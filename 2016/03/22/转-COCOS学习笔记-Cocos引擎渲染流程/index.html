@@ -1,0 +1,1141 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Cocos," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.5.0" />
+
+
+
+
+
+
+<meta name="description" content="最近在研究Cocos引擎的渲染流程，在这里将其整个渲染流程进行一下梳理：  
+梳理之前我们要知道一些东西，就是我们的Cocos引擎是通过使用OpenGL的一些API来进行渲染绘制的，所以如果我们要彻底理解Cocos引擎的渲染流程并想修改引擎底层渲染的相关内容，熟悉OpenGL是很有必要的。  
+这里先简单说一下大概流程，Cocos3.x版本的渲染是将所有需要渲染的node先通过各种RenderCo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[转]COCOS学习笔记--Cocos引擎渲染流程">
+<meta property="og:url" content="http://yoursite.com/2016/03/22/转-COCOS学习笔记-Cocos引擎渲染流程/index.html">
+<meta property="og:site_name" content="熔火之心">
+<meta property="og:description" content="最近在研究Cocos引擎的渲染流程，在这里将其整个渲染流程进行一下梳理：  
+梳理之前我们要知道一些东西，就是我们的Cocos引擎是通过使用OpenGL的一些API来进行渲染绘制的，所以如果我们要彻底理解Cocos引擎的渲染流程并想修改引擎底层渲染的相关内容，熟悉OpenGL是很有必要的。  
+这里先简单说一下大概流程，Cocos3.x版本的渲染是将所有需要渲染的node先通过各种RenderCo">
+<meta property="og:image" content="http://img.blog.csdn.net/20151227222357244?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
+<meta property="og:image" content="http://img.blog.csdn.net/20151227224023689">
+<meta property="og:updated_time" content="2016-03-22T12:12:54.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="[转]COCOS学习笔记--Cocos引擎渲染流程">
+<meta name="twitter:description" content="最近在研究Cocos引擎的渲染流程，在这里将其整个渲染流程进行一下梳理：  
+梳理之前我们要知道一些东西，就是我们的Cocos引擎是通过使用OpenGL的一些API来进行渲染绘制的，所以如果我们要彻底理解Cocos引擎的渲染流程并想修改引擎底层渲染的相关内容，熟悉OpenGL是很有必要的。  
+这里先简单说一下大概流程，Cocos3.x版本的渲染是将所有需要渲染的node先通过各种RenderCo">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20151227222357244?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 6264780808712619000,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> [转]COCOS学习笔记--Cocos引擎渲染流程 | 熔火之心 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?b5cc997336f28f59fa10c14b7fef523b";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">熔火之心</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th fa-fw"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="#" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                [转]COCOS学习笔记--Cocos引擎渲染流程
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-03-22T08:01:00+08:00" content="2016-03-22">
+              2016-03-22
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/03/22/转-COCOS学习笔记-Cocos引擎渲染流程/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/03/22/转-COCOS学习笔记-Cocos引擎渲染流程/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/03/22/转-COCOS学习笔记-Cocos引擎渲染流程/" class="leancloud_visitors" data-flag-title="[转]COCOS学习笔记--Cocos引擎渲染流程">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近在研究Cocos引擎的渲染流程，在这里将其整个渲染流程进行一下梳理：  </p>
+<p>梳理之前我们要知道一些东西，就是我们的Cocos引擎是通过使用OpenGL的一些API来进行渲染绘制的，所以如果我们要彻底理解Cocos引擎的渲染流程并想修改引擎底层渲染的相关内容，熟悉OpenGL是很有必要的。  </p>
+<p>这里先简单说一下大概流程，Cocos3.x版本的渲染是将所有需要渲染的node先通过各种RenderCommand封装起来，你先不用管RenderCommand是什么，只需要记住它把我们要渲染的node封装起来了就行，然后引擎把这些RenderCommand添加到了一个队列中存了起来，这个队列叫CommandQueue，添加的时候顺便对这些RenderCommand设置了一些参数，最后在每一帧结束时调用进行渲染，渲染前会根据ID对RenderCommand进行排序，然后再进行渲染。  </p>
+<img src="http://img.blog.csdn.net/20151227222357244?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
+<p>好了接下来我们来开始梳理引擎整个的渲染流程了：  </p>
+<p>首先，整个工程的渲染流程的入口在哪里呢？  </p>
+<p>我们打开工程文件目录，在 platform\win32文件目录下找到CCApplication-win3类文件，这里要注意不同平台的不一样，比如mac平台下是platform\mac目录下的CCApplication-mac文件，根据我们发布的工程平台的不同，这个CCApplication类文件也不同。整个渲染流程就在这个CCApplication类文件run()方法中开始，代码如下：  </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">int</span> Application::run()  </div><div class="line">&#123;     </div><div class="line">    ......         </div><div class="line">    director-&gt;mainLoop();<span class="comment">//进入引擎的主循环  </span></div><div class="line">    ......      </div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这里我们要了解一个概念，就是cocos2dx整个工程是运行在一个单线程里的，也就是我们经常说的主线程，在主线程里完成渲染、相关的定时器等等处理。注意Application::run()中的这句：  </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">director-&gt;mainLoop();</div></pre></td></tr></table></figure>
+<p>这句代码就是进入cocos2d-x的主循环了，这个主循环mainLoop()由导演负责维护，主线程mainloop()会不停地执行，理想状态下每秒会调用60次。  </p>
+<p>那我们看看CCDirector类里的mainLoop()方法具体做了些什么：  </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">void</span> DisplayLinkDirector::mainLoop()  </div><div class="line">&#123;  </div><div class="line">    <span class="keyword">if</span> (_purgeDirectorInNextLoop)<span class="comment">//进入下一个主循环，也就是结束这次的主循环，就净化，也就是一些后期处理   </span></div><div class="line">    &#123;  </div><div class="line">        _purgeDirectorInNextLoop = <span class="literal">false</span>;  </div><div class="line">        purgeDirector();  </div><div class="line">    &#125;  </div><div class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (_restartDirectorInNextLoop)  </div><div class="line">    &#123;  </div><div class="line">        _restartDirectorInNextLoop = <span class="literal">false</span>;  </div><div class="line">        restartDirector();  </div><div class="line">    &#125;  </div><div class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (! _invalid)  </div><div class="line">    &#123;  </div><div class="line">        drawScene();<span class="comment">//绘制屏幕  </span></div><div class="line">        PoolManager::getInstance()-&gt;getCurrentPool()-&gt;clear();<span class="comment">//释放一些没有用的对象，主要保件内存的合理管理   </span></div><div class="line">    &#125;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>最开始我还疑惑为什么mainLoop()方法的类是DisplayLinkDirector而不是CCDirector，但是在CCDirector.cpp中我们会找到如下代码：  </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">static</span> DisplayLinkDirector *s_SharedDirector = <span class="literal">nullptr</span>;  </div><div class="line">Director* Director::getInstance()  </div><div class="line">&#123;  </div><div class="line">    <span class="keyword">if</span> (!s_SharedDirector)  </div><div class="line">    &#123;  </div><div class="line">        s_SharedDirector = <span class="keyword">new</span> (<span class="built_in">std</span>::nothrow) DisplayLinkDirector();  </div><div class="line">        CCASSERT(s_SharedDirector, <span class="string">"FATAL: Not enough memory"</span>);  </div><div class="line">        s_SharedDirector-&gt;init();  </div><div class="line">    &#125;  </div><div class="line">   </div><div class="line">    <span class="keyword">return</span> s_SharedDirector;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>我们可以看到Director类返回的单例对象是一个DisplayLinkDirector类型的，所以这个导演实例要执行mainLoop()方法，这个方法自然是DisplayLinkDirector类里的方法啦！  </p>
+<p>但是这是不是说明Director类就是DisplayLinkDirector类或继承自DisplayLinkDirector类呢？千万不要这样想！这两个类没有半毛钱关系，我们在CCDirector.h中看到如下代码：  </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> CC_DLL Director : <span class="keyword">public</span> Ref</div></pre></td></tr></table></figure>
+<p>可以看出Director类是继承自Ref类的，只是通过getInstance()方法返回的导演类的实例对象是DisplayLinkDirector类型的，CCDisplayLinkDirector类是CCDisplay的子类，从命名就应该可以很清晰的知道它的用处。这里虽然有点绕，但不要混淆哈  ！ </p>
+<p>好了，回过头来，在DisplayLinkDirector::mainLoop()方法中我可以看到这句代码：  </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">void</span> DisplayLinkDirector::mainLoop()  </div><div class="line">&#123;  </div><div class="line">    ......  </div><div class="line">    drawScene();  </div><div class="line">    ......  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>mainloop()如果执行会调用drawScene()，通过drawScene()代码就可以实现场景的绘制了。<br>那我们继续看看drawScene()具体做了些什么：  </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">void</span> Director::drawScene()  </div><div class="line">&#123;  </div><div class="line">    ......  </div><div class="line">    <span class="keyword">if</span> (_notificationNode)  </div><div class="line">   &#123;  </div><div class="line">        _notificationNode-&gt;visit(_renderer, Mat4::IDENTITY, <span class="number">0</span>);  </div><div class="line">   &#125;  </div><div class="line">    ......  </div><div class="line">    _renderer-&gt;render();  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Director::drawScene()做了好多事情，其他的先不看，我们主要关注这两句：  </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">_notificationNode-&gt;visit(_renderer, Mat4::IDENTITY, <span class="number">0</span>);</div></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">_renderer-&gt;render();</div></pre></td></tr></table></figure>
+<p>先看第一句，这句_notificationNode-&gt;visit(_renderer, Mat4::IDENTITY, 0) ,这句其实是进入了一个循环调用，具体要看CCNode.cpp：  </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">void</span> Node::visit(Renderer* renderer, <span class="keyword">const</span> Mat4 &amp;parentTransform, <span class="keyword">uint32_t</span> parentFlags)  </div><div class="line">&#123;  </div><div class="line">    ......   </div><div class="line">        <span class="keyword">for</span>( ; i &lt; _children.size(); i++ )  </div><div class="line">        &#123;  </div><div class="line">            <span class="keyword">auto</span> node = _children.at(i);  </div><div class="line">   </div><div class="line">            <span class="keyword">if</span> (node &amp;&amp; node-&gt;_localZOrder &lt; <span class="number">0</span>)  </div><div class="line">                node-&gt;visit(renderer, _modelViewTransform, flags);  </div><div class="line">            <span class="keyword">else</span>  </div><div class="line">                <span class="keyword">break</span>;  </div><div class="line">        &#125;  </div><div class="line">        ......  </div><div class="line">        <span class="keyword">this</span>-&gt;draw(renderer, _modelViewTransform, flags);  </div><div class="line">        ......  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这个函数有一个循环调用，我们可以看到auto node = _children.at(i);和node-&gt;visit(renderer, _modelViewTransform, flags);，这段代码的意思是先获取子节点，然后递归调用节点的visit()函数，到了没有子节点的节点，执行了这句this-&gt;draw(renderer, _modelViewTransform, flags)，开始调用draw()函数，那么我们接着看draw()函数代码：  </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">void</span> Node::draw(Renderer* renderer, <span class="keyword">const</span> Mat4 &amp;transform, <span class="keyword">uint32_t</span> flags)  </div><div class="line">&#123;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>里面什么都没有啊，这是怎么回事？其实这个draw()函数是个虚函数，所以它执行时执行的是该子节点类的draw()函数。那么我们分别看DrawNode::draw()、Sprite::draw()：  </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">void</span> DrawNode::draw(Renderer *renderer, <span class="keyword">const</span> Mat4 &amp;transform, <span class="keyword">uint32_t</span> flags)  </div><div class="line">&#123;  </div><div class="line">    <span class="keyword">if</span>(_bufferCount)  </div><div class="line">    &#123;  </div><div class="line">        ......  </div><div class="line">        renderer-&gt;addCommand(&amp;_customCommand);  </div><div class="line">    &#125;  </div><div class="line">    <span class="keyword">if</span>(_bufferCountGLPoint)  </div><div class="line">    &#123;  </div><div class="line">        ......  </div><div class="line">        renderer-&gt;addCommand(&amp;_customCommandGLPoint);  </div><div class="line">    &#125;  </div><div class="line">      </div><div class="line">    <span class="keyword">if</span>(_bufferCountGLLine)  </div><div class="line">    &#123;  </div><div class="line">        ......  </div><div class="line">        renderer-&gt;addCommand(&amp;_customCommandGLLine);  </div><div class="line">    &#125;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">void</span> Sprite::draw(Renderer *renderer, <span class="keyword">const</span> Mat4 &amp;transform, <span class="keyword">uint32_t</span> flags)  </div><div class="line">&#123;  </div><div class="line">......  </div><div class="line">    <span class="keyword">if</span>(_insideBounds)  </div><div class="line">&#123;  </div><div class="line">    ......  </div><div class="line">        renderer-&gt;addCommand(&amp;_trianglesCommand);  </div><div class="line">    &#125;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>我们可以看到在在这些子类的draw()函数都执行了renderer-&gt;addCommand()代码，这是向RenderQueue中添加RenderCommand，在添加时顺便对RenderCommand进行了一些参数设置，当然有的类的draw()不是向RenderQueue中添加RenderCommand，而是直接使用OpenGL的API直接进行渲染，或者做一些其他的事情。</p>
+<p>当Director::drawScene()循环调用完所有子节点的visit()方法并且执行完draw()方法，即向RenderQueue中添加完RenderCommand后，我们就看看接下来进行渲染的Renderer::render() 函数都做了些什么：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">void</span> Renderer::render()  </div><div class="line">&#123;  </div><div class="line">    _isRendering = <span class="literal">true</span>;  </div><div class="line">      </div><div class="line">    <span class="keyword">if</span> (_glViewAssigned)  </div><div class="line">    &#123;  </div><div class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;renderqueue : _renderGroups)  </div><div class="line">        &#123;  </div><div class="line">            renderqueue.sort();  </div><div class="line">        &#125;  </div><div class="line">        visitRenderQueue(_renderGroups[<span class="number">0</span>]);  </div><div class="line">    &#125;  </div><div class="line">    clean();  </div><div class="line">    _isRendering = <span class="literal">false</span>;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>看到“renderqueue.sort()”，这是根据ID先对所有RenderCommand进行排序，然后才进行渲染，“visitRenderQueue( _renderGroups[0])”就是来进行渲染的。  </p>
+<p>那么我们接着看看void Renderer::visitRenderQueue(const RenderQueue&amp; queue)的代码： </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">void</span> Renderer::visitRenderQueue(RenderQueue&amp; <span class="built_in">queue</span>)  </div><div class="line">&#123;  </div><div class="line">    <span class="built_in">queue</span>.saveRenderState();  </div><div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span>&amp; zNegQueue = <span class="built_in">queue</span>.getSubQueue(RenderQueue::QUEUE_GROUP::GLOBALZ_NEG);  </div><div class="line">    <span class="keyword">if</span> (zNegQueue.size() &gt; <span class="number">0</span>)  </div><div class="line">    &#123;  </div><div class="line">        <span class="keyword">if</span>(_isDepthTestFor2D)  </div><div class="line">        &#123;  </div><div class="line">            glEnable(GL_DEPTH_TEST);  </div><div class="line">            glDepthMask(<span class="literal">true</span>);  </div><div class="line">            glEnable(GL_BLEND);  </div><div class="line">            RenderState::StateBlock::_defaultState-&gt;setDepthTest(<span class="literal">true</span>);  </div><div class="line">            RenderState::StateBlock::_defaultState-&gt;setDepthWrite(<span class="literal">true</span>);  </div><div class="line">            RenderState::StateBlock::_defaultState-&gt;setBlend(<span class="literal">true</span>);  </div><div class="line">        &#125;  </div><div class="line">        <span class="keyword">else</span>  </div><div class="line">        &#123;  </div><div class="line">            glDisable(GL_DEPTH_TEST);  </div><div class="line">            glDepthMask(<span class="literal">false</span>);  </div><div class="line">            glEnable(GL_BLEND);  </div><div class="line">            RenderState::StateBlock::_defaultState-&gt;setDepthTest(<span class="literal">false</span>);  </div><div class="line">            RenderState::StateBlock::_defaultState-&gt;setDepthWrite(<span class="literal">false</span>);  </div><div class="line">            RenderState::StateBlock::_defaultState-&gt;setBlend(<span class="literal">true</span>);  </div><div class="line">        &#125;  </div><div class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> it = zNegQueue.cbegin(); it != zNegQueue.cend(); ++it)  </div><div class="line">        &#123;  </div><div class="line">            processRenderCommand(*it);  </div><div class="line">        &#125;  </div><div class="line">        flush();  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在visitRenderQueue()方法中我我们看到这一行代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">processRenderCommand(*it);</div></pre></td></tr></table></figure>
+<p>这是干什么的呢？这句代码就是进一步进入渲染流程的，我们看一下processRenderCommand()它做了什么：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">void</span> Renderer::processRenderCommand(RenderCommand* command)  </div><div class="line">&#123;  </div><div class="line">    <span class="keyword">auto</span> commandType = command-&gt;getType();  </div><div class="line">    <span class="keyword">if</span>( RenderCommand::Type::TRIANGLES_COMMAND == commandType)  </div><div class="line">    &#123;  </div><div class="line">         ......  </div><div class="line">         drawBatchedTriangles();  </div><div class="line">         ......  </div><div class="line">    &#125;  </div><div class="line">    <span class="keyword">else</span> <span class="keyword">if</span> ( RenderCommand::Type::QUAD_COMMAND == commandType )  </div><div class="line">    &#123;  </div><div class="line">        ......  </div><div class="line">        drawBatchedQuads();  </div><div class="line">        ......  </div><div class="line">    &#125;  </div><div class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (RenderCommand::Type::MESH_COMMAND == commandType)  </div><div class="line">    &#123;  </div><div class="line">        ......  </div><div class="line">        <span class="keyword">auto</span> cmd = <span class="keyword">static_cast</span>&lt;MeshCommand*&gt;(command);  </div><div class="line">        ......  </div><div class="line">        cmd-&gt;execute();  </div><div class="line">        ......  </div><div class="line">    &#125;  </div><div class="line">    ......  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>我们可以看到，在这里，根据渲染类型的不同，会调用不同的函数，这些函数里有OpenGL的API，没错，这些函数来进行渲染的。比如TRIANGLES_COMMAND类型中调用了drawBatchedTriangles()，QUAD_COMMAND类型中调用了drawBatchedQuads()，MESH_COMMAND类型中调用了MeshCommand::execute()，等等。  </p>
+<p>举个例子，我们来看下drawBatchedTriangles()方法：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">void</span> Renderer::drawBatchedTriangles()  </div><div class="line">&#123;  </div><div class="line">    ......  </div><div class="line">    <span class="keyword">if</span> (Configuration::getInstance()-&gt;supportsShareableVAO())  </div><div class="line">    &#123;  </div><div class="line">        ......&#125;  </div><div class="line">    <span class="keyword">else</span>  </div><div class="line">    &#123;  </div><div class="line">        ......  </div><div class="line">        <span class="comment">// vertices  </span></div><div class="line">        glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, <span class="number">3</span>, GL_FLOAT, GL_FALSE, kQuadSize, (GLvoid*) offsetof(V3F_C4B_T2F, vertices));  </div><div class="line">   </div><div class="line">        <span class="comment">// colors  </span></div><div class="line">        glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_COLOR, <span class="number">4</span>, GL_UNSIGNED_BYTE, GL_TRUE, kQuadSize, (GLvoid*) offsetof(V3F_C4B_T2F, colors));  </div><div class="line">   </div><div class="line">        <span class="comment">// tex coords  </span></div><div class="line">        glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_TEX_COORD, <span class="number">2</span>, GL_FLOAT, GL_FALSE, kQuadSize, (GLvoid*) offsetof(V3F_C4B_T2F, texCoords));  </div><div class="line">   </div><div class="line">        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _buffersVBO[<span class="number">1</span>]);  </div><div class="line">        glBufferData(GL_ELEMENT_ARRAY_BUFFER, <span class="keyword">sizeof</span>(_indices[<span class="number">0</span>]) * _filledIndex, _indices, GL_STATIC_DRAW);  </div><div class="line">      &#125;  </div><div class="line">       ......  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>可以看到该方法中调用了很多OpenGL的API，这些方法就是整个渲染流程最后进行渲染的环节。</p>
+<p>好了，以上便是Cocos引擎的整个的渲染流程了。<br>最后用一个流程图对以上内容做一下总结，话说这张图我真的是很用心画的，改了好多遍最后优化到现在这个样子给大家看，希望对大家有帮助：</p>
+<img src="http://img.blog.csdn.net/20151227224023689">
+<blockquote>
+<p>原文地址：<a href="http://m.blog.csdn.net/article/details?id=50414407" target="_blank" rel="external">http://m.blog.csdn.net/article/details?id=50414407</a></p>
+</blockquote>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Cocos/" rel="tag">#Cocos</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/03/22/LearnOpenGL-Text-Rendering/" rel="next" title="[LearnOpenGL] Text Rendering">
+                <i class="fa fa-chevron-left"></i> [LearnOpenGL] Text Rendering
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/03/22/cocos2dx-3-10-场景后处理实现方法/" rel="prev" title="cocos2dx 3.10 场景后处理实现方法">
+                cocos2dx 3.10 场景后处理实现方法 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <div class="ds-share flat" data-thread-key="2016/03/22/转-COCOS学习笔记-Cocos引擎渲染流程/"
+     data-title="[转]COCOS学习笔记--Cocos引擎渲染流程"
+     data-content=""
+     data-url="http://yoursite.com/2016/03/22/转-COCOS学习笔记-Cocos引擎渲染流程/">
+  <div class="ds-share-inline">
+    <ul  class="ds-share-icons-16">
+
+      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+
+    </ul>
+    <div class="ds-share-icons-more">
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/03/22/转-COCOS学习笔记-Cocos引擎渲染流程/"
+           data-title="[转]COCOS学习笔记--Cocos引擎渲染流程" data-url="http://yoursite.com/2016/03/22/转-COCOS学习笔记-Cocos引擎渲染流程/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/小李.jpg"
+               alt="楼政浩" />
+          <p class="site-author-name" itemprop="name">楼政浩</p>
+          <p class="site-description motion-element" itemprop="description">图形游戏</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">21</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/rhzx3519" target="_blank">
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/1590103232/profile?topnav=1&wvr=6&is_all=1" target="_blank">
+                  
+                    <i class="fa fa-weibo"></i> Weibo
+                  
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        <div class="links-of-blogroll motion-element">
+          
+            <div class="links-of-blogroll-title">Links</div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://developer.nvidia.com/gpugems" target="_blank">GPU Gems</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://kesen.realtimerendering.com" target="_blank">SIGGRAPH papers</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.learnopengl.com" target="_blank">Learn OpenGL</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.shadertoy.com/" target="_blank">ShaderToy</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.khronos.org" target="_blank">OpenGL Home</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.uefap.com/speaking/symbols/symbols.htm" target="_blank">Mathematical symbols</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.kevinbeason.com" target="_blank">kevinbeason</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://cs.brown.edu/courses/cs224/docs.shtml" target="_blank">Brown Universiy CS</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.iaccepted.net" target="_blank">DOUBI</a>
+                </li>
+              
+            </ul>
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <p class="post-toc-empty">此文章未包含目录</p>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">楼政浩</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+
+  
+
+
+
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=0.5.0"></script>
+
+
+
+  
+  
+<script type="text/javascript" src="/js/src/scrollspy.js?v=0.5.0"></script>
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = NexT.utils.escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    NexT.motion.middleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+
+      if (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          NexT.utils.displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"louzh"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+  
+
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+       search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+    'use strict';
+    $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+            // get the contents from search data
+            isfetched = true;
+            $('.popup').detach().appendTo('.header-inner');
+            var datas = $( "entry", xmlResponse ).map(function() {
+                return {
+                    title: $( "title", this ).text(),
+                    content: $("content",this).text(),
+                    url: $( "url" , this).text()
+                };
+            }).get();
+            var $input = document.getElementById(search_id);
+            var $resultContent = document.getElementById(content_id);
+            $input.addEventListener('input', function(){
+                var matchcounts = 0;
+                var str='<ul class=\"search-result-list\">';                
+                var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                $resultContent.innerHTML = "";
+                if (this.value.trim().length > 1) {
+                // perform local searching
+                datas.forEach(function(data) {
+                    var isMatch = true;
+                    var content_index = [];
+                    var data_title = data.title.trim().toLowerCase();
+                    var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                    var data_url = data.url;
+                    var index_title = -1;
+                    var index_content = -1;
+                    var first_occur = -1;
+                    // only match artiles with not empty titles and contents
+                    if(data_title != '' && data_content != '') {
+                        keywords.forEach(function(keyword, i) {
+                            index_title = data_title.indexOf(keyword);
+                            index_content = data_content.indexOf(keyword);
+                            if( index_title < 0 && index_content < 0 ){
+                                isMatch = false;
+                            } else {
+                                if (index_content < 0) {
+                                    index_content = 0;
+                                }
+                                if (i == 0) {
+                                    first_occur = index_content;
+                                }
+                            }
+                        });
+                    }
+                    // show search results
+                    if (isMatch) {
+                        matchcounts += 1;
+                        str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                        var content = data.content.trim().replace(/<[^>]+>/g,"");
+                        if (first_occur >= 0) {
+                            // cut out 100 characters
+                            var start = first_occur - 20;
+                            var end = first_occur + 80;
+                            if(start < 0){
+                                start = 0;
+                            }
+                            if(start == 0){
+                                end = 50;
+                            }
+                            if(end > content.length){
+                                end = content.length;
+                            }
+                            var match_content = content.substring(start, end);
+                            // highlight all keywords
+                            keywords.forEach(function(keyword){
+                                var regS = new RegExp(keyword, "gi");
+                                match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                            });
+                            
+                            str += "<p class=\"search-result\">" + match_content +"...</p>"
+                        }
+                        str += "</li>";
+                    }
+                })};
+                str += "</ul>";
+                if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+                if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+                $resultContent.innerHTML = str;
+            });
+            proceedsearch();
+        }
+    });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').mousedown(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("RVzQ830wAlYNdhbz5nLmby9w-gzGzoHsz", "5YfzhCNs37UlyrgIi1KmNECg");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+
+
+</body>
+</html>

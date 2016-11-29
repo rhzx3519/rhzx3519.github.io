@@ -1,0 +1,1132 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="OpenGL,Game,Cocos," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.5.0" />
+
+
+
+
+
+
+<meta name="description" content="实现一个场景变灰的效果，首先，场景中主要有两个layer：mainLayer和uiLayer。mainLayer是场景中需要进行后处理的部分，而uiLayer是不需要后处理的。例子是在cocos的新项目的基础上修改的，可以通过cocos new projName -p packageName -l cpp命令创建一个新的工程。HelloWorldScene的代码如下：
+12345678910111">
+<meta property="og:type" content="article">
+<meta property="og:title" content="cocos2dx 3.10 场景后处理实现方法">
+<meta property="og:url" content="http://yoursite.com/2016/03/22/cocos2dx-3-10-场景后处理实现方法/index.html">
+<meta property="og:site_name" content="熔火之心">
+<meta property="og:description" content="实现一个场景变灰的效果，首先，场景中主要有两个layer：mainLayer和uiLayer。mainLayer是场景中需要进行后处理的部分，而uiLayer是不需要后处理的。例子是在cocos的新项目的基础上修改的，可以通过cocos new projName -p packageName -l cpp命令创建一个新的工程。HelloWorldScene的代码如下：
+12345678910111">
+<meta property="og:updated_time" content="2016-03-22T12:35:11.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="cocos2dx 3.10 场景后处理实现方法">
+<meta name="twitter:description" content="实现一个场景变灰的效果，首先，场景中主要有两个layer：mainLayer和uiLayer。mainLayer是场景中需要进行后处理的部分，而uiLayer是不需要后处理的。例子是在cocos的新项目的基础上修改的，可以通过cocos new projName -p packageName -l cpp命令创建一个新的工程。HelloWorldScene的代码如下：
+12345678910111">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 6264780808712619000,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> cocos2dx 3.10 场景后处理实现方法 | 熔火之心 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?b5cc997336f28f59fa10c14b7fef523b";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">熔火之心</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th fa-fw"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="#" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                cocos2dx 3.10 场景后处理实现方法
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-03-22T08:24:41+08:00" content="2016-03-22">
+              2016-03-22
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Game/" itemprop="url" rel="index">
+                    <span itemprop="name">Game</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/03/22/cocos2dx-3-10-场景后处理实现方法/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/03/22/cocos2dx-3-10-场景后处理实现方法/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/03/22/cocos2dx-3-10-场景后处理实现方法/" class="leancloud_visitors" data-flag-title="cocos2dx 3.10 场景后处理实现方法">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>实现一个场景变灰的效果，首先，场景中主要有两个layer：mainLayer和uiLayer。mainLayer是场景中需要进行后处理的部分，而uiLayer是不需要后处理的。例子是在cocos的新项目的基础上修改的，可以通过cocos new projName -p packageName -l cpp命令创建一个新的工程。HelloWorldScene的代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> __HELLOWORLD_SCENE_H__  </span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> __HELLOWORLD_SCENE_H__  </span></div><div class="line">  </div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"cocos2d.h"</span>  </span></div><div class="line">  </div><div class="line"><span class="comment">/************************************************************************/</span>  </div><div class="line"><span class="comment">/* 后处理类，用于绑定rendertexture                                                                     */</span>  </div><div class="line"><span class="comment">/************************************************************************/</span>  </div><div class="line"><span class="keyword">class</span> PostProcessing : <span class="keyword">public</span> cocos2d::Sprite  </div><div class="line">&#123;  </div><div class="line"><span class="keyword">public</span>:  </div><div class="line">    <span class="function"><span class="keyword">static</span> PostProcessing* <span class="title">create</span><span class="params">(cocos2d::Texture2D *texture)</span></span>;  </div><div class="line">  </div><div class="line"><span class="keyword">private</span>:  </div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">initProgram</span><span class="params">()</span></span>;  </div><div class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">update</span><span class="params">(<span class="keyword">float</span> delta)</span> override</span>;  </div><div class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">draw</span><span class="params">(cocos2d::Renderer *renderer, <span class="keyword">const</span> cocos2d::Mat4 &amp;transform, <span class="keyword">uint32_t</span> flags)</span> override</span>;  </div><div class="line">&#125;;  </div><div class="line">  </div><div class="line">  </div><div class="line"><span class="keyword">class</span> HelloWorld : <span class="keyword">public</span> cocos2d::Layer  </div><div class="line">&#123;  </div><div class="line"><span class="keyword">public</span>:  </div><div class="line">    <span class="keyword">virtual</span> ~HelloWorld();  </div><div class="line">  </div><div class="line">    <span class="keyword">static</span> cocos2d::<span class="function">Scene* <span class="title">createScene</span><span class="params">()</span></span>;  </div><div class="line">  </div><div class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">bool</span> <span class="title">init</span><span class="params">()</span></span>;  </div><div class="line">  </div><div class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">update</span><span class="params">(<span class="keyword">float</span> delta)</span> override</span>;  </div><div class="line">      </div><div class="line">    <span class="comment">// a selector callback  </span></div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">menuCloseCallback</span><span class="params">(cocos2d::Ref* pSender)</span></span>;  </div><div class="line">      </div><div class="line">    <span class="comment">// implement the "static create()" method manually  </span></div><div class="line">    CREATE_FUNC(HelloWorld);  </div><div class="line">  </div><div class="line"><span class="keyword">private</span>:  </div><div class="line">    cocos2d::Layer *mainLayer, *mainLayerParent, *uiLayer, *processLayer;  </div><div class="line">    cocos2d::RenderTexture *rt;  </div><div class="line">&#125;;  </div><div class="line">  </div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span> <span class="comment">// __HELLOWORLD_SCENE_H__</span></span></div></pre></td></tr></table></figure>
+<p>新添加的部分解释一下：</p>
+<ol>
+<li><p>HelloWorld类中的新添加的成员变量RenderTexture使我们实现后处理的关键，它的作用相当于OpenGL中的帧缓冲，能够访问渲染场景并将其保存成纹理存储起来，用于之后的后处理。</p>
+</li>
+<li><p>HelloWorld类中的这些layer 用于分层渲染。</p>
+</li>
+<li><p>PostProcessing 这个精灵类用于保存RenderTexture中的纹理，并在其中进行后处理，具体实现后面再说明。</p>
+</li>
+</ol>
+<p>看一下HelloWord的init方法：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">bool</span> HelloWorld::init()  </div><div class="line">&#123;  </div><div class="line">    <span class="comment">//////////////////////////////  </span></div><div class="line">    <span class="comment">// 1. super init first  </span></div><div class="line">    <span class="keyword">if</span> ( !Layer::init() )  </div><div class="line">    &#123;  </div><div class="line">        <span class="keyword">return</span> <span class="literal">false</span>;  </div><div class="line">    &#125;  </div><div class="line">      </div><div class="line">    Size visibleSize = Director::getInstance()-&gt;getVisibleSize();  </div><div class="line">    Vec2 origin = Director::getInstance()-&gt;getVisibleOrigin();  </div><div class="line">  </div><div class="line">    <span class="comment">/////////////////////////////  </span></div><div class="line">    <span class="comment">// 2. add a menu item with "X" image, which is clicked to quit the program  </span></div><div class="line">    <span class="comment">//    you may modify it.  </span></div><div class="line">  </div><div class="line">    <span class="comment">// add a "close" icon to exit the progress. it's an autorelease object  </span></div><div class="line">    <span class="keyword">auto</span> closeItem = MenuItemImage::create(  </div><div class="line">                                           <span class="string">"CloseNormal.png"</span>,  </div><div class="line">                                           <span class="string">"CloseSelected.png"</span>,  </div><div class="line">                                           CC_CALLBACK_1(HelloWorld::menuCloseCallback, <span class="keyword">this</span>));  </div><div class="line">      </div><div class="line">    closeItem-&gt;setPosition(Vec2(origin.x + visibleSize.width - closeItem-&gt;getContentSize().width/<span class="number">2</span> ,  </div><div class="line">                                origin.y + closeItem-&gt;getContentSize().height/<span class="number">2</span>));  </div><div class="line">  </div><div class="line">    <span class="comment">// create menu, it's an autorelease object  </span></div><div class="line">    <span class="keyword">auto</span> menu = Menu::create(closeItem, <span class="literal">NULL</span>);  </div><div class="line">    menu-&gt;setPosition(Vec2::ZERO);  </div><div class="line">    <span class="keyword">this</span>-&gt;addChild(menu, <span class="number">1</span>);  </div><div class="line">  </div><div class="line">    <span class="comment">/////////////////////////////  </span></div><div class="line">    <span class="comment">// 3. add your codes below...  </span></div><div class="line">  </div><div class="line">    <span class="comment">// add a label shows "Hello World"  </span></div><div class="line">    <span class="comment">// create and initialize a label  </span></div><div class="line">    uiLayer = Layer::create();  </div><div class="line">    <span class="keyword">this</span>-&gt;addChild(uiLayer, <span class="number">1</span>);  </div><div class="line">  </div><div class="line">    <span class="keyword">auto</span> label = Label::createWithTTF(<span class="string">"Hello World"</span>, <span class="string">"fonts/Marker Felt.ttf"</span>, <span class="number">24</span>);  </div><div class="line">      </div><div class="line">    <span class="comment">// position the label on the center of the screen  </span></div><div class="line">    label-&gt;setPosition(Vec2(origin.x + visibleSize.width/<span class="number">2</span>,  </div><div class="line">                            origin.y + visibleSize.height - label-&gt;getContentSize().height));  </div><div class="line">  </div><div class="line">    <span class="comment">// add the label as a child to this layer  </span></div><div class="line">    uiLayer-&gt;addChild(label);  </div><div class="line">  </div><div class="line">    mainLayerParent = Layer::create();  </div><div class="line">    <span class="keyword">this</span>-&gt;addChild(mainLayerParent);  </div><div class="line">  </div><div class="line">    mainLayer = Layer::create(); <span class="comment">// 游戏效果渲染层用于之后的后处理  </span></div><div class="line">    mainLayerParent-&gt;addChild(mainLayer);  </div><div class="line">      </div><div class="line">  </div><div class="line">    <span class="comment">// add "HelloWorld" splash screen"  </span></div><div class="line">    <span class="keyword">auto</span> sprite = Sprite::create(<span class="string">"HelloWorld.png"</span>);  </div><div class="line">  </div><div class="line">    <span class="comment">// position the sprite on the center of the screen  </span></div><div class="line">    sprite-&gt;setPosition(Vec2(visibleSize.width/<span class="number">2</span> + origin.x, visibleSize.height/<span class="number">2</span> + origin.y));  </div><div class="line">  </div><div class="line">    <span class="comment">// add the sprite as a child to this layer  </span></div><div class="line">    mainLayer-&gt;addChild(sprite, <span class="number">0</span>);  </div><div class="line">  </div><div class="line">    <span class="comment">// 灰色精灵  </span></div><div class="line">    GrayMask *graySprite = GrayMask::create(<span class="string">"Flower.jpg"</span>);  </div><div class="line">    graySprite-&gt;setPosition(Vec2(visibleSize.width / <span class="number">2</span> + origin.x + <span class="number">100</span>, visibleSize.height / <span class="number">2</span> + origin.y));  </div><div class="line">    mainLayer-&gt;addChild(graySprite, <span class="number">-1</span>);  </div><div class="line">      </div><div class="line">    rt = RenderTexture::create(visibleSize.width, visibleSize.height);  </div><div class="line">    rt-&gt;retain();  </div><div class="line">  </div><div class="line">    processLayer = Layer::create(); <span class="comment">//后处理效果层，用于绑定rendertexture的纹理，使用shader进行后处理之后展现到屏幕上  </span></div><div class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> imageFilePath = FileUtils::getInstance()-&gt;fullPathForFilename(<span class="string">"Flower.jpg"</span>);  </div><div class="line">    Director::getInstance()-&gt;getTextureCache()-&gt;addImage(imageFilePath);  </div><div class="line">    PostProcessing *post = PostProcessing::create(rt-&gt;getSprite()-&gt;getTexture());  </div><div class="line">    <span class="comment">//PostProcessing *post = PostProcessing::create(Director::getInstance()-&gt;getTextureCache()-&gt;addImage(imageFilePath));  </span></div><div class="line">    post-&gt;setFlippedY(<span class="literal">true</span>);  </div><div class="line">    post-&gt;setPosition(Vec2(visibleSize.width / <span class="number">2</span> + origin.x, visibleSize.height / <span class="number">2</span> + origin.y));  </div><div class="line">    processLayer-&gt;addChild(post);  </div><div class="line">    <span class="keyword">this</span>-&gt;addChild(processLayer);  </div><div class="line">  </div><div class="line">    mainLayerParent-&gt;setVisible(<span class="literal">false</span>);  </div><div class="line">  </div><div class="line">    <span class="keyword">this</span>-&gt;scheduleUpdate(); <span class="comment">// 设置每一帧结束的时候调用update方法  </span></div><div class="line">    <span class="keyword">return</span> <span class="literal">true</span>;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>我们将两个sprite放在mainlayer中，而将ui按钮放在uiLayer中，注意mainLayer之上还要有一个mainLayerParent Layer。如果我们直接将mainLayer放在scene下面，则在之后的后处理中，我们需要将mainLayer设置成不可见，这样mainLayer就不会渲染了，我们也就得不到mainLayer渲染之后的纹理了。而将mainLayerParent设置成不可见，mainLayer仍然会渲染，我们就可以得到纹理了。  </p>
+<p>在最后我们调用scheduleUpdate()方法，设置每一帧结束的时候调用update方法。update方法代码如下:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">void</span> HelloWorld::update(<span class="keyword">float</span> delta)  </div><div class="line">&#123;  </div><div class="line">    rt-&gt;begin();  </div><div class="line">    mainLayer-&gt;visit();  </div><div class="line">    rt-&gt;end();  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在每一帧我们都需要调用 begin、visit、end方法以得到后处理场景的纹理。需要处理的所有node都挂在mainLayer下面。得到纹理之后，我们在PostProcessing类中处理。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//////////////////////////////绑定后处理纹理的精灵////////////////////////////////////////////  </span></div><div class="line">PostProcessing* PostProcessing::create(cocos2d::Texture2D *texture)  </div><div class="line">&#123;  </div><div class="line">    PostProcessing* layer = <span class="keyword">new</span> PostProcessing();  </div><div class="line">    <span class="keyword">if</span> (layer &amp;&amp; layer-&gt;initWithTexture(texture))  </div><div class="line">    &#123;  </div><div class="line">        layer-&gt;autorelease();  </div><div class="line">        layer-&gt;initProgram();  </div><div class="line">        <span class="keyword">return</span> layer;  </div><div class="line">    &#125;  </div><div class="line">  </div><div class="line">    CC_SAFE_DELETE(layer);  </div><div class="line">    <span class="keyword">return</span> <span class="literal">NULL</span>;  </div><div class="line">&#125;  </div><div class="line">  </div><div class="line">  </div><div class="line"><span class="keyword">void</span> PostProcessing::initProgram()  </div><div class="line">&#123;  </div><div class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> fragFilePath = FileUtils::getInstance()-&gt;fullPathForFilename(<span class="string">"Shaders/shader_gray.fsh"</span>);  </div><div class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> fragSource = FileUtils::getInstance()-&gt;getStringFromFile(fragFilePath);  </div><div class="line">  </div><div class="line">    GLProgram *glProgram = GLProgram::createWithByteArrays(ccPositionTextureColor_vert, fragSource.c_str());  </div><div class="line">    GLProgramState *glProgramState = GLProgramState::getOrCreateWithGLProgram(glProgram);  </div><div class="line">    setGLProgramState(glProgramState);  </div><div class="line">  </div><div class="line">    CHECK_GL_ERROR_DEBUG();  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>传入一个纹理之后创建PostProcessing类，在initProgram中我们设置自己的shader。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">void</span> PostProcessing::draw(Renderer *renderer, <span class="keyword">const</span> Mat4 &amp;transform, <span class="keyword">uint32_t</span> flags)  </div><div class="line">&#123;  </div><div class="line">    GLProgramState* glProgramState = getGLProgramState();  </div><div class="line">  </div><div class="line">    <span class="comment">//CC_NODE_DRAW_SETUP();  </span></div><div class="line">  </div><div class="line">    <span class="comment">//GL::blendFunc(_blendFunc.src, _blendFunc.dst);  </span></div><div class="line">    glProgramState-&gt;apply(transform);  </div><div class="line">      </div><div class="line">    GL::bindTexture2D(_texture-&gt;getName());  </div><div class="line">  </div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> kQuadSize sizeof(_quad.bl)  </span></div><div class="line">  </div><div class="line">    <span class="keyword">long</span> offset = (<span class="keyword">long</span>)&amp;_quad;  </div><div class="line">  </div><div class="line">    <span class="comment">// vertex  </span></div><div class="line">    <span class="keyword">int</span> diff = offsetof(V3F_C4B_T2F, vertices);  </div><div class="line">    glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, <span class="number">3</span>, GL_FLOAT, GL_FALSE, kQuadSize, (<span class="keyword">void</span>*)(offset + diff));  </div><div class="line">  </div><div class="line">    <span class="comment">// texCoods  </span></div><div class="line">    diff = offsetof(V3F_C4B_T2F, texCoords);  </div><div class="line">    glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_TEX_COORDS, <span class="number">2</span>, GL_FLOAT, GL_FALSE, kQuadSize, (<span class="keyword">void</span>*)(offset + diff));  </div><div class="line">  </div><div class="line">    <span class="comment">// color  </span></div><div class="line">    diff = offsetof(V3F_C4B_T2F, colors);  </div><div class="line">    glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_COLOR, <span class="number">4</span>, GL_UNSIGNED_BYTE, GL_TRUE, kQuadSize, (<span class="keyword">void</span>*)(offset + diff));  </div><div class="line">  </div><div class="line">  </div><div class="line">    glDrawArrays(GL_TRIANGLE_STRIP, <span class="number">0</span>, <span class="number">4</span>);  </div><div class="line">  </div><div class="line">    CHECK_GL_ERROR_DEBUG();  </div><div class="line">  </div><div class="line">    CC_INCREMENT_GL_DRAWS(<span class="number">1</span>);  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在draw方法中我们使用shader，绑定后处理纹理，并将其设置到屏幕四边形之上。顶点着色器使用cocos定义的ccPositionTextureColor_noMVP_vert，片元着色器代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> GL_ES  </span></div><div class="line">precision mediump <span class="keyword">float</span>;  </div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span>  </span></div><div class="line">  </div><div class="line">varying vec4 v_fragmentColor;  </div><div class="line">varying vec2 v_texCoord;  </div><div class="line">  </div><div class="line">uniform sampler2D u_texture;  </div><div class="line">  </div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">()</span> </span>&#123;  </div><div class="line">    <span class="keyword">float</span> alpha = texture2D(u_texture, v_texCoord).a;   </div><div class="line">    <span class="keyword">float</span> grey = dot(texture2D(u_texture, v_texCoord).rgb, vec3(<span class="number">0.299</span>, <span class="number">0.587</span>, <span class="number">0.114</span>));   </div><div class="line">    gl_FragColor = vec4(grey, grey, grey, alpha);   </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>以上就是PostProcessing类的全部代码。</p>
+<p>mainLayer中的另一个graySprite主要是用来试验处理cocos的Sprite纹理的。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line"><span class="comment">///////////////////////////////////灰色特效的精灵///////////////////////////////////////  </span></div><div class="line"><span class="keyword">class</span> GrayMask : <span class="keyword">public</span> Sprite  </div><div class="line">&#123;  </div><div class="line"><span class="keyword">public</span>:  </div><div class="line">    <span class="function"><span class="keyword">static</span> GrayMask* <span class="title">create</span><span class="params">(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> &amp;filename)</span></span>;  </div><div class="line">  </div><div class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">draw</span><span class="params">(Renderer *renderer, <span class="keyword">const</span> Mat4 &amp;transform, <span class="keyword">uint32_t</span> flags)</span> override</span>;  </div><div class="line">  </div><div class="line"><span class="keyword">private</span>:  </div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">initProgram</span><span class="params">()</span></span>;  </div><div class="line">&#125;;  </div><div class="line">  </div><div class="line">GrayMask* GrayMask::create(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> &amp;filename)  </div><div class="line">&#123;  </div><div class="line">    GrayMask* sprite = <span class="keyword">new</span> GrayMask();  </div><div class="line">    <span class="keyword">if</span> (sprite &amp;&amp; sprite-&gt;initWithFile(filename))  </div><div class="line">    &#123;  </div><div class="line">        sprite-&gt;autorelease();  </div><div class="line">        sprite-&gt;initProgram();  </div><div class="line">        <span class="keyword">return</span> sprite;  </div><div class="line">    &#125;  </div><div class="line">    CC_SAFE_DELETE(sprite);  </div><div class="line">    <span class="keyword">return</span> <span class="literal">NULL</span>;  </div><div class="line">&#125;  </div><div class="line">  </div><div class="line"><span class="keyword">void</span> GrayMask::initProgram()  </div><div class="line">&#123;  </div><div class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> fragFilePath = FileUtils::getInstance()-&gt;fullPathForFilename(<span class="string">"Shaders/shader_sprite_gray.fsh"</span>);  </div><div class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> fragSource = FileUtils::getInstance()-&gt;getStringFromFile(fragFilePath);  </div><div class="line">  </div><div class="line">    GLProgram *glProgram = GLProgram::createWithByteArrays(ccPositionTextureColor_noMVP_vert, fragSource.c_str());  </div><div class="line">    GLProgramState *glProgramState = GLProgramState::getOrCreateWithGLProgram(glProgram);  </div><div class="line">    setGLProgramState(glProgramState);  </div><div class="line">&#125;  </div><div class="line">  </div><div class="line">  </div><div class="line"><span class="keyword">void</span> GrayMask::draw(Renderer *renderer, <span class="keyword">const</span> Mat4 &amp;transform, <span class="keyword">uint32_t</span> flags)  </div><div class="line">&#123;  </div><div class="line">    <span class="comment">//getGLProgramState()-&gt;apply(transform);  </span></div><div class="line">    Sprite::draw(renderer, transform, flags);  </div><div class="line">  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>片元着色器代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> GL_ES  </span></div><div class="line">precision mediump <span class="keyword">float</span>;  </div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span>  </span></div><div class="line">  </div><div class="line">varying vec4 v_fragmentColor;  </div><div class="line">varying vec2 v_texCoord;  </div><div class="line">  </div><div class="line">  </div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">()</span> </span>&#123;  </div><div class="line">    <span class="keyword">float</span> alpha = texture2D(CC_Texture0, v_texCoord).a;   </div><div class="line">    <span class="keyword">float</span> grey = dot(texture2D(CC_Texture0, v_texCoord).rgb, vec3(<span class="number">0.299</span>, <span class="number">0.587</span>, <span class="number">0.114</span>));   </div><div class="line">    <span class="comment">// gl_FragColor = vec4(grey, grey, grey, alpha);   </span></div><div class="line">    <span class="comment">// gl_FragColor = vec4(texture2D(CC_Texture0, v_texCoord).r, grey, grey, alpha);   </span></div><div class="line">    gl_FragColor = vec4(texture2D(CC_Texture0, v_texCoord).r, <span class="number">0</span>, <span class="number">0</span>, alpha);  </div><div class="line">&#125;  </div><div class="line"></div><div class="line">&#123;% img http:<span class="comment">//img.blog.csdn.net/20160307165555982?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center%&#125;</span></div></pre></td></tr></table></figure>
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/OpenGL/" rel="tag">#OpenGL</a>
+          
+            <a href="/tags/Game/" rel="tag">#Game</a>
+          
+            <a href="/tags/Cocos/" rel="tag">#Cocos</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/03/22/转-COCOS学习笔记-Cocos引擎渲染流程/" rel="next" title="[转]COCOS学习笔记--Cocos引擎渲染流程">
+                <i class="fa fa-chevron-left"></i> [转]COCOS学习笔记--Cocos引擎渲染流程
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/03/22/Cocos2dx-3-10版本开发环境配置以及相关脚本编译命令/" rel="prev" title="Cocos2dx 3.10版本开发环境配置以及相关脚本编译命令">
+                Cocos2dx 3.10版本开发环境配置以及相关脚本编译命令 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <div class="ds-share flat" data-thread-key="2016/03/22/cocos2dx-3-10-场景后处理实现方法/"
+     data-title="cocos2dx 3.10 场景后处理实现方法"
+     data-content=""
+     data-url="http://yoursite.com/2016/03/22/cocos2dx-3-10-场景后处理实现方法/">
+  <div class="ds-share-inline">
+    <ul  class="ds-share-icons-16">
+
+      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+
+    </ul>
+    <div class="ds-share-icons-more">
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/03/22/cocos2dx-3-10-场景后处理实现方法/"
+           data-title="cocos2dx 3.10 场景后处理实现方法" data-url="http://yoursite.com/2016/03/22/cocos2dx-3-10-场景后处理实现方法/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/小李.jpg"
+               alt="楼政浩" />
+          <p class="site-author-name" itemprop="name">楼政浩</p>
+          <p class="site-description motion-element" itemprop="description">图形游戏</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">21</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/rhzx3519" target="_blank">
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/1590103232/profile?topnav=1&wvr=6&is_all=1" target="_blank">
+                  
+                    <i class="fa fa-weibo"></i> Weibo
+                  
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        <div class="links-of-blogroll motion-element">
+          
+            <div class="links-of-blogroll-title">Links</div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://developer.nvidia.com/gpugems" target="_blank">GPU Gems</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://kesen.realtimerendering.com" target="_blank">SIGGRAPH papers</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.learnopengl.com" target="_blank">Learn OpenGL</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.shadertoy.com/" target="_blank">ShaderToy</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.khronos.org" target="_blank">OpenGL Home</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.uefap.com/speaking/symbols/symbols.htm" target="_blank">Mathematical symbols</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.kevinbeason.com" target="_blank">kevinbeason</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://cs.brown.edu/courses/cs224/docs.shtml" target="_blank">Brown Universiy CS</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.iaccepted.net" target="_blank">DOUBI</a>
+                </li>
+              
+            </ul>
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <p class="post-toc-empty">此文章未包含目录</p>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">楼政浩</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+
+  
+
+
+
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=0.5.0"></script>
+
+
+
+  
+  
+<script type="text/javascript" src="/js/src/scrollspy.js?v=0.5.0"></script>
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = NexT.utils.escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    NexT.motion.middleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+
+      if (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          NexT.utils.displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"louzh"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+  
+
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+       search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+    'use strict';
+    $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+            // get the contents from search data
+            isfetched = true;
+            $('.popup').detach().appendTo('.header-inner');
+            var datas = $( "entry", xmlResponse ).map(function() {
+                return {
+                    title: $( "title", this ).text(),
+                    content: $("content",this).text(),
+                    url: $( "url" , this).text()
+                };
+            }).get();
+            var $input = document.getElementById(search_id);
+            var $resultContent = document.getElementById(content_id);
+            $input.addEventListener('input', function(){
+                var matchcounts = 0;
+                var str='<ul class=\"search-result-list\">';                
+                var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                $resultContent.innerHTML = "";
+                if (this.value.trim().length > 1) {
+                // perform local searching
+                datas.forEach(function(data) {
+                    var isMatch = true;
+                    var content_index = [];
+                    var data_title = data.title.trim().toLowerCase();
+                    var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                    var data_url = data.url;
+                    var index_title = -1;
+                    var index_content = -1;
+                    var first_occur = -1;
+                    // only match artiles with not empty titles and contents
+                    if(data_title != '' && data_content != '') {
+                        keywords.forEach(function(keyword, i) {
+                            index_title = data_title.indexOf(keyword);
+                            index_content = data_content.indexOf(keyword);
+                            if( index_title < 0 && index_content < 0 ){
+                                isMatch = false;
+                            } else {
+                                if (index_content < 0) {
+                                    index_content = 0;
+                                }
+                                if (i == 0) {
+                                    first_occur = index_content;
+                                }
+                            }
+                        });
+                    }
+                    // show search results
+                    if (isMatch) {
+                        matchcounts += 1;
+                        str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                        var content = data.content.trim().replace(/<[^>]+>/g,"");
+                        if (first_occur >= 0) {
+                            // cut out 100 characters
+                            var start = first_occur - 20;
+                            var end = first_occur + 80;
+                            if(start < 0){
+                                start = 0;
+                            }
+                            if(start == 0){
+                                end = 50;
+                            }
+                            if(end > content.length){
+                                end = content.length;
+                            }
+                            var match_content = content.substring(start, end);
+                            // highlight all keywords
+                            keywords.forEach(function(keyword){
+                                var regS = new RegExp(keyword, "gi");
+                                match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                            });
+                            
+                            str += "<p class=\"search-result\">" + match_content +"...</p>"
+                        }
+                        str += "</li>";
+                    }
+                })};
+                str += "</ul>";
+                if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+                if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+                $resultContent.innerHTML = str;
+            });
+            proceedsearch();
+        }
+    });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').mousedown(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("RVzQ830wAlYNdhbz5nLmby9w-gzGzoHsz", "5YfzhCNs37UlyrgIi1KmNECg");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+
+
+</body>
+</html>

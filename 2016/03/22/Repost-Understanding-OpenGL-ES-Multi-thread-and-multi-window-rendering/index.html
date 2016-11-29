@@ -1,0 +1,1155 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="OpenGL ES,Cocos," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.5.0" />
+
+
+
+
+
+
+<meta name="description" content="As the CPUs and GPUs in mobile devices have become more powerful and devices with one or more high-resolution screen have become ubiquitous, the demand for complex interactions with the graphics drive">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[Repost] Understanding OpenGL ES: Multi-thread and multi-window rendering">
+<meta property="og:url" content="http://yoursite.com/2016/03/22/Repost-Understanding-OpenGL-ES-Multi-thread-and-multi-window-rendering/index.html">
+<meta property="og:site_name" content="熔火之心">
+<meta property="og:description" content="As the CPUs and GPUs in mobile devices have become more powerful and devices with one or more high-resolution screen have become ubiquitous, the demand for complex interactions with the graphics drive">
+<meta property="og:image" content="http://withimagination.imgtec.com/wp-content/uploads/2014/11/OpenGL-data-upload-Optimized.png">
+<meta property="og:image" content="http://withimagination.imgtec.com/wp-content/uploads/2014/11/OpenGL-data-upload-Optimized.png">
+<meta property="og:image" content="http://withimagination.imgtec.com/wp-content/uploads/2014/11/Application-Layer-Composition-Optimized.png">
+<meta property="og:updated_time" content="2016-03-22T13:15:51.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="[Repost] Understanding OpenGL ES: Multi-thread and multi-window rendering">
+<meta name="twitter:description" content="As the CPUs and GPUs in mobile devices have become more powerful and devices with one or more high-resolution screen have become ubiquitous, the demand for complex interactions with the graphics drive">
+<meta name="twitter:image" content="http://withimagination.imgtec.com/wp-content/uploads/2014/11/OpenGL-data-upload-Optimized.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 6264780808712619000,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> [Repost] Understanding OpenGL ES: Multi-thread and multi-window rendering | 熔火之心 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?b5cc997336f28f59fa10c14b7fef523b";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">熔火之心</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th fa-fw"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="#" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                [Repost] Understanding OpenGL ES: Multi-thread and multi-window rendering
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-03-22T08:58:44+08:00" content="2016-03-22">
+              2016-03-22
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/OpenGL/" itemprop="url" rel="index">
+                    <span itemprop="name">OpenGL</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/03/22/Repost-Understanding-OpenGL-ES-Multi-thread-and-multi-window-rendering/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/03/22/Repost-Understanding-OpenGL-ES-Multi-thread-and-multi-window-rendering/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/03/22/Repost-Understanding-OpenGL-ES-Multi-thread-and-multi-window-rendering/" class="leancloud_visitors" data-flag-title="[Repost] Understanding OpenGL ES: Multi-thread and multi-window rendering">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>As the CPUs and GPUs in mobile devices have become more powerful and devices with one or more high-resolution screen have become ubiquitous, the demand for complex interactions with the graphics driver has increased. In this blog post, I’ll discuss what multi-thread and multi-window rendering means to developers, and I’ll describe if and when these techniques should be used in your apps.  </p>
+<h2 id="What-is-multi-thread-rendering"><a href="#What-is-multi-thread-rendering" class="headerlink" title="What is multi-thread rendering?"></a>What is multi-thread rendering?</h2><p>Traditionally, OpenGL ES applications only render to one surface from one thread. However, as the complexity of 3D rendering engines has increased, the CPU overhead of graphics API operations has become a common bottleneck – particularly when loading assets. This is where multi-threaded rendering becomes interesting.</p>
+<p>A rendering thread is one CPU thread associated with one graphics context. By default, each graphics context will not be able to access the resources (textures, shaders and vertex buffers) of another context. For this reason, shared contexts are used so one or more background loading threads can access the resources of a primary thread. There are two reasons why this rendering model is extremely useful:  </p>
+<ol>
+<li><p>The primary thread won’t block<br>By their nature, graphics API calls that upload data have to block until the transfer between application and driver memory has completed. Additionally, shader compilation is a blocking operation in many graphics drivers. This blocking introduces a costly overhead that results in the GPU being starved of work. By moving all upload operations to a background thread, the primary thread can maintain a consistent framerate</p>
+</li>
+<li><p>Parallel work distribution on multi-core CPUs<br>As the graphics driver is processed on the CPU, splitting the work into multiple rendering threads enables the OS to issue work to multiple CPU cores in parallel. This results in the driver’s workload being processed faster than a single rendering thread would be capable of</p>
+</li>
+</ol>
+<h2 id="When-should-I-use-multi-threaded-rendering"><a href="#When-should-I-use-multi-threaded-rendering" class="headerlink" title="When should I use multi-threaded rendering?"></a>When should I use multi-threaded rendering?</h2><img src="http://withimagination.imgtec.com/wp-content/uploads/2014/11/OpenGL-data-upload-Optimized.png">  
+<p><strong>OpenGL ES Data Upload – Unoptimized</strong>  </p>
+<img src="http://withimagination.imgtec.com/wp-content/uploads/2014/11/OpenGL-data-upload-Optimized.png">  
+<p>OpenGL ES Data Upload – Optimized  </p>
+<p>Multi-threaded rendering is best suited to applications that are CPU limited when compiling shaders or uploading data to the graphics driver. Multi-threaded rendering (when done sensibly) enables better distribution of driver work and allows applications to maintain consistent frame rates.</p>
+<p>In the simple example above, the transition from Level 1 to Level 2 in a game requires additional textures, VBOs and shader programs to be uploaded. Assuming a seamless transition between the two is required (i.e. splash screens, videos etc. can’t be used to hide the upload cost), the game must upload the new resources to the driver while Level 1 is still being rendered.</p>
+<p>In the unoptimized case, the time spent issuing calls to the driver each frame is erratic due to the additional overhead of upload/compilation operations. The increased frame submission time may cause V-sync’s to be missed, which could cause the game to feel jerky as the frame rate stutters.</p>
+<p>In the optimized case, a secondary thread is used to upload resources in the background. This allows the primary thread to retain a consistent call submission time and, in turn, a smooth frame rate.  </p>
+<h2 id="Best-practices"><a href="#Best-practices" class="headerlink" title="Best practices"></a>Best practices</h2><p>For the best possible performance, rendering threads should be created at start up. A primary thread should be used for all rendering. Additional threads (created with a shared context) should only be used for shader compilation and buffer data upload. The number of background threads should be kept to a minimum (e.g. one thread per-CPU core). Creating threads in excess will lead to unmaintainable, hard to debug code.</p>
+<p>Calls to eglMakeCurrent() should be kept to a minimum due to its cost (the EGL specification states that all outstanding operations must be flushed before the context is bound to a new thread).</p>
+<h2 id="When-shouldn’t-I-use-multi-threaded-rendering"><a href="#When-shouldn’t-I-use-multi-threaded-rendering" class="headerlink" title="When shouldn’t I use multi-threaded rendering?"></a>When shouldn’t I use multi-threaded rendering?</h2><h3 id="When-you’re-not-CPU-limited-or-load-times-are-not-a-concern"><a href="#When-you’re-not-CPU-limited-or-load-times-are-not-a-concern" class="headerlink" title="When you’re not CPU limited or load times are not a concern"></a>When you’re not CPU limited or load times are not a concern</h3><p>If you’re not CPU limited by the graphics driver, you should avoid multi-threaded rendering. It will increase the complexity of your rendering engine and may even reduce performance if it’s implemented badly.  </p>
+<h3 id="When-trying-to-“simplify”-your-rendering-engine"><a href="#When-trying-to-“simplify”-your-rendering-engine" class="headerlink" title="When trying to “simplify” your rendering engine"></a>When trying to “simplify” your rendering engine</h3><p>The worst use case is to frequently bind a single graphics context to different threads (using eglmakeCurrent()). This is bad for two reasons:  </p>
+<ol>
+<li><strong>The cost of context binding</strong><br>As discussed above, calling eglMakeCurrent() forces the driver to kick all outstanding operations<br>API calls are serialized  </li>
+<li><strong>API calls are serialized</strong><br>As a graphics context can only be bound to a single CPU thread at any point in time, all API calls will be submitted serially  </li>
+</ol>
+<p>So, the API calls have the same cost as a single threaded render (as API call submission is serialized), but there is the additional overhead of the context switch…which means that performance will be less optimal than a single threaded renderer.  </p>
+<p>It may seem like a good design decision, but rendering in this way always results in complex, messy code, where submission order is very difficult to understand (and even more difficult to debug!).</p>
+<p>Don’t do this!  </p>
+<h2 id="What-is-multi-window-rendering"><a href="#What-is-multi-window-rendering" class="headerlink" title="What is multi-window rendering?"></a>What is multi-window rendering?</h2><p>Multi-window rendering is when an application renders into more than one window surface. These surfaces are then composed into a surface by the OS’s window compositor (for example, Surface Flinger on Android or X11 on many Linux distros) that can be presented to the device’s screen.</p>
+<p>In a multi-window application, there is a one to one mapping of CPU threads and graphics contexts. Each graphics context is used to render into its own windows surface.  </p>
+<h2 id="When-should-I-use-multi-window-rendering"><a href="#When-should-I-use-multi-window-rendering" class="headerlink" title="When should I use multi-window rendering?"></a>When should I use multi-window rendering?</h2><p>Multi-window rendering is best suited to use cases where an application needs to render to more than one screen, for example when a TV is used as a second screen.  </p>
+<h2 id="When-shouldn’t-I-use-multi-window-rendering"><a href="#When-shouldn’t-I-use-multi-window-rendering" class="headerlink" title="When shouldn’t I use multi-window rendering?"></a>When shouldn’t I use multi-window rendering?</h2><p><strong>To compose layers</strong>  </p>
+<img src="http://withimagination.imgtec.com/wp-content/uploads/2014/11/Application-Layer-Composition-Optimized.png">  
+<p>Layer Composition – Optimized  </p>
+<p>In the unoptimized example above, the game scene, touch controls and mini map are rendered to individual surfaces. The application then relies on the OS’s compositor to combine them into surface that can be displayed. This approach is wasteful as memory has to be allocated for a number of surfaces, the compositor will process transparent pixels and the GPU’s Hidden Surface Removal (HSR) isn’t being used to its full potential (i.e. fragments that are occluded by opaque UI elements will be redundantly coloured).</p>
+<p>In the optimized case, the game scene is rendered first, and then the touch controls and mini map are rendered directly into the same surface. In cases where this approach isn’t suitable, FBOs can be used to perform the composition within the application. For example, the game scene could be rendered to a lower resolution FBO, blit into the app’s window surface and the UI elements could be drawn on top at the native resolution (this technique is commonly used to increase the performance per-pixel when rendering game scenes).</p>
+<h2 id="Multi-thread-multi-window-support-in-PVRTrace"><a href="#Multi-thread-multi-window-support-in-PVRTrace" class="headerlink" title="Multi-thread, multi-window support in PVRTrace"></a>Multi-thread, multi-window support in PVRTrace</h2><p>As of our <a href="http://withimagination.imgtec.com/index.php/powervr/powervr-graphics-sdk-v3-2-brings-advanced-features" target="_blank" rel="external">PowerVR Graphics 3.2 SDK</a>, <a href="http://www.imgtec.com/powervr/insider/pvrtrace.asp" target="_blank" rel="external">PVRTrace</a> (our OpenGL ES capture and analysis tool) supports applications that rely on these complex graphics driver interactions. This includes per-thread render state inspectors, per-thread filtering in the Call View and Frame Selector, and a thread usage timeline graph. The combination of all of these features makes multi-threaded OpenGL ES much easier for you (and us!) to debug. Additionally, the multi-thread support in our PVRVFrame OpenGL ES emulator has been significantly improved.</p>
+<h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p>Multi-thread, multi-window rendering makes it very easy to shoot yourself in the foot by creating complex, hard to debug rendering engines. However, it also provides a lot of power and flexibility when used correctly. If you stick to the guidelines outlined in this post, you can improve the performance of your resource loading without introducing unnecessary headaches.</p>
+<p>Remember to follow us on Twitter (@ImaginationPR, @PowerVRInsider) and keep coming back to our blog as we continue to bring you the latest news and announcements on PowerVR.  </p>
+<p>Related Posts:  </p>
+<ul>
+<li><a href="http://blog.imgtec.com/powervr-developers/ray-traced-soft-shadows-in-real-time-spellwrath" target="_blank" rel="external">Ray traced soft shadows in real time in Spellwrath</a></li>
+<li><a href="http://blog.imgtec.com/powervr/imagination-announces-vulkan-sdk-for-powervr-rogue-gpus" target="_blank" rel="external">Imagination announces Vulkan SDK for PowerVR Rogue GPUs</a></li>
+<li><a href="http://blog.imgtec.com/powervr/gdc-2016-ray-tracing-graphics-mobile" target="_blank" rel="external">PowerVR at GDC 2016: ray tracing and high-end graphics on mobile</a></li>
+<li><a href="http://blog.imgtec.com/powervr/unity-5-plus-hybrid-rendering-ray-tracing" target="_blank" rel="external">Go from zero to hero in one day with Unity 5 plus hybrid rendering</a></li>
+<li><a href="http://blog.imgtec.com/powervr/physically-based-rendering-on-a-powervr-gpu" target="_blank" rel="external">Dwarf Hall: physically based rendering on a PowerVR GPU</a>   </li>
+</ul>
+<blockquote>
+<p><a href="http://blog.imgtec.com/powervr/understanding-opengl-es-multi-thread-multi-window-rendering" target="_blank" rel="external">original source</a></p>
+</blockquote>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/OpenGL-ES/" rel="tag">#OpenGL ES</a>
+          
+            <a href="/tags/Cocos/" rel="tag">#Cocos</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/03/22/cocos-后处理效果之模糊/" rel="next" title="cocos 后处理效果之模糊">
+                <i class="fa fa-chevron-left"></i> cocos 后处理效果之模糊
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/04/02/傅里叶分析之掐死教程（完整版）/" rel="prev" title="【转】傅里叶分析之掐死教程（完整版）">
+                【转】傅里叶分析之掐死教程（完整版） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <div class="ds-share flat" data-thread-key="2016/03/22/Repost-Understanding-OpenGL-ES-Multi-thread-and-multi-window-rendering/"
+     data-title="[Repost] Understanding OpenGL ES: Multi-thread and multi-window rendering"
+     data-content=""
+     data-url="http://yoursite.com/2016/03/22/Repost-Understanding-OpenGL-ES-Multi-thread-and-multi-window-rendering/">
+  <div class="ds-share-inline">
+    <ul  class="ds-share-icons-16">
+
+      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+
+    </ul>
+    <div class="ds-share-icons-more">
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/03/22/Repost-Understanding-OpenGL-ES-Multi-thread-and-multi-window-rendering/"
+           data-title="[Repost] Understanding OpenGL ES: Multi-thread and multi-window rendering" data-url="http://yoursite.com/2016/03/22/Repost-Understanding-OpenGL-ES-Multi-thread-and-multi-window-rendering/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/小李.jpg"
+               alt="楼政浩" />
+          <p class="site-author-name" itemprop="name">楼政浩</p>
+          <p class="site-description motion-element" itemprop="description">图形游戏</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">21</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/rhzx3519" target="_blank">
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/1590103232/profile?topnav=1&wvr=6&is_all=1" target="_blank">
+                  
+                    <i class="fa fa-weibo"></i> Weibo
+                  
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        <div class="links-of-blogroll motion-element">
+          
+            <div class="links-of-blogroll-title">Links</div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://developer.nvidia.com/gpugems" target="_blank">GPU Gems</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://kesen.realtimerendering.com" target="_blank">SIGGRAPH papers</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.learnopengl.com" target="_blank">Learn OpenGL</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.shadertoy.com/" target="_blank">ShaderToy</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.khronos.org" target="_blank">OpenGL Home</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.uefap.com/speaking/symbols/symbols.htm" target="_blank">Mathematical symbols</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.kevinbeason.com" target="_blank">kevinbeason</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://cs.brown.edu/courses/cs224/docs.shtml" target="_blank">Brown Universiy CS</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.iaccepted.net" target="_blank">DOUBI</a>
+                </li>
+              
+            </ul>
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#What-is-multi-thread-rendering"><span class="nav-number">1.</span> <span class="nav-text">What is multi-thread rendering?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#When-should-I-use-multi-threaded-rendering"><span class="nav-number">2.</span> <span class="nav-text">When should I use multi-threaded rendering?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Best-practices"><span class="nav-number">3.</span> <span class="nav-text">Best practices</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#When-shouldn’t-I-use-multi-threaded-rendering"><span class="nav-number">4.</span> <span class="nav-text">When shouldn’t I use multi-threaded rendering?</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#When-you’re-not-CPU-limited-or-load-times-are-not-a-concern"><span class="nav-number">4.1.</span> <span class="nav-text">When you’re not CPU limited or load times are not a concern</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#When-trying-to-“simplify”-your-rendering-engine"><span class="nav-number">4.2.</span> <span class="nav-text">When trying to “simplify” your rendering engine</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#What-is-multi-window-rendering"><span class="nav-number">5.</span> <span class="nav-text">What is multi-window rendering?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#When-should-I-use-multi-window-rendering"><span class="nav-number">6.</span> <span class="nav-text">When should I use multi-window rendering?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#When-shouldn’t-I-use-multi-window-rendering"><span class="nav-number">7.</span> <span class="nav-text">When shouldn’t I use multi-window rendering?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Multi-thread-multi-window-support-in-PVRTrace"><span class="nav-number">8.</span> <span class="nav-text">Multi-thread, multi-window support in PVRTrace</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Conclusion"><span class="nav-number">9.</span> <span class="nav-text">Conclusion</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">楼政浩</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+
+  
+
+
+
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=0.5.0"></script>
+
+
+
+  
+  
+<script type="text/javascript" src="/js/src/scrollspy.js?v=0.5.0"></script>
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = NexT.utils.escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    NexT.motion.middleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+
+      if (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          NexT.utils.displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"louzh"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+  
+
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+       search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+    'use strict';
+    $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+            // get the contents from search data
+            isfetched = true;
+            $('.popup').detach().appendTo('.header-inner');
+            var datas = $( "entry", xmlResponse ).map(function() {
+                return {
+                    title: $( "title", this ).text(),
+                    content: $("content",this).text(),
+                    url: $( "url" , this).text()
+                };
+            }).get();
+            var $input = document.getElementById(search_id);
+            var $resultContent = document.getElementById(content_id);
+            $input.addEventListener('input', function(){
+                var matchcounts = 0;
+                var str='<ul class=\"search-result-list\">';                
+                var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                $resultContent.innerHTML = "";
+                if (this.value.trim().length > 1) {
+                // perform local searching
+                datas.forEach(function(data) {
+                    var isMatch = true;
+                    var content_index = [];
+                    var data_title = data.title.trim().toLowerCase();
+                    var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                    var data_url = data.url;
+                    var index_title = -1;
+                    var index_content = -1;
+                    var first_occur = -1;
+                    // only match artiles with not empty titles and contents
+                    if(data_title != '' && data_content != '') {
+                        keywords.forEach(function(keyword, i) {
+                            index_title = data_title.indexOf(keyword);
+                            index_content = data_content.indexOf(keyword);
+                            if( index_title < 0 && index_content < 0 ){
+                                isMatch = false;
+                            } else {
+                                if (index_content < 0) {
+                                    index_content = 0;
+                                }
+                                if (i == 0) {
+                                    first_occur = index_content;
+                                }
+                            }
+                        });
+                    }
+                    // show search results
+                    if (isMatch) {
+                        matchcounts += 1;
+                        str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                        var content = data.content.trim().replace(/<[^>]+>/g,"");
+                        if (first_occur >= 0) {
+                            // cut out 100 characters
+                            var start = first_occur - 20;
+                            var end = first_occur + 80;
+                            if(start < 0){
+                                start = 0;
+                            }
+                            if(start == 0){
+                                end = 50;
+                            }
+                            if(end > content.length){
+                                end = content.length;
+                            }
+                            var match_content = content.substring(start, end);
+                            // highlight all keywords
+                            keywords.forEach(function(keyword){
+                                var regS = new RegExp(keyword, "gi");
+                                match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                            });
+                            
+                            str += "<p class=\"search-result\">" + match_content +"...</p>"
+                        }
+                        str += "</li>";
+                    }
+                })};
+                str += "</ul>";
+                if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+                if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+                $resultContent.innerHTML = str;
+            });
+            proceedsearch();
+        }
+    });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').mousedown(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("RVzQ830wAlYNdhbz5nLmby9w-gzGzoHsz", "5YfzhCNs37UlyrgIi1KmNECg");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+
+
+</body>
+</html>

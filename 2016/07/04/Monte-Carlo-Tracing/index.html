@@ -1,0 +1,1197 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="ray tracing,numerical evaluation method," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.5.0" />
+
+
+
+
+
+
+<meta name="description" content="Rendering Equation            
+$$    L_r(\overrightarrow x, \overrightarrow \omega) = \int_A f_r(\overrightarrow x, \overrightarrow \omega(\overrightarrow x, \overrightarrow x’), \overrightarrow \omeg">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Monte Carlo Tracing">
+<meta property="og:url" content="http://yoursite.com/2016/07/04/Monte-Carlo-Tracing/index.html">
+<meta property="og:site_name" content="熔火之心">
+<meta property="og:description" content="Rendering Equation            
+$$    L_r(\overrightarrow x, \overrightarrow \omega) = \int_A f_r(\overrightarrow x, \overrightarrow \omega(\overrightarrow x, \overrightarrow x’), \overrightarrow \omeg">
+<meta property="og:image" content="http://yoursite.com/images/monte_carlo_tracing/mcr1.jpg">
+<meta property="og:image" content="http://yoursite.com/images/monte_carlo_tracing/mcr2.jpg">
+<meta property="og:image" content="http://yoursite.com/images/monte_carlo_tracing/mcr3.jpg">
+<meta property="og:updated_time" content="2016-07-06T01:15:42.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Monte Carlo Tracing">
+<meta name="twitter:description" content="Rendering Equation            
+$$    L_r(\overrightarrow x, \overrightarrow \omega) = \int_A f_r(\overrightarrow x, \overrightarrow \omega(\overrightarrow x, \overrightarrow x’), \overrightarrow \omeg">
+<meta name="twitter:image" content="http://yoursite.com/images/monte_carlo_tracing/mcr1.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 6264780808712619000,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> Monte Carlo Tracing | 熔火之心 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?b5cc997336f28f59fa10c14b7fef523b";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">熔火之心</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th fa-fw"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="#" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Monte Carlo Tracing
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-07-04T23:14:06+08:00" content="2016-07-04">
+              2016-07-04
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Graphic/" itemprop="url" rel="index">
+                    <span itemprop="name">Graphic</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/07/04/Monte-Carlo-Tracing/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/07/04/Monte-Carlo-Tracing/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/07/04/Monte-Carlo-Tracing/" class="leancloud_visitors" data-flag-title="Monte Carlo Tracing">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Rendering-Equation"><a href="#Rendering-Equation" class="headerlink" title="Rendering Equation"></a>Rendering Equation</h1><img src="/images/monte_carlo_tracing/mcr1.jpg">            
+<p>$$<br>    L_r(\overrightarrow x, \overrightarrow \omega) = \int_A f_r(\overrightarrow x, \overrightarrow \omega(\overrightarrow x, \overrightarrow x’), \overrightarrow \omega L_0(\overrightarrow x,\overrightarrow \omega(\overrightarrow x’, \overrightarrow x)) G(\overrightarrow x, \overrightarrow x’) V(\overrightarrow x, \overrightarrow x’)dA(\overrightarrow x’))<br>$$        </p>
+<p>where<br>    $$ G(\overrightarrow x, \overrightarrow x’) = G(\overrightarrow x’, \overrightarrow x) = \frac {cos\theta_i cos\theta_0’} {|\overrightarrow x - \overrightarrow x’|^2} V(\overrightarrow x, \overrightarrow x’) $$<br>上面的公式可以简写为：  </p>
+<p>$$ L = L_e + K \circ L $$    </p>
+<p>K可以分解为T和S，T代表光线传递，它将一个表面的出射光线转换为另一表面的入射光线:    $$ L_i(\overrightarrow x, \overrightarrow \omega(\overrightarrow x’, \overrightarrow x)) = T \circ L(\overrightarrow x, \overrightarrow \omega(\overrightarrow x, \overrightarrow x’)) $$    </p>
+<p>S代表反射或者散射的光线，它根据入射光线计算出出射光线：    $$ L_r(\overrightarrow x, \overrightarrow \omega) = S \circ L_i(\overrightarrow x, \overrightarrow \omega’) $$    </p>
+<p>rendering equation可以通过以下的迭代方式求出它的解：    $$ L^0 = L_e $$<br>    $$ L^1 = L_e + K \circ L^0 = L_e + K \circ L_e $$<br>    $$ … $$<br>    $$ L^n = L<em>e + K \circ L^{n-1} = \sum</em>{i = 0}^nK^n \circ L_e $$</p>
+<p>其中$K^0 = I$, I是单位操作符，上述无穷求和等式被称为纽曼级数(Neumann Series)，它展示了rendering equation的形式解.<br>    另一种解释纽曼级数的方式是：<br>    $$ \frac 1 {1-x} = (1 - x)^{-1} = 1 + x + x^2 …,  $$<br>and<br>    $$ (1 - K)^{-1} = I + K + K^2 …, $$<br>则rendering equation 有以下解:<br>    $$ L = (1 - K)^{-1}L_e $$    </p>
+<p>也可以写作：<br>    $$ L(\overrightarrow x, \overrightarrow \omega) = \sum_{i=0}^\infty K^i \circ L_e(\overrightarrow x_0, \overrightarrow \omega_0) $$<br><img src="/images/monte_carlo_tracing/mcr2.jpg"><br>该等式还是相当的复杂啊，我们接下来会用monte carlo 方法求解该方程的解。</p>
+<p>将rendering equation和相机中的图像形成过程联系起来，我们会得到一个更加有用的等式Measurement Equation:<br>$$<br>M = \int<em>A \int</em>\Omega \int_T R(\overrightarrow x, \overrightarrow \omega, t)L(\overrightarrow x, \overrightarrow \omega,t) dt d\omega dA<br>$$  </p>
+<p>其中    </p>
+<p>$ R(\overrightarrow x, \overrightarrow \omega, t) $ 被称为反应函数(Response Function)，它的三个变量分别代表像素过滤器($\overrightarrow x$)，光圈($ \overrightarrow \omega $)， 快门(t)。<br>如上所述，图像中的像素值是一个多重积分函数，这些积分非常复杂，但是我们可以非常容易地求出被积函数，通过采样对应的函数。    </p>
+<ul>
+<li>在(x, y)上采样像素可以预过滤图像，减少走样。        </li>
+<li>在(u, v)上采样相机的光圈可以生成景深（field of depth）    </li>
+<li>在相机快门的时间值t上采样可以生成运动模糊(motion blur)    </li>
+<li>在光线的波长$\lambda$上采样可以生成诸如弥散的光谱效果    </li>
+<li><p>采样反射函数可以生成模糊的反射    </p>
+</li>
+<li><p>采样光线传递可以生成模糊的光线传递    </p>
+</li>
+<li><p>采样光源的固体角(solid angle)可以生成半影和虚影    </p>
+</li>
+<li>采样路径则考虑了相互反射    </li>
+</ul>
+<p>下面介绍采样路径的方法，即monte carlo tracing。    </p>
+<h1 id="Monte-Carlo-Path-Tracing"><a href="#Monte-Carlo-Path-Tracing" class="headerlink" title="Monte Carlo Path Tracing"></a>Monte Carlo Path Tracing</h1><p>首先介绍路径中的一些标记，每条路径都以一个眼睛和光源作为端点。</p>
+<p>E - eye.<br>L - light.</p>
+<p>将物体表面的反射和传递类型归纳为以下三类：    </p>
+<ul>
+<li>D - diffuse reflection or transmission    </li>
+<li><p>G - glossy reflection or transmission    </p>
+</li>
+<li><p>S - specular reflection or refraction    </p>
+</li>
+</ul>
+<p>Diffuse（漫反射）表示光线散射到任意方向。Specular(镜面反射)表示光线只有一个出射方向。Glossy(光泽反射)介于两者之间。    </p>
+<p>特定的光线追踪算法考虑的不同的光线路径，可以使用正则表达式表示：        </p>
+<ul>
+<li><p>Appel Ray casting: $E(D|G)L$    </p>
+</li>
+<li><p>Whitted Recursive ray tracing: $E<a href="D|G">S</a>L$    </p>
+</li>
+<li>Kajiya Path Tracing: $E[(D|G|S)+(D|G)]L$    </li>
+<li>Goral Radiosity: $ED^*L$        </li>
+</ul>
+<p><strong>monte carlo path tracing</strong> 可以描述为以下步骤：<br><strong>Step 1.</strong> Choose a ray given (x,y,u,v,t)<br>weight = 1    </p>
+<p><strong>Step 2.</strong> Trace ray to find point of intersection with the nearest surface.<br><strong>Step 3.</strong> Randomly decide whether to compute emitted or reflected light.    </p>
+<p><strong>Step 3A.</strong> If emitted,<br>return weight * Le    </p>
+<p><strong>Step 3B.</strong> If reflected, weight *= reflectance<br>Randomly scatter the ray according to the BRDF pdf<br>Go to Step 2.</p>
+<p>当光线最终到达光源时，该算法终止。<br>上述算法构成了mcpt的基础，有两个问题需要解决：    </p>
+<ol>
+<li>使用一种无偏的方法采样路径的无穷和</li>
+<li>求出一个低一致性的估计值</li>
+</ol>
+<h2 id="随机游动和马尔科夫链-random-walks-and-markov-chains"><a href="#随机游动和马尔科夫链-random-walks-and-markov-chains" class="headerlink" title="随机游动和马尔科夫链(random walks and markov chains)"></a>随机游动和马尔科夫链(random walks and markov chains)</h2><p>考虑一个简单的问题：离散随机游动。相对与拥有诸如方向和位置的这样连续变量的物理系统，我们考虑一个由n个状态值构成的离散的物理系统。之前描述的路线追踪就是一个随机游动的例子，我们从一个样本移动到另一个样本，或者从一个点移动到另一个点，样本从连续的概率分布空间中得到。在离散随机游动中，我们从一个状态转移到另一个状态，样本从离散的概率分布空间中得到。    </p>
+<p>离散随机游动定义如下：    </p>
+<ol>
+<li>$p_i^0$表示在状态i开始的概率</li>
+<li>$p_{i, j}$ 表示从状态i到状态j的转移概率</li>
+<li>$p_i^*$ 表示在状态i结束的概率    </li>
+</ol>
+<img src="/images/monte_carlo_tracing/mcr3.jpg">    
+<p>状态转移与状态终止的概率之和为1，$p_i^* = 1 - \sum<em>j=0 {p</em>{i, j}}$，也就是说在状态i终止的概率等于状态i不转移到状态j的概率（j为除i之外的状态）。    </p>
+<p>离散随机漫游由以下几步构成：    </p>
+<p><strong>Step 1.</strong> Create a random particle in state i with probability $p_0^i$.<br><strong>Step 2.</strong> With probability $p_i^*$, terminate in state i. Score particle in state i by incrementing the counter for state i<br>Go to Step 1.    </p>
+<p><strong>Step 3.</strong> Randomly select new state according to the transition probability distribution.<br>Set i to new j.<br>Go to Step 2.        </p>
+<p>离散随机游走也被称为马尔科夫链，马尔可夫链是一个由随机过程产生的状态序列。<br>为了求出一个粒子在状态i终止的概率，我们引入另外一个变量$p_i^n$，表示n次转移之后在状态i的概率，状态转移的概率相互之间都是独立的，我们可以通过循环计算该概率：</p>
+<p>$$ P_j^0 = p_j^0 $$</p>
+<p>$$ P_j^1 = p_j^0 + \sum<em>i p</em>{i, j}P_i^0 $$<br>$$ … $$    </p>
+<p>$$ P_j^n = p_j^0 + \sum<em>i p</em>{i, j}P_i^{n-1}. $$</p>
+<p>定义一个矩阵M, $M_{i,j} = p_i,j$，上面的方程可以表示为一个矩阵与向量之间的乘积:<br>$$ P_j^0 = p_j^0 $$</p>
+<p>$$ P_j^1 = p_j^0 + MP_i^0 $$<br>$$ … $$    </p>
+<p>$$ P_j^n = p_j^0 + MP_i^{n-1}. $$</p>
+<p>这个过程可以写为以下矩阵等式的迭代解：    </p>
+<p>$$ (I - M)P = p^0 $$    </p>
+<p>得    </p>
+<p>$$ P = (I - M)^{-1}p^0 = \sum_{i = 0}M^ip^0 $$<br>使用离散随机游动（马尔可夫链）解决矩阵等式的方法，可以直接应用到辐射度学方法。辐射度学公式如下：<br>$$ B_i = E_i + \rho_i \sum_jF_i,jB_j $$    </p>
+<p>其中：    </p>
+<p>$$<br>F_{i, j} =  \frac 1 {\pi A_i} \int_Ai \int_Aj G(\overrightarrow x, \overrightarrow x’) V(\overrightarrow x, \overrightarrow x’) dA(\overrightarrow x) dA(\overrightarrow x’)<br>$$  </p>
+<p>$F_{i, j}$ 表示一条随机光线离开表面$A_i$到达$A_j$的概率。$\sum_jF_i,j$可以解释为转移矩阵。$\rho$是漫反射反射率，$\rho = B/E$</p>
+<p>实际应用中，转移矩阵在运行时计算。</p>
+<blockquote>
+<p>文献引用：    </p>
+</blockquote>
+<ol>
+<li><a href="https://en.wikipedia.org/wiki/Neumann_series" target="_blank" rel="external">Neumann series</a></li>
+<li><a href="http://hzlouzhenghao.com/pdfs/monte_carlo_pathtracing.pdf" target="_blank" rel="external">monte_carlo_pathtracing</a></li>
+</ol>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/ray-tracing/" rel="tag">#ray tracing</a>
+          
+            <a href="/tags/numerical-evaluation-method/" rel="tag">#numerical evaluation method</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/07/04/耐卡字幕组翻译规则/" rel="next" title="耐卡字幕组翻译规则">
+                <i class="fa fa-chevron-left"></i> 耐卡字幕组翻译规则
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/07/05/pbr起步/" rel="prev" title="pbr起步">
+                pbr起步 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <div class="ds-share flat" data-thread-key="2016/07/04/Monte-Carlo-Tracing/"
+     data-title="Monte Carlo Tracing"
+     data-content=""
+     data-url="http://yoursite.com/2016/07/04/Monte-Carlo-Tracing/">
+  <div class="ds-share-inline">
+    <ul  class="ds-share-icons-16">
+
+      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+
+    </ul>
+    <div class="ds-share-icons-more">
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/07/04/Monte-Carlo-Tracing/"
+           data-title="Monte Carlo Tracing" data-url="http://yoursite.com/2016/07/04/Monte-Carlo-Tracing/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/小李.jpg"
+               alt="楼政浩" />
+          <p class="site-author-name" itemprop="name">楼政浩</p>
+          <p class="site-description motion-element" itemprop="description">图形游戏</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">21</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/rhzx3519" target="_blank">
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/1590103232/profile?topnav=1&wvr=6&is_all=1" target="_blank">
+                  
+                    <i class="fa fa-weibo"></i> Weibo
+                  
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        <div class="links-of-blogroll motion-element">
+          
+            <div class="links-of-blogroll-title">Links</div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://developer.nvidia.com/gpugems" target="_blank">GPU Gems</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://kesen.realtimerendering.com" target="_blank">SIGGRAPH papers</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.learnopengl.com" target="_blank">Learn OpenGL</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.shadertoy.com/" target="_blank">ShaderToy</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.khronos.org" target="_blank">OpenGL Home</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.uefap.com/speaking/symbols/symbols.htm" target="_blank">Mathematical symbols</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.kevinbeason.com" target="_blank">kevinbeason</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://cs.brown.edu/courses/cs224/docs.shtml" target="_blank">Brown Universiy CS</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.iaccepted.net" target="_blank">DOUBI</a>
+                </li>
+              
+            </ul>
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Rendering-Equation"><span class="nav-number">1.</span> <span class="nav-text">Rendering Equation</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Monte-Carlo-Path-Tracing"><span class="nav-number">2.</span> <span class="nav-text">Monte Carlo Path Tracing</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#随机游动和马尔科夫链-random-walks-and-markov-chains"><span class="nav-number">2.1.</span> <span class="nav-text">随机游动和马尔科夫链(random walks and markov chains)</span></a></li></ol></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">楼政浩</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+
+  
+
+
+
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=0.5.0"></script>
+
+
+
+  
+  
+<script type="text/javascript" src="/js/src/scrollspy.js?v=0.5.0"></script>
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = NexT.utils.escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    NexT.motion.middleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+
+      if (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          NexT.utils.displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"louzh"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+  
+
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+       search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+    'use strict';
+    $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+            // get the contents from search data
+            isfetched = true;
+            $('.popup').detach().appendTo('.header-inner');
+            var datas = $( "entry", xmlResponse ).map(function() {
+                return {
+                    title: $( "title", this ).text(),
+                    content: $("content",this).text(),
+                    url: $( "url" , this).text()
+                };
+            }).get();
+            var $input = document.getElementById(search_id);
+            var $resultContent = document.getElementById(content_id);
+            $input.addEventListener('input', function(){
+                var matchcounts = 0;
+                var str='<ul class=\"search-result-list\">';                
+                var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                $resultContent.innerHTML = "";
+                if (this.value.trim().length > 1) {
+                // perform local searching
+                datas.forEach(function(data) {
+                    var isMatch = true;
+                    var content_index = [];
+                    var data_title = data.title.trim().toLowerCase();
+                    var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                    var data_url = data.url;
+                    var index_title = -1;
+                    var index_content = -1;
+                    var first_occur = -1;
+                    // only match artiles with not empty titles and contents
+                    if(data_title != '' && data_content != '') {
+                        keywords.forEach(function(keyword, i) {
+                            index_title = data_title.indexOf(keyword);
+                            index_content = data_content.indexOf(keyword);
+                            if( index_title < 0 && index_content < 0 ){
+                                isMatch = false;
+                            } else {
+                                if (index_content < 0) {
+                                    index_content = 0;
+                                }
+                                if (i == 0) {
+                                    first_occur = index_content;
+                                }
+                            }
+                        });
+                    }
+                    // show search results
+                    if (isMatch) {
+                        matchcounts += 1;
+                        str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                        var content = data.content.trim().replace(/<[^>]+>/g,"");
+                        if (first_occur >= 0) {
+                            // cut out 100 characters
+                            var start = first_occur - 20;
+                            var end = first_occur + 80;
+                            if(start < 0){
+                                start = 0;
+                            }
+                            if(start == 0){
+                                end = 50;
+                            }
+                            if(end > content.length){
+                                end = content.length;
+                            }
+                            var match_content = content.substring(start, end);
+                            // highlight all keywords
+                            keywords.forEach(function(keyword){
+                                var regS = new RegExp(keyword, "gi");
+                                match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                            });
+                            
+                            str += "<p class=\"search-result\">" + match_content +"...</p>"
+                        }
+                        str += "</li>";
+                    }
+                })};
+                str += "</ul>";
+                if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+                if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+                $resultContent.innerHTML = str;
+            });
+            proceedsearch();
+        }
+    });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').mousedown(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("RVzQ830wAlYNdhbz5nLmby9w-gzGzoHsz", "5YfzhCNs37UlyrgIi1KmNECg");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+
+
+</body>
+</html>
