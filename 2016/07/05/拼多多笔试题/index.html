@@ -41,7 +41,7 @@
 <link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Global Illumination,light," />
+  <meta name="keywords" content="dp,python,线段树," />
 
 
 
@@ -57,18 +57,22 @@
 
 
 
-<meta name="description" content="A Gentle Introduction to Precomputed Radiance Transfer, Marcos Paulo Berteli Slomp† Manuel M. Oliveira† Diego Inácio Patrício†">
+<meta name="description" content="1 第三题这是个动态规划题，初始化一个二维数组，遍历矩阵中每一个位置，如果该位置已经访问过，则返回该位置的路径长度，否则将该位置初始路径长度设置为1，向上下左右方向遍历搜索路径长度，取最大值加1
+以下是python代码，python获取用户输入之后要将string类型转换为int类型，真是个大坑
+123456789101112131415161718192021222324252627282930">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Slomp_Oliveira_Patricio-Tutorial-PRT">
-<meta property="og:url" content="http://yoursite.com/2016/04/24/Slomp-Oliveira-Patricio-Tutorial-PRT/index.html">
+<meta property="og:title" content="拼多多笔试题(2017-3-20)">
+<meta property="og:url" content="http://yoursite.com/2016/07/05/拼多多笔试题/index.html">
 <meta property="og:site_name" content="熔火之心">
-<meta property="og:description" content="A Gentle Introduction to Precomputed Radiance Transfer, Marcos Paulo Berteli Slomp† Manuel M. Oliveira† Diego Inácio Patrício†">
-<meta property="og:image" content="http://yoursite.com/pdfs/Slomp_Oliveira_Patricio-Tutorial-PRT.pdf">
-<meta property="og:updated_time" content="2016-04-24T09:59:46.000Z">
+<meta property="og:description" content="1 第三题这是个动态规划题，初始化一个二维数组，遍历矩阵中每一个位置，如果该位置已经访问过，则返回该位置的路径长度，否则将该位置初始路径长度设置为1，向上下左右方向遍历搜索路径长度，取最大值加1
+以下是python代码，python获取用户输入之后要将string类型转换为int类型，真是个大坑
+123456789101112131415161718192021222324252627282930">
+<meta property="og:updated_time" content="2017-03-19T16:36:20.593Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Slomp_Oliveira_Patricio-Tutorial-PRT">
-<meta name="twitter:description" content="A Gentle Introduction to Precomputed Radiance Transfer, Marcos Paulo Berteli Slomp† Manuel M. Oliveira† Diego Inácio Patrício†">
-<meta name="twitter:image" content="http://yoursite.com/pdfs/Slomp_Oliveira_Patricio-Tutorial-PRT.pdf">
+<meta name="twitter:title" content="拼多多笔试题(2017-3-20)">
+<meta name="twitter:description" content="1 第三题这是个动态规划题，初始化一个二维数组，遍历矩阵中每一个位置，如果该位置已经访问过，则返回该位置的路径长度，否则将该位置初始路径长度设置为1，向上下左右方向遍历搜索路径长度，取最大值加1
+以下是python代码，python获取用户输入之后要将string类型转换为int类型，真是个大坑
+123456789101112131415161718192021222324252627282930">
 
 
 
@@ -86,7 +90,7 @@
   };
 </script>
 
-  <title> Slomp_Oliveira_Patricio-Tutorial-PRT | 熔火之心 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title> 拼多多笔试题(2017-3-20) | 熔火之心 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -249,7 +253,7 @@
             
             
               
-                Slomp_Oliveira_Patricio-Tutorial-PRT
+                拼多多笔试题(2017-3-20)
               
             
           </h1>
@@ -261,8 +265,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-04-24T05:22:35+08:00" content="2016-04-24">
-              2016-04-24
+            <time itemprop="dateCreated" datetime="2016-07-05T23:25:53+08:00" content="2016-07-05">
+              2016-07-05
             </time>
           </span>
 
@@ -275,8 +279,8 @@
               <span class="post-meta-item-text">分类于</span>
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Graphic/" itemprop="url" rel="index">
-                    <span itemprop="name">Graphic</span>
+                  <a href="/categories/Algorithm/" itemprop="url" rel="index">
+                    <span itemprop="name">Algorithm</span>
                   </a>
                 </span>
 
@@ -291,8 +295,8 @@
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2016/04/24/Slomp-Oliveira-Patricio-Tutorial-PRT/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/04/24/Slomp-Oliveira-Patricio-Tutorial-PRT/" itemprop="commentsCount"></span>
+                <a href="/2016/07/05/拼多多笔试题/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/07/05/拼多多笔试题/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -302,7 +306,7 @@
 
           
           
-             <span id="/2016/04/24/Slomp-Oliveira-Patricio-Tutorial-PRT/" class="leancloud_visitors" data-flag-title="Slomp_Oliveira_Patricio-Tutorial-PRT">
+             <span id="/2016/07/05/拼多多笔试题/" class="leancloud_visitors" data-flag-title="拼多多笔试题(2017-3-20)">
                &nbsp; | &nbsp;
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -323,10 +327,10 @@
       
 
       
-        <img src="/pdfs/Slomp_Oliveira_Patricio-Tutorial-PRT.pdf">
-<blockquote>
-<p><a href="https://www.google.com.hk/url?sa=t&amp;rct=j&amp;q=&amp;esrc=s&amp;source=web&amp;cd=1&amp;cad=rja&amp;uact=8&amp;ved=0ahUKEwjhm8SbgafMAhWBzpQKHbQhC2UQFggbMAA&amp;url=%68%74%74%70%3a%2f%2f%77%77%77%2e%69%6e%66%2e%75%66%72%67%73%2e%62%72%2f%7e%6f%6c%69%76%65%69%72%61%2f%70%75%62%73%5f%66%69%6c%65%73%2f%53%6c%6f%6d%70%5f%4f%6c%69%76%65%69%72%61%5f%50%61%74%72%69%63%69%6f%2d%54%75%74%6f%72%69%61%6c%2d%50%52%54%2e%70%64%66&amp;usg=AFQjCNEU9eBBa-2heauW3ilXJL3khgoJEA" target="_blank" rel="external">A Gentle Introduction to Precomputed Radiance Transfer, Marcos Paulo Berteli Slomp† Manuel M. Oliveira† Diego Inácio Patrício†</a></p>
-</blockquote>
+        <h1 id="1-第三题"><a href="#1-第三题" class="headerlink" title="1 第三题"></a>1 第三题</h1><pre><code>这是个动态规划题，初始化一个二维数组，遍历矩阵中每一个位置，如果该位置已经访问过，则返回该位置的路径长度，否则将该位置初始路径长度设置为1，向上下左右方向遍历搜索路径长度，取最大值加1
+以下是python代码，python获取用户输入之后要将string类型转换为int类型，真是个大坑
+</code></pre><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">line = raw_input().split(<span class="string">' '</span>)</div><div class="line">r, c = int(line[<span class="number">0</span>]), int(line[<span class="number">1</span>])</div><div class="line"></div><div class="line">mat = []</div><div class="line">i = <span class="number">0</span></div><div class="line"><span class="keyword">while</span> i &lt; r:</div><div class="line">	line = raw_input().split(<span class="string">' '</span>)</div><div class="line">	mat.append([int(n) <span class="keyword">for</span> n <span class="keyword">in</span> line])</div><div class="line">	i += <span class="number">1</span></div><div class="line"></div><div class="line">dp = [[<span class="number">-1</span> <span class="keyword">for</span> m <span class="keyword">in</span> range(c)] <span class="keyword">for</span> n <span class="keyword">in</span> range(r)]</div><div class="line"></div><div class="line">dx = [<span class="number">-1</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>]</div><div class="line">dy = [<span class="number">0</span>, <span class="number">0</span>, <span class="number">-1</span>, <span class="number">1</span>]</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">gao</span><span class="params">(i, j)</span>:</span></div><div class="line">	<span class="keyword">if</span> dp[i][j] != <span class="number">-1</span>:</div><div class="line">		<span class="keyword">return</span> dp[i][j]</div><div class="line"></div><div class="line">	dp[i][j] = <span class="number">1</span></div><div class="line">	<span class="keyword">for</span> k <span class="keyword">in</span> range(<span class="number">4</span>):</div><div class="line">		x = i + dx[k]</div><div class="line">		y = j + dy[k]</div><div class="line">		<span class="keyword">if</span> x &gt;= <span class="number">0</span> <span class="keyword">and</span> x &lt; r <span class="keyword">and</span> y &gt;= <span class="number">0</span> <span class="keyword">and</span> y &lt; c <span class="keyword">and</span> mat[x][y] &lt; mat[i][j]:</div><div class="line">			dp[i][j] = max(dp[i][j], gao(x, y)+ <span class="number">1</span>)</div><div class="line"></div><div class="line">	<span class="keyword">return</span> dp[i][j]</div><div class="line"></div><div class="line"></div><div class="line">ret = <span class="number">0</span></div><div class="line">i = <span class="number">0</span></div><div class="line"><span class="keyword">while</span> i &lt; r:</div><div class="line">	j = <span class="number">0</span></div><div class="line">	<span class="keyword">while</span> j &lt; c:</div><div class="line">		ret = max(gao(i, j), ret)</div><div class="line">		j += <span class="number">1</span></div><div class="line">	i += <span class="number">1</span></div><div class="line"></div><div class="line"><span class="keyword">print</span> ret</div></pre></td></tr></table></figure>
+<p>&gt;<br><a href="http://poj.org/problem?id=1088" target="_blank" rel="external">原题地址</a>  </p>
 
       
     </div>
@@ -341,9 +345,11 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Global-Illumination/" rel="tag">#Global Illumination</a>
+            <a href="/tags/dp/" rel="tag">#dp</a>
           
-            <a href="/tags/light/" rel="tag">#light</a>
+            <a href="/tags/python/" rel="tag">#python</a>
+          
+            <a href="/tags/线段树/" rel="tag">#线段树</a>
           
         </div>
       
@@ -352,17 +358,13 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/04/23/Introduction-Of-Precomputed-Radiance-Transfer/" rel="next" title="Introduction Of Precomputed Radiance Transfer">
-                <i class="fa fa-chevron-left"></i> Introduction Of Precomputed Radiance Transfer
+              <a href="/2016/07/05/pbr第一章-介绍/" rel="next" title="pbr第一章 介绍">
+                <i class="fa fa-chevron-left"></i> pbr第一章 介绍
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/06/01/BRDF/" rel="prev" title="BRDF">
-                BRDF <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -377,10 +379,10 @@
 
     <div class="post-spread">
       
-        <div class="ds-share flat" data-thread-key="2016/04/24/Slomp-Oliveira-Patricio-Tutorial-PRT/"
-     data-title="Slomp_Oliveira_Patricio-Tutorial-PRT"
+        <div class="ds-share flat" data-thread-key="2016/07/05/拼多多笔试题/"
+     data-title="拼多多笔试题(2017-3-20)"
      data-content=""
-     data-url="http://yoursite.com/2016/04/24/Slomp-Oliveira-Patricio-Tutorial-PRT/">
+     data-url="http://yoursite.com/2016/07/05/拼多多笔试题/">
   <div class="ds-share-inline">
     <ul  class="ds-share-icons-16">
 
@@ -407,8 +409,8 @@
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2016/04/24/Slomp-Oliveira-Patricio-Tutorial-PRT/"
-           data-title="Slomp_Oliveira_Patricio-Tutorial-PRT" data-url="http://yoursite.com/2016/04/24/Slomp-Oliveira-Patricio-Tutorial-PRT/">
+      <div class="ds-thread" data-thread-key="2016/07/05/拼多多笔试题/"
+           data-title="拼多多笔试题(2017-3-20)" data-url="http://yoursite.com/2016/07/05/拼多多笔试题/">
       </div>
     
   </div>
@@ -563,7 +565,7 @@
               
             
             
-              <p class="post-toc-empty">此文章未包含目录</p>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-第三题"><span class="nav-number">1.</span> <span class="nav-text">1 第三题</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator">

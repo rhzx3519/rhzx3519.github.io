@@ -249,6 +249,204 @@
             
               
                 
+                <a class="post-title-link" href="/2016/03/22/LearnOpenGL-Text-Rendering/" itemprop="url">
+                  [LearnOpenGL] Text Rendering
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-03-22T05:14:31+08:00" content="2016-03-22">
+              2016-03-22
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/OpenGL/" itemprop="url" rel="index">
+                    <span itemprop="name">OpenGL</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/03/22/LearnOpenGL-Text-Rendering/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/03/22/LearnOpenGL-Text-Rendering/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/03/22/LearnOpenGL-Text-Rendering/" class="leancloud_visitors" data-flag-title="[LearnOpenGL] Text Rendering">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="LearnOpenGL-Text-Rendering"><a href="#LearnOpenGL-Text-Rendering" class="headerlink" title="LearnOpenGL. Text Rendering"></a>LearnOpenGL. Text Rendering</h2><h3 id="文本渲染"><a href="#文本渲染" class="headerlink" title="文本渲染"></a>文本渲染</h3><p>在你图形学冒险的一些阶段中，你可能会想使用OpenGL画文本。跟你期待的相反，使用OpenGL这样的底层的图形库在屏幕上渲染一段简单的字符串是非常困难的。如果你不介意只渲染128个字符，那么它可能不是太困难。当每个字符都有不同的宽度、高度和间隔，事情就变得更加困难了。根据你所在的地区，可能会需要超过128个字符。你可能还想要数学表达式或者乐谱符号一类的特殊字符，或者从上到下地渲染文本。只要你考虑所有这些复杂的文本，这不会使你惊讶,那就是这些事情可能并不属于像OpenGL这样的底层图形库。  </p>
+<p>因为OpenGL并没有任何支持文本渲染的能力，所以只有靠我们自己定义一个渲染文本到屏幕的系统了。而且OpenGL没有文本字符的图形图元，我们并需创造一些。一些作为例子的技术是：通过GL_LINES渲染字符的形状，创建3D网格或者在3D环境中的2D四边形上渲染字符纹理。<br>开发者们通常会选择渲染字符纹理到四边形上。单独地渲染纹理到四边形上应该不会很困难，但是将相关的字符处理成纹理是十分具有挑战性的。在这篇教程中，我们会探索一些方法，并使用FreeType库实现一个更先进和灵活的技术来渲染文本。  </p>
+<p>开发者们通常会选择渲染字符纹理到四边形上。单独地渲染纹理到四边形上应该不会很困难，但是将相关的字符处理成纹理是十分具有挑战性的。在这篇教程中，我们会探索一些方法，并使用FreeType库实现一个更先进和灵活的技术来渲染文本。  </p>
+<h3 id="经典文本渲染：位图字体"><a href="#经典文本渲染：位图字体" class="headerlink" title="经典文本渲染：位图字体"></a>经典文本渲染：位图字体</h3><p>在以前，渲染文本关系到为你的应用选择一种字体（或者你自己创造一种）并从中提取所有相关的字符将它们粘贴到单独一个大纹理上。这样的一个纹理-从现在起我们称之为位图字体-在预先定义的纹理区域中包含了所有我们想要使用的字符符号。这些字体的字符符号我们称之为字形。每个字形都有一个特定的纹理坐标区域与之相关联。任何时候你想渲染一个字符，你可以通过渲染位图字体中字形相应的部分到一个2D四边形上来选择一个相应的字形。  </p>
+<img src="http://img.blog.csdn.net/20160223214704719?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">  
+<p>在这里你可以看到我们如何使用位图字体，并从我们渲染在上面的几个四边形中的纹理中采样相应的字形（通过小心地选择纹理坐标），渲染’OpenGL’这段文本。通过激活混合模式同时使背景透明，我们最终会得到一串渲染到屏幕的字符，这个特殊的位图字体是使用Codehead’s Bitmap Font Generator渲染的。  </p>
+<p>这种方法有一些优点和缺点。首先，它实现起来相对简单，而且因为位图字体是预先光栅化的，所以它是非常有效率的。但是它并不十分灵活，当你想要使用不同的字体时必须重新编译全新的位图字体，而且系统被限制为一个单独的分辨率；缩放时会呈现出像素化的边缘。更近一步的，它通常被限制为一个小的字符集，所以渲染扩展的或者Unicode的字符通常是不可能的。  </p>
+<p>  这种方法在过去是相当流行的，因为它速度很快而且在任何平台上都能起作用，但是今天有更加灵活的方法。其中之一是使用FreeType库来加载TrueType字体。  </p>
+<h3 id="现代文本渲染：FreeType"><a href="#现代文本渲染：FreeType" class="headerlink" title="现代文本渲染：FreeType"></a>现代文本渲染：FreeType</h3><p>FreeType是一个软件开发库，它能够载入字体，渲染字体为位图并且能够支持多种字体相关的操作。这是一个在Mac OS X、Java、PlayStation Consoles、Linux和Android上颇为流行的库。能够载入TrueType字体使FreeType变得特别有吸引力。<br>TrueType字体是一个字符字形集合，它不是通过像素或者不可扩展的分辨率定义的，而是通过数学方程式定义（样条组合）。和矢量图类似，光栅化的字体图片能够基于你想要的字体高度通过程序生成。使用TrueType字体你能够简单地渲染不同大小的字符字形而没有任何图形质量的损失。<br>FreeType能够从他们的网站上下载。你可以选择自己从他们的源码中编译这个库，或者使用预编译的库如果你的目标平台在列表中存在的话。确保链接到freetype.lib，好让你的编译器知道到哪里去寻找头文件。<br>接着确保包含合适的头文件：  </p>
+<figure class="highlight c"><figcaption><span>文件引用</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;ft2build.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> FT_FREETYPE_H  </span></div></pre></td></tr></table></figure>
+<p>FreeType所做的是载入这些TrueType字体，并为每个字形生成一个位图图片，接着计算数个度量。我们可以提取这些位图图片，生成纹理，通过使用载入的度量为每个字符字形确定合适的位置。  </p>
+<p>为了载入字体，我们必须要初始化FreeType库，载入字体作为face。在这里我们载入arial.ttf TrueType字体，我们从Windows/Fonts目录下复制这个字体。  </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">FT_Library ft;</div><div class="line"><span class="keyword">if</span> (FT_Init_FreeType(&amp;ft))</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"ERROR::FREETYPE: Could not init FreeType Library"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line"></div><div class="line">FT_Face face;</div><div class="line"><span class="keyword">if</span> (FT_New_Face(ft, <span class="string">"fonts/arial.ttf"</span>, <span class="number">0</span>, &amp;face))</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"ERROR::FREETYPE: Failed to load font"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;  </div></pre></td></tr></table></figure>
+<p>当错误发生时，每个FreeType函数返回一个非零的整型。一旦我们已经载入了face，我们应该定义一个字体大小以便我们从这个face中提取。  </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">FT_Set_Pixel_Sizes(face, <span class="number">0</span>, <span class="number">48</span>);  </div></pre></td></tr></table></figure>
+<p>这个函数设置了字体的宽度和高度参数。将宽度设置为0使得face能够基于给定的高度动态计算宽度。<br>一个FreeType Face能够解析一个字形集合。我们能够通过调用 FT_LOAD_Char 函数设置其中一个字形为激活字形。这里我们选择载入字符字形’X’： </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> (FT_Load_Char(face, <span class="string">'X'</span>, FT_LOAD_RENDER))</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"ERROR::FREETYTPE: Failed to load Glyph"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;  </div></pre></td></tr></table></figure>
+<p>FreeType所做的是载入这些TrueType字体，并为每个字形生成一个位图图片，接着计算数个度量。我们可以提取这些位图图片，生成纹理，通过使用载入的度量为每个字符字形确定合适的位置。  </p>
+<p>为了载入字体，我们必须要初始化FreeType库，载入字体作为face。在这里我们载入arial.ttf TrueType字体，我们从Windows/Fonts目录下复制这个字体。  </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">FT_Library ft;</div><div class="line"><span class="keyword">if</span> (FT_Init_FreeType(&amp;ft))</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"ERROR::FREETYPE: Could not init FreeType Library"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line"></div><div class="line">FT_Face face;</div><div class="line"><span class="keyword">if</span> (FT_New_Face(ft, <span class="string">"fonts/arial.ttf"</span>, <span class="number">0</span>, &amp;face))</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"ERROR::FREETYPE: Failed to load font"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;  </div></pre></td></tr></table></figure>
+<p>当错误发生时，每个FreeType函数返回一个非零的整型。一旦我们已经载入了face，我们应该定义一个字体大小以便我们从这个face中提取。  </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">FT_Set_Pixel_Sizes(face, <span class="number">0</span>, <span class="number">48</span>);  </div></pre></td></tr></table></figure>
+<p>这个函数设置了字体的宽度和高度参数。将宽度设置为0使得face能够基于给定的高度动态计算宽度。<br>一个FreeType Face能够解析一个字形集合。我们能够通过调用 FT_LOAD_Char 函数设置其中一个字形为激活字形。这里我们选择载入字符字形’X’： </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> (FT_Load_Char(face, <span class="string">'X'</span>, FT_LOAD_RENDER))</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"ERROR::FREETYTPE: Failed to load Glyph"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;  </div></pre></td></tr></table></figure>
+<p>通过设置FT_LOAD_RENDER为其中一个载入标识，我们告诉FreeType为我们创建一个8位的灰度位图图片，我们可以通过face-&gt;glyph-&gt;bitmap访问它。  </p>
+<p>我们通过FreeType载入的每个字形都有不同的大小（因为我们使用位图字体）。FreeType生成的位图图片正好大到能够包含字符所有可见的部分。举个例子，点字符’.’的位图图片比字符’X’的字符图片小得多。因为这个原因，FreeType同样能够载入数个度量来指定每个字符的大小和合适的位置。下图展示了FreeType为每个字符字形计算的所有度量。  </p>
+<img src="http://img.blog.csdn.net/20160224103257708?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
+<p>每个字形坐落在一条水平的基准线上（被描绘为一个水平的箭头），一些字形完全落在水平线之上（像’X’），而另一些字形稍稍落在水平线之下（像’g’或者’p’）。这些度量精确定义了偏移量，使每个字形落在基准线的合适位置，大小以及我们渲染下一个字形时所需要的像素数量。下面是这些属性中我们需要的小列表：  </p>
+<ul>
+<li><strong>width</strong>：位图的宽度（像素单位），通过face-&gt;glyph-&gt;bitmap.width访问。</li>
+<li><strong>height</strong>：位图高度（像素单位），通过face-&gt;glyph-&gt;bitmap.height访问。</li>
+<li><strong>bearingX</strong>：水平方位。相对于原点的水平位置（像素单位），通过face-&gt;glyph-&gt;bitmap_left访问。</li>
+<li><strong>bearingY</strong>：竖直方位。相对于基准线的竖直位置（像素单位），通过face-&gt;glyph-&gt;bitmap_top访问。</li>
+<li><strong>advance</strong>：水平推进。从当前字形原点到下一个字形原点的水平距离（1/64个像素单位），通过face-&gt;glyph-&gt;advance.x访问。</li>
+</ul>
+<p>每次我们想要渲染一个字符到屏幕时：我们能够载入一个字符字形，获取它的度量并生成一个纹理，但是每一帧都做这些事情的话是不效率的。我们在程序中的某些地方存储生成的数据，以便在我们想要渲染一个字符的时候查询。我们定义一个方便的结构体存储在一个map中。  </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">struct</span> Character &#123;</div><div class="line">    GLuint     TextureID;  <span class="comment">// ID handle of the glyph texture</span></div><div class="line">    glm::ivec2 Size;       <span class="comment">// Size of glyph</span></div><div class="line">    glm::ivec2 Bearing;    <span class="comment">// Offset from baseline to left/top of glyph</span></div><div class="line">    GLuint     Advance;    <span class="comment">// Offset to advance to next glyph</span></div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="built_in">std</span>::<span class="built_in">map</span>&lt;GLchar, Character&gt; Characters;</div></pre></td></tr></table></figure>
+<p>在这篇教程中，我们通过限制使用ASCII字符集的头128个字符使事情变得简单些。我们为每一个字符生成一个纹理并存储它们相应的数据到Charatrer结构体中，然后将它添加到Charaters map中。通过这种方式，所有我们后边渲染每个字符要用到的数据都被存储起来了。  </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line">glPixelStorei(GL_UNPACK_ALIGNMENT, <span class="number">1</span>); <span class="comment">// Disable byte-alignment restriction</span></div><div class="line">  </div><div class="line"><span class="keyword">for</span> (GLubyte c = <span class="number">0</span>; c &lt; <span class="number">128</span>; c++)</div><div class="line">&#123;</div><div class="line">    <span class="comment">// Load character glyph </span></div><div class="line">    <span class="keyword">if</span> (FT_Load_Char(face, c, FT_LOAD_RENDER))</div><div class="line">    &#123;</div><div class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"ERROR::FREETYTPE: Failed to load Glyph"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">        <span class="keyword">continue</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// Generate texture</span></div><div class="line">    GLuint texture;</div><div class="line">    glGenTextures(<span class="number">1</span>, &amp;texture);</div><div class="line">    glBindTexture(GL_TEXTURE_2D, texture);</div><div class="line">    glTexImage2D(</div><div class="line">        GL_TEXTURE_2D,</div><div class="line">        <span class="number">0</span>,</div><div class="line">        GL_RED,</div><div class="line">        face-&gt;glyph-&gt;bitmap.width,</div><div class="line">        face-&gt;glyph-&gt;bitmap.rows,</div><div class="line">        <span class="number">0</span>,</div><div class="line">        GL_RED,</div><div class="line">        GL_UNSIGNED_BYTE,</div><div class="line">        face-&gt;glyph-&gt;bitmap.buffer</div><div class="line">    );</div><div class="line">    <span class="comment">// Set texture options</span></div><div class="line">    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);</div><div class="line">    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);</div><div class="line">    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);</div><div class="line">    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);</div><div class="line">    <span class="comment">// Now store character for later use</span></div><div class="line">    Character character = &#123;</div><div class="line">        texture, </div><div class="line">        glm::ivec2(face-&gt;glyph-&gt;bitmap.width, face-&gt;glyph-&gt;bitmap.rows),</div><div class="line">        glm::ivec2(face-&gt;glyph-&gt;bitmap_left, face-&gt;glyph-&gt;bitmap_top),</div><div class="line">        face-&gt;glyph-&gt;advance.x</div><div class="line">    &#125;;</div><div class="line">    Characters.insert(<span class="built_in">std</span>::pair&lt;GLchar, Character&gt;(c, character));</div></pre></td></tr></table></figure>
+<p>在for循环中我们遍历了ASCII字符集中的所有128个字符，获取到它们相应的字符字形。对于每一个字符，我们生成一个纹理，设置参数，存储度量。这里有趣的事情是我们使用GL_RED作为纹理的internalFormat和format参数。字形生成的位图是一个8位灰度的图片，每种颜色通过一个字节表示。因为这个原因，我们存储位图缓冲的每个字节为一个纹理的颜色值。我们创建一个纹理，每个字节对应纹理颜色的红色分量（颜色向量的首个字节）。如果我们使用单独一个字节表示纹理颜色，我们需要注意OpenGL的一个限制：  </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">glPixelStorei(GL_UNPACK_ALIGNMENT, <span class="number">1</span>); </div></pre></td></tr></table></figure>
+<p>OpenGL需要纹理都必须按4字节对齐。它们的大小通常是4字节的倍数。通常这不会是个问题，因为大多数纹理的宽度都是4的倍数或者每个像素使用4字节表示，但是因为我们现在每个像素只使用一个字节，它们可能有任何宽度。通过设置OpenGL的取出对齐等于1，我们确保没有对齐问题（这可能会引起碎片错误。同样要确保清理FreeType的资源，一旦你结束处理字形的时候。  </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">FT_Done_Face(face);</div><div class="line">FT_Done_FreeType(ft);</div></pre></td></tr></table></figure>
+<h3 id="着色器"><a href="#着色器" class="headerlink" title="着色器"></a>着色器</h3><p>我们使用下面的顶点着色器渲染实际的字形:  </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#version 330 core</span></div><div class="line">layout (location = <span class="number">0</span>) in vec4 vertex; <span class="comment">// &lt;vec2 pos, vec2 tex&gt;</span></div><div class="line">out vec2 TexCoords;</div><div class="line"></div><div class="line">uniform mat4 projection;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">    gl_Position = projection * vec4(vertex.xy, <span class="number">0.0</span>, <span class="number">1.0</span>);</div><div class="line">    TexCoords = vertex.zw;</div><div class="line">&#125;  </div></pre></td></tr></table></figure>
+<p>我们将位置和纹理坐标一起放到四分量向量中。顶点着色器将位置坐标与投影矩阵相乘，将纹理坐标输送到片元着色器：  </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#version 330 core</span></div><div class="line">in vec2 TexCoords;</div><div class="line">out vec4 color;</div><div class="line"></div><div class="line">uniform sampler2D text;</div><div class="line">uniform vec3 textColor;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line">&#123;    </div><div class="line">    vec4 sampled = vec4(<span class="number">1.0</span>, <span class="number">1.0</span>, <span class="number">1.0</span>, texture(text, TexCoords).r);</div><div class="line">    color = vec4(textColor, <span class="number">1.0</span>) * sampled;</div><div class="line">&#125;  </div></pre></td></tr></table></figure>
+<p>片元着色器有两个uniform：其中一个是单色的字形位图图片，另一个是颜色uniform用于调整文本的最终颜色。首先，我们从位图纹理中采样颜色值。因为纹理数据只被存储在他的红色分量上，我们采样纹理的r分量作为采样的alpha值。通过变换颜色的alpha值，最终的颜色会是所有的字形的背景是透明的而实际的字符像素却是不透明的。我们同时将RGB颜色乘以textColor全局值来变换文本的颜色。<br>我们需要激活混合模式使上述方法生效：  </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">glEnable(GL_BLEND);</div><div class="line">glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);  </div></pre></td></tr></table></figure>
+<p>对于投影矩阵我们将会使用正交投影矩阵。对于渲染文本我们（通常）不需要透视，并且使用一个正交投影矩阵也可以让我们在屏幕坐标系统中指定所有的顶点坐标，我们可以通过下述方法指定：  </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">glm::mat4 projection = glm::ortho(<span class="number">0.0f</span>, <span class="number">800.0f</span>, <span class="number">0.0f</span>, <span class="number">600.0f</span>);</div></pre></td></tr></table></figure>
+<p>我们设置投影矩阵的底部参数为0.0f，顶部参数和窗口的高度相同。结果是我们指定坐标y值的范围为屏幕底部（0.0f）到屏幕顶部（600.0f）。这意味着（0.0,0.0）点对应于屏幕的左下角。  </p>
+<p>最后我们创建一个VBO和VAO用于渲染四边形。现在我们保留了足够的内存用于初始化VBO，这使我们能够之后能够更新VBO的内存在渲染字符的时候。  </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">GLuint VAO, VBO;</div><div class="line">glGenVertexArrays(<span class="number">1</span>, &amp;VAO);</div><div class="line">glGenBuffers(<span class="number">1</span>, &amp;VBO);</div><div class="line">glBindVertexArray(VAO);</div><div class="line">glBindBuffer(GL_ARRAY_BUFFER, VBO);</div><div class="line">glBufferData(GL_ARRAY_BUFFER, <span class="keyword">sizeof</span>(GLfloat) * <span class="number">6</span> * <span class="number">4</span>, <span class="literal">NULL</span>, GL_DYNAMIC_DRAW);</div><div class="line">glEnableVertexAttribArray(<span class="number">0</span>);</div><div class="line">glVertexAttribPointer(<span class="number">0</span>, <span class="number">4</span>, GL_FLOAT, GL_FALSE, <span class="number">4</span> * <span class="keyword">sizeof</span>(GLfloat), <span class="number">0</span>);</div><div class="line">glBindBuffer(GL_ARRAY_BUFFER, <span class="number">0</span>);</div><div class="line">glBindVertexArray(<span class="number">0</span>);      </div></pre></td></tr></table></figure>
+<p>每个2D四边形需要6个4浮点数分量的顶点，我们保留6*4浮点数的内存。因为我们将会频繁更新VBO的内存内容，我们使用GL_DYNAMIC_DRAW分配内存。  </p>
+<h3 id="渲染文本线"><a href="#渲染文本线" class="headerlink" title="渲染文本线"></a>渲染文本线</h3><p>为了渲染一个字符，我们从Character map中获取相应的Character结构体并使用字符的度量计算四边形的大小。计算得到四边形的大小之后，我们动态产生6个顶点的集合，使用glBufferSubData更新VBO管理的内存内容。  </p>
+<p>我们创建一个叫做RenderText的函数用于渲染一串字符：  </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">RenderText</span><span class="params">(Shader &amp;s, <span class="built_in">std</span>::<span class="built_in">string</span> text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color)</span></span></div><div class="line">&#123;</div><div class="line">    <span class="comment">// Activate corresponding render state	</span></div><div class="line">    s.Use();</div><div class="line">    glUniform3f(glGetUniformLocation(s.Program, <span class="string">"textColor"</span>), color.x, color.y, color.z);</div><div class="line">    glActiveTexture(GL_TEXTURE0);</div><div class="line">    glBindVertexArray(VAO);</div><div class="line"></div><div class="line">    <span class="comment">// Iterate through all characters</span></div><div class="line">    <span class="built_in">std</span>::<span class="built_in">string</span>::const_iterator c;</div><div class="line">    <span class="keyword">for</span> (c = text.begin(); c != text.end(); c++)</div><div class="line">    &#123;</div><div class="line">        Character ch = Characters[*c];</div><div class="line"></div><div class="line">        GLfloat xpos = x + ch.Bearing.x * scale;</div><div class="line">        GLfloat ypos = y - (ch.Size.y - ch.Bearing.y) * scale;</div><div class="line"></div><div class="line">        GLfloat w = ch.Size.x * scale;</div><div class="line">        GLfloat h = ch.Size.y * scale;</div><div class="line">        <span class="comment">// Update VBO for each character</span></div><div class="line">        GLfloat vertices[<span class="number">6</span>][<span class="number">4</span>] = &#123;</div><div class="line">            &#123; xpos,     ypos + h,   <span class="number">0.0</span>, <span class="number">0.0</span> &#125;,            </div><div class="line">            &#123; xpos,     ypos,       <span class="number">0.0</span>, <span class="number">1.0</span> &#125;,</div><div class="line">            &#123; xpos + w, ypos,       <span class="number">1.0</span>, <span class="number">1.0</span> &#125;,</div><div class="line"></div><div class="line">            &#123; xpos,     ypos + h,   <span class="number">0.0</span>, <span class="number">0.0</span> &#125;,</div><div class="line">            &#123; xpos + w, ypos,       <span class="number">1.0</span>, <span class="number">1.0</span> &#125;,</div><div class="line">            &#123; xpos + w, ypos + h,   <span class="number">1.0</span>, <span class="number">0.0</span> &#125;           </div><div class="line">        &#125;;</div><div class="line">        <span class="comment">// Render glyph texture over quad</span></div><div class="line">        glBindTexture(GL_TEXTURE_2D, ch.textureID);</div><div class="line">        <span class="comment">// Update content of VBO memory</span></div><div class="line">        glBindBuffer(GL_ARRAY_BUFFER, VBO);</div><div class="line">        glBufferSubData(GL_ARRAY_BUFFER, <span class="number">0</span>, <span class="keyword">sizeof</span>(vertices), vertices); </div><div class="line">        glBindBuffer(GL_ARRAY_BUFFER, <span class="number">0</span>);</div><div class="line">        <span class="comment">// Render quad</span></div><div class="line">        glDrawArrays(GL_TRIANGLES, <span class="number">0</span>, <span class="number">6</span>);</div><div class="line">        <span class="comment">// Now advance cursors for next glyph (note that advance is number of 1/64 pixels)</span></div><div class="line">        x += (ch.Advance &gt;&gt; <span class="number">6</span>) * scale; <span class="comment">// Bitshift by 6 to get value in pixels (2^6 = 64)</span></div><div class="line">    &#125;</div><div class="line">    glBindVertexArray(<span class="number">0</span>);</div><div class="line">    glBindTexture(GL_TEXTURE_2D, <span class="number">0</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这个函数的内容应该是相对不言自明的：我们首先计算四边形的原点位置（xpos和ypos）和四边形的大小（w和h），接着生成6个顶点的集合用于构成2D四边形；注意到我们使用scale变量缩放了每个度量。接着我们更新VBO的内容渲染四边形。<br>下面这行代码需要特别注意：  </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">GLfloat ypos = y - (ch.Size.y - ch.Bearing.y);   </div></pre></td></tr></table></figure>
+<p>一些字符（像’p’或者’g’）被渲染到稍稍低于基准线的位置，所以相应的四边形也应该渲染到稍稍低于RenderText的y值的位置。我们需要偏移ypos低于基准线的确切数值可以通过字形的度量得到：  </p>
+<img src="http://img.blog.csdn.net/20160224153546000?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
+<p>为了计算偏移量一类的距离，我们需要计算出字形扩展到基准线之下的距离；红色箭头表示这个距离。正如你可以从字形度量中看到的，我们能够通过字形（位图）的高度减去bearingY计算出这个向量的长度。对于落在基准线上面的字符（像’X’）这个值是0.0，对于稍稍落在基准线下面的字符（像’g’ or ‘j’）这个值是正的。<br>如果你做对了所有事情，现在你应该能够使用下面的代码成功的渲染出一串文本：  </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">RenderText(shader, <span class="string">"This is sample text"</span>, <span class="number">25.0f</span>, <span class="number">25.0f</span>, <span class="number">1.0f</span>, glm::vec3(<span class="number">0.5</span>, <span class="number">0.8f</span>, <span class="number">0.2f</span>));</div><div class="line">RenderText(shader, <span class="string">"(C) LearnOpenGL.com"</span>, <span class="number">540.0f</span>, <span class="number">570.0f</span>, <span class="number">0.5f</span>, glm::vec3(<span class="number">0.3</span>, <span class="number">0.7f</span>, <span class="number">0.9f</span>));</div></pre></td></tr></table></figure>
+<p>这应该看起来像下面的图片一样：  </p>
+<img src="http://img.blog.csdn.net/20160224154836710?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
+<p>你可以从<a href="http://www.learnopengl.com/code_viewer.php?code=in-practice/text_rendering" target="_blank" rel="external">这里</a><br>找到这个例子的代码。  </p>
+<p>为了让你感受到我们如何计算四边形的顶点，我们关闭混合模式来观察真实渲染的四边形是什么样子的：  </p>
+<img src="http://img.blog.csdn.net/20160224155128399?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
+<p>这里你可以清楚地看到大多数的四边形落在（想象中的）基准线上，而对于像’p’或者’(‘这样字形的四边形会往下移动。  </p>
+<h3 id="更进一步"><a href="#更进一步" class="headerlink" title="更进一步"></a>更进一步</h3><p>这篇教程展示了使用TrueType字体和FreeType库来渲染文本的技术。这种方法是灵活的、可扩展的，并且能够用于多种字符编码。但是，它可能会过度消耗程序性能，节省性能的位图字体会是不错的选择。当然你也可以通过使用FreeType加载所有字符字形，动态地生成位图字体来结合这两种方法。这能够使渲染器节省相当数量的纹理切换，基于每个字形如何紧密的排列，这能够节省相当多的性能消耗。  </p>
+<p>另一件关于FreeType字体的事情是，字形纹理被存储为一个固定的尺寸，所以相当数量的缩放会产生锯齿边缘。更进一步，字形旋转时会呈现出模糊的效果。这可以通过每个像素存储到最近字形轮廓的距离，来代替存储每个光栅化的像素颜色来缓和这种现象。这种技术被称为有符号的距离字段，Valve在几年前发表了一篇论文，这篇论文阐述了他们对这项技术的实现，对于3D渲染程序，这项技术的作用意外的好。  </p>
+<blockquote>
+<p>原文地址：<a href="http://learnopengl.com/#!In-Practice/Text-Rendering" target="_blank" rel="external">http://learnopengl.com/#!In-Practice/Text-Rendering</a></p>
+</blockquote>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/03/22/hello-world/" itemprop="url">
                   Hello World
                 </a>
@@ -386,7 +584,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">21</span>
+              <span class="site-state-item-count">22</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -394,7 +592,7 @@
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-count">6</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -403,7 +601,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-count">23</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -500,8 +698,8 @@
       <div class="footer-inner">
         <div class="copyright" >
   
-  &copy; 
-  <span itemprop="copyrightYear">2016</span>
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
