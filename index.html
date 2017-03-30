@@ -249,6 +249,153 @@
             
               
                 
+                <a class="post-title-link" href="/2017/03/30/linux下多进程示例/" itemprop="url">
+                  linux下多进程示例
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-03-30T20:54:45+08:00" content="2017-03-30">
+              2017-03-30
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2017/03/30/linux下多进程示例/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/03/30/linux下多进程示例/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2017/03/30/linux下多进程示例/" class="leancloud_visitors" data-flag-title="linux下多进程示例">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="了解linux环境下多进程编程"><a href="#了解linux环境下多进程编程" class="headerlink" title="了解linux环境下多进程编程"></a>了解linux环境下多进程编程</h1><p>##1. Purpose of software<br>    a. using fopen() and fclose() to read data from file.<br>    b. using fork() to spawn child processes and wait() or waitpid() to fetch<br>        the results of child processes.<br>    c. using excevp() to change from one program to another.<br>    d. using signals to communicate with different processes.</p>
+<p>##2. developer and development date    </p>
+<p>##3. how the software is organized<br>    isPrime.c    //判断一个数是否是素数<br>    singlePrime.c         //使用exevp函数调用isPrime<br>    singleSpawn.c        //生成一个子进程调用isPrime，通过wait()函数获取程序执行结果<br>    multiSpawn.c        //生成多个子进程，在每个子进程中都调用morph函数<br>    multiSpawnSignal.c    //注册信号处理函数，在接收到SIGUSR1信号时返回有多少子进程已经执行完毕，多少子进程还在执行<br>    Makefile2    //用于make编译的文件<br>    Makefile3    // …<br>    Makefile4    // …</p>
+<p>##4. Instruction on how to compile the program<br>    Task 0:<br>        cc isPrime.c -o isPrime<br>    Task 1:<br>        cc singlePrime.c -o singlePrime<br>    Task 2:<br>        make -f Makefile2<br>    Task 3:<br>        make -f Makefile3<br>    Task 4:<br>        make -f Makefile3</p>
+<p>##5. Any issues/limitations problem that user must be aware of</p>
+<p>##6. Instructions explaining how to use the software<br>    Task 0:<br>        ./isPrime 1<br>    Task 1:<br>        ./singlePrime prime.bin<br>    Task 2:<br>        ./singleSpawn prime.bin<br>    Task 3:<br>        ./multiSpawn prime.bin<br>    Task 4:<br>        ./multiSpawnSignal prime.bin</p>
+<p>###<br>isPrime.c<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* </span></div><div class="line">File is isPrime.c</div><div class="line"></div><div class="line">Purpose:</div><div class="line">a program that checks if a given number is a prime number</div><div class="line"></div><div class="line">input:</div><div class="line">number - a positive int  entered via the command line parameters.  For example isPrime 1234</div><div class="line"></div><div class="line">output:</div><div class="line">0 - if the input number is not a prime number</div><div class="line">1 - if the input number is a prime number</div><div class="line">2 - if the command line parameter is not correct </div><div class="line"></div><div class="line">Assumption:</div><div class="line">the program does not check if the number is a positive integer</div><div class="line"></div><div class="line">*/ </div><div class="line"></div><div class="line"><span class="comment">/**************************************************************/</span></div><div class="line"><span class="comment">// INCLUDE FILES</span></div><div class="line"><span class="comment">//</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"stdio.h"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"stdlib.h"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">/*************************************************************/</span></div><div class="line"><span class="comment">// PROTYPES</span></div><div class="line"><span class="comment">//</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">isPrime</span><span class="params">(<span class="keyword">unsigned</span> <span class="keyword">int</span> number)</span></span>;</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">/*************************************************************/</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span></span></div><div class="line"></div><div class="line">&#123;</div><div class="line">	<span class="keyword">int</span> i;</div><div class="line"></div><div class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span> number;</div><div class="line"></div><div class="line">	<span class="keyword">if</span> (argc &lt; <span class="number">2</span>) <span class="keyword">return</span>(<span class="number">2</span>);</div><div class="line">	<span class="keyword">else</span> number = atoi(argv[<span class="number">1</span>]);</div><div class="line">	<span class="keyword">if</span> (isPrime(number)) &#123;</div><div class="line">		<span class="built_in">exit</span>(<span class="number">1</span>);</div><div class="line">	&#125;</div><div class="line">	<span class="built_in">exit</span>(<span class="number">0</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">/*************************************************************/</span></div><div class="line"><span class="comment">/*</span></div><div class="line">Purpose: check if the input number is a prime number</div><div class="line">input:</div><div class="line">number - the number to be checked</div><div class="line"></div><div class="line">return:</div><div class="line">0 - if the number is not a prime number</div><div class="line">1 - if the number is a prime number</div><div class="line">*/ </div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">isPrime</span><span class="params">(<span class="keyword">unsigned</span> <span class="keyword">int</span> number)</span></span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">int</span> i;</div><div class="line">	<span class="keyword">for</span>(i = <span class="number">2</span>; i*i &lt;= number; i++) &#123;</div><div class="line">		usleep(<span class="number">100</span>);</div><div class="line">		<span class="keyword">if</span> (number % i == <span class="number">0</span>) &#123;</div><div class="line">			<span class="keyword">return</span>(<span class="number">0</span>);</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">    <span class="comment">// printf("%d is a prime number\n",number);</span></div><div class="line">	<span class="keyword">return</span>(<span class="number">1</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>createBinary.c<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* </span></div><div class="line">File is createBinary.c</div><div class="line"></div><div class="line">Purpose:</div><div class="line">a program that creates a binary file for testing the prime number program </div><div class="line"></div><div class="line">input:</div><div class="line">a sequence of numbers to be tested</div><div class="line"></div><div class="line">output:</div><div class="line">0 - if success</div><div class="line">1 - if an error occured</div><div class="line">a binary file with the name.   </div><div class="line"></div><div class="line">Assumption:</div><div class="line">1. the program does not check if the number is a positive integer</div><div class="line">2. the program overwrites that file testPrime.bin</div><div class="line"></div><div class="line">*/ </div><div class="line"></div><div class="line"><span class="comment">/**************************************************************/</span></div><div class="line"><span class="comment">// INCLUDE FILES</span></div><div class="line"><span class="comment">//</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"stdio.h"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"stdlib.h"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">/*************************************************************/</span></div><div class="line"><span class="comment">// PROTYPES</span></div><div class="line"><span class="comment">//</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">/*************************************************************/</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span></span></div><div class="line"></div><div class="line">&#123;</div><div class="line">	<span class="keyword">int</span> i;</div><div class="line">    FILE *fd1;</div><div class="line">    <span class="keyword">char</span> s[<span class="number">32</span>];</div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> n;</div><div class="line">    <span class="keyword">int</span> rc = <span class="number">0</span>;</div><div class="line"></div><div class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span> number;</div><div class="line"></div><div class="line">	<span class="keyword">if</span> (argc &lt; <span class="number">2</span>) &#123;</div><div class="line">        <span class="built_in">printf</span>(<span class="string">" Usage: %s filename number number number etc. \n"</span>,argv[<span class="number">0</span>]);</div><div class="line">        <span class="keyword">return</span>(<span class="number">1</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    fd1 = fopen(argv[<span class="number">1</span>],<span class="string">"wb"</span>);</div><div class="line">    <span class="keyword">if</span> (fd1 == <span class="literal">NULL</span>) &#123;</div><div class="line">        <span class="built_in">printf</span>(<span class="string">"error when openning file %s\n"</span>,argv[<span class="number">1</span>]);</div><div class="line">       <span class="keyword">return</span>(<span class="number">1</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">for</span> (i = <span class="number">2</span>; i &lt; argc; i++) &#123;</div><div class="line">        n = strtoul(argv[i],<span class="literal">NULL</span>,<span class="number">10</span>);</div><div class="line">        rc = fwrite(&amp;n, <span class="keyword">sizeof</span>(<span class="keyword">unsigned</span> <span class="keyword">int</span>), <span class="number">1</span>, fd1);</div><div class="line">        <span class="keyword">if</span> (rc != <span class="number">1</span>) &#123;</div><div class="line">            <span class="built_in">printf</span>(<span class="string">"error when writing to file %s \n"</span>,argv[<span class="number">1</span>]);</div><div class="line">            <span class="keyword">if</span> (fd1 != <span class="literal">NULL</span>) fclose(fd1);</div><div class="line">            <span class="keyword">return</span>(<span class="number">1</span>);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="keyword">if</span> (fd1 != <span class="literal">NULL</span>) fclose(fd1);</div><div class="line"></div><div class="line">	<span class="built_in">exit</span>(<span class="number">0</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>singlePrime.c<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">morph</span><span class="params">(<span class="keyword">char</span> *number)</span> </span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">char</span> *argv[] = &#123;<span class="string">"./isPrime"</span>, number, <span class="literal">NULL</span>&#125;;</div><div class="line">	</div><div class="line">	<span class="built_in">printf</span>(<span class="string">"%s\n"</span>, number);</div><div class="line">	<span class="keyword">int</span> ret = execvp(argv[<span class="number">0</span>], argv); <span class="comment">// using execvp function to change from one program to another</span></div><div class="line">	<span class="keyword">return</span> ret;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>** argv)</span> </span></div><div class="line">&#123;</div><div class="line">	FILE *fd1;</div><div class="line">	<span class="keyword">char</span> s[<span class="number">32</span>];</div><div class="line">	<span class="keyword">char</span> buffer[<span class="number">32</span>];</div><div class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span> n;</div><div class="line">	<span class="keyword">int</span> i = <span class="number">0</span>;</div><div class="line"></div><div class="line">	<span class="keyword">if</span> (argc &lt; <span class="number">2</span>) &#123;	<span class="comment">// check whether the file name is send to this program</span></div><div class="line">		<span class="built_in">printf</span>(<span class="string">"Usage: singlePrime fileName\n"</span>);</div><div class="line">		<span class="keyword">return</span>(<span class="number">1</span>);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	fd1 = fopen(argv[<span class="number">1</span>], <span class="string">"rb"</span>); <span class="comment">// read from a binary file as readable mode</span></div><div class="line">	<span class="keyword">if</span> (fd1 == <span class="literal">NULL</span>) &#123;</div><div class="line">		<span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"file file.bin does not exist, where file.bin is the provided file name\n"</span>);</div><div class="line">		<span class="keyword">return</span>(<span class="number">1</span>);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span> temp;</div><div class="line">	<span class="keyword">while</span> (fread(&amp;temp, <span class="keyword">sizeof</span>(<span class="keyword">unsigned</span> <span class="keyword">int</span>), <span class="number">1</span>, fd1)) &#123;</div><div class="line">		<span class="built_in">sprintf</span>(buffer, <span class="string">"%u"</span>, temp);</div><div class="line">		<span class="comment">// printf("%d: %s\n", i, buffer);</span></div><div class="line">		morph(buffer);	<span class="comment">// call morph function</span></div><div class="line">		i++;</div><div class="line">	&#125;</div><div class="line">	fclose(fd1);</div><div class="line">	<span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>singleSpawn.c<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">morph</span><span class="params">(<span class="keyword">char</span> *number)</span> </span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">int</span> child_ret;</div><div class="line">	<span class="keyword">pid_t</span> pc, pr;</div><div class="line">	pc = fork();	<span class="comment">// spawn a child process</span></div><div class="line">	<span class="keyword">if</span> (pc &lt; <span class="number">0</span>) </div><div class="line">		perror(<span class="string">"error when fork"</span>);</div><div class="line">	<span class="keyword">else</span> <span class="keyword">if</span> (pc == <span class="number">0</span>) &#123; <span class="comment">// child process</span></div><div class="line">		<span class="keyword">char</span> *argv[] = &#123;<span class="string">"./isPrime"</span>, number, <span class="literal">NULL</span>&#125;;</div><div class="line">		execvp(argv[<span class="number">0</span>], argv);</div><div class="line">	&#125; <span class="keyword">else</span> &#123;	<span class="comment">// parent process</span></div><div class="line">		pr = wait(&amp;child_ret);	<span class="comment">// using wait function to fetch return code from child process</span></div><div class="line">        <span class="keyword">if</span> (WEXITSTATUS(child_ret))</div><div class="line">        	<span class="built_in">printf</span>(<span class="string">"%s is a prime number\n"</span>, number);</div><div class="line">        <span class="built_in">exit</span>(<span class="number">0</span>);</div><div class="line">	&#125;</div><div class="line">	 </div><div class="line">	<span class="built_in">exit</span>(<span class="number">0</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>** argv)</span> </span></div><div class="line">&#123;</div><div class="line">	FILE *fd1;</div><div class="line">	<span class="keyword">char</span> s[<span class="number">32</span>];</div><div class="line">	<span class="keyword">char</span> buffer[<span class="number">32</span>];</div><div class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span> n;</div><div class="line">	<span class="keyword">int</span> i = <span class="number">0</span>;</div><div class="line"></div><div class="line">	<span class="keyword">if</span> (argc &lt; <span class="number">2</span>) &#123;</div><div class="line">		<span class="built_in">printf</span>(<span class="string">"Usage: singlePrime fileName\n"</span>);</div><div class="line">		<span class="keyword">return</span>(<span class="number">1</span>);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	fd1 = fopen(argv[<span class="number">1</span>], <span class="string">"rb"</span>); <span class="comment">// read from a binary file as readable mode</span></div><div class="line">	<span class="keyword">if</span> (fd1 == <span class="literal">NULL</span>) &#123;</div><div class="line">		<span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"file file.bin does not exist, where file.bin is the provided file name\n"</span>);</div><div class="line">		<span class="keyword">return</span>(<span class="number">1</span>);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span> temp;</div><div class="line">	<span class="keyword">while</span> (fread(&amp;temp, <span class="keyword">sizeof</span>(<span class="keyword">unsigned</span> <span class="keyword">int</span>), <span class="number">1</span>, fd1)) &#123;</div><div class="line">		<span class="built_in">sprintf</span>(buffer, <span class="string">"%u"</span>, temp);</div><div class="line">		morph(buffer);</div><div class="line">		<span class="comment">// printf("%d: %s\n", i, buffer);</span></div><div class="line">		i++;</div><div class="line">	&#125;</div><div class="line">	fclose(fd1);</div><div class="line">	<span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>multiSpawn.c<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">morph</span><span class="params">(<span class="keyword">char</span> *number)</span> </span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">char</span> *argv[] = &#123;<span class="string">"./isPrime"</span>, number, <span class="literal">NULL</span>&#125;;</div><div class="line">	execvp(argv[<span class="number">0</span>], argv);</div><div class="line">	<span class="built_in">exit</span>(<span class="number">0</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>** argv)</span> </span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">const</span> <span class="keyword">int</span> INTEGER_SIZE = <span class="number">4</span>; </div><div class="line">	<span class="keyword">int</span> N = <span class="number">10</span>;</div><div class="line">	FILE *fd1;	<span class="comment">// file pointer</span></div><div class="line">	<span class="keyword">char</span> buffer[<span class="number">32</span>]; <span class="comment">// file raading buffer</span></div><div class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span> n;</div><div class="line">	<span class="keyword">int</span> i = <span class="number">0</span>, count = <span class="number">0</span>;</div><div class="line">	<span class="keyword">char</span> number[<span class="number">32</span>]; </div><div class="line">	<span class="keyword">pid_t</span> pc;</div><div class="line"></div><div class="line">	<span class="keyword">if</span> (argc &lt; <span class="number">2</span>) &#123;</div><div class="line">		<span class="built_in">printf</span>(<span class="string">"Usage: multiSpawn fileName\n"</span>);</div><div class="line">		<span class="keyword">return</span>(<span class="number">1</span>);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	fd1 = fopen(argv[<span class="number">1</span>], <span class="string">"rb"</span>); <span class="comment">// read from a binary file as readable mode</span></div><div class="line">	<span class="keyword">if</span> (fd1 == <span class="literal">NULL</span>) &#123;</div><div class="line">		<span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"file file.bin does not exist, where file.bin is the provided file name\n"</span>);</div><div class="line">		<span class="keyword">return</span>(<span class="number">1</span>);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	fseek(fd1, <span class="number">0L</span>, SEEK_END);	<span class="comment">// move fd1 file pointer to the end of file</span></div><div class="line">	<span class="keyword">long</span> file_size = ftell(fd1);	<span class="comment">// fetch the file size</span></div><div class="line">	fseek(fd1, <span class="number">0L</span>, SEEK_SET); <span class="comment">// reset fd1 pointer to the begin of file</span></div><div class="line"></div><div class="line">	N = file_size / INTEGER_SIZE;	<span class="comment">// find the number of integers in the file</span></div><div class="line"></div><div class="line">	<span class="keyword">int</span> childProcessIds[N]; <span class="comment">// record the child process id according each integer</span></div><div class="line">	<span class="keyword">char</span> numbers[N][<span class="number">32</span>];	<span class="comment">// integer array to record each integer readed from file</span></div><div class="line"></div><div class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span> temp;</div><div class="line">	<span class="keyword">while</span> (fread(&amp;temp, <span class="keyword">sizeof</span>(<span class="keyword">unsigned</span> <span class="keyword">int</span>), <span class="number">1</span>, fd1) &amp;&amp; i &lt; N) &#123;</div><div class="line">		<span class="built_in">sprintf</span>(buffer, <span class="string">"%u"</span>, temp);</div><div class="line">		<span class="built_in">strcpy</span>(numbers[i], buffer);</div><div class="line">		<span class="comment">// printf("%d, %s\n", i, numbers[i]);</span></div><div class="line">		i++;</div><div class="line">	&#125;</div><div class="line">	fclose(fd1);</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">	<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; N; i++) &#123;</div><div class="line">		pc = fork();</div><div class="line">		<span class="keyword">if</span> (pc == <span class="number">0</span> || pc == <span class="number">-1</span>) &#123;</div><div class="line">			<span class="built_in">strcpy</span>(number, numbers[i]);</div><div class="line">			<span class="keyword">break</span>;</div><div class="line">		&#125; <span class="keyword">else</span> <span class="keyword">if</span> (pc &gt; <span class="number">0</span>) &#123;</div><div class="line">			childProcessIds[i] = pc;</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="keyword">if</span> (pc == <span class="number">0</span>) &#123; <span class="comment">// child process</span></div><div class="line">		<span class="comment">// printf("%s\n", number);</span></div><div class="line">		<span class="keyword">char</span> *argv[] = &#123;<span class="string">"./isPrime"</span>, number, <span class="literal">NULL</span>&#125;;</div><div class="line">		execvp(argv[<span class="number">0</span>], argv);</div><div class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> (pc &gt; <span class="number">0</span>) &#123; <span class="comment">// parent process</span></div><div class="line">		<span class="keyword">int</span> return_code;</div><div class="line">		<span class="keyword">int</span> child_ret;</div><div class="line">		<span class="keyword">while</span> (<span class="number">1</span>) &#123;</div><div class="line">			return_code = waitpid(<span class="number">-1</span>, &amp;child_ret, <span class="number">0</span>);</div><div class="line">			<span class="keyword">if</span> (return_code == <span class="number">-1</span>) &#123;</div><div class="line">				<span class="built_in">exit</span>(<span class="number">0</span>);</div><div class="line">			&#125;</div><div class="line"></div><div class="line">			<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; N; i++) &#123;	<span class="comment">// search child process id according return_code</span></div><div class="line">				<span class="keyword">if</span> (childProcessIds[i] == return_code) &#123;</div><div class="line">					<span class="keyword">break</span>;</div><div class="line">				&#125;</div><div class="line">			&#125;</div><div class="line">			<span class="keyword">if</span> (i != N &amp;&amp; WEXITSTATUS(child_ret)) <span class="comment">// determine whether the number is prime according return code of child process</span></div><div class="line">				<span class="built_in">printf</span>(<span class="string">"%s is a prime number\n"</span>, numbers[i]);</div><div class="line">		&#125;</div><div class="line">		</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>multiSpawnSignal.c<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* </span></div><div class="line">File is multiSpawnSignal.c</div><div class="line"></div><div class="line">to test this program, you need run by typing './multiSpawnSignal prime.bin &amp;'</div><div class="line">then you will see a pid in terminal, you can use 'kill -USR1 pid' to send singal to the</div><div class="line">program</div><div class="line"></div><div class="line">*/ </div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;signal.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">static</span> <span class="keyword">int</span> countFinished = <span class="number">0</span>;</div><div class="line"><span class="keyword">static</span> <span class="keyword">int</span> totalNumberOfChildProcesses = <span class="number">0</span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">morph</span><span class="params">(<span class="keyword">char</span> *number)</span> </span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">char</span> *argv[] = &#123;<span class="string">"./isPrime"</span>, number, <span class="literal">NULL</span>&#125;;</div><div class="line">	execvp(argv[<span class="number">0</span>], argv);</div><div class="line">	<span class="built_in">exit</span>(<span class="number">0</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// signal handler</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">handler</span><span class="params">(<span class="keyword">int</span> signo)</span> </span>&#123;</div><div class="line">	<span class="keyword">switch</span>(signo) &#123;</div><div class="line">		<span class="keyword">case</span> SIGUSR1:</div><div class="line">			<span class="built_in">printf</span>(<span class="string">"%d processes have finished their execution and %d are still working\n"</span>, countFinished, totalNumberOfChildProcesses - countFinished);</div><div class="line">			<span class="keyword">break</span>;</div><div class="line">		<span class="keyword">default</span>:</div><div class="line">			<span class="keyword">break</span>;			</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>** argv)</span> </span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">10</span>;</div><div class="line">	FILE *fd1;</div><div class="line">	<span class="keyword">char</span> buffer[<span class="number">32</span>];</div><div class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span> n;</div><div class="line">	<span class="keyword">int</span> i = <span class="number">0</span>, count = <span class="number">0</span>;</div><div class="line">	<span class="keyword">int</span> childProcessIds[N];</div><div class="line">	<span class="keyword">char</span> numbers[N][<span class="number">32</span>];</div><div class="line">	<span class="keyword">char</span> number[<span class="number">32</span>];</div><div class="line">	<span class="keyword">pid_t</span> pc;</div><div class="line"></div><div class="line">	<span class="comment">// set signal handler</span></div><div class="line">	<span class="keyword">if</span> (signal(SIGUSR1, handler) == SIG_ERR) &#123;</div><div class="line">		perror(<span class="string">"Can't set handler for SIGUSR1"</span>);</div><div class="line">		<span class="built_in">exit</span>(<span class="number">1</span>);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="keyword">if</span> (argc &lt; <span class="number">2</span>) &#123;</div><div class="line">		<span class="built_in">printf</span>(<span class="string">"Usage: multiSpawn fileName\n"</span>);</div><div class="line">		<span class="built_in">exit</span>(<span class="number">1</span>);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	fd1 = fopen(argv[<span class="number">1</span>], <span class="string">"rb"</span>); <span class="comment">// read from a binary file as readable mode</span></div><div class="line">	<span class="keyword">if</span> (fd1 == <span class="literal">NULL</span>) &#123;</div><div class="line">		<span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"file file.bin does not exist, where file.bin is the provided file name\n"</span>);</div><div class="line">		<span class="built_in">exit</span>(<span class="number">1</span>);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span> temp;</div><div class="line">	<span class="keyword">while</span> (fread(&amp;temp, <span class="keyword">sizeof</span>(<span class="keyword">unsigned</span> <span class="keyword">int</span>), <span class="number">1</span>, fd1) &amp;&amp; i &lt; N) &#123;</div><div class="line">		<span class="built_in">sprintf</span>(buffer, <span class="string">"%u"</span>, temp);</div><div class="line">		<span class="built_in">strcpy</span>(numbers[i], buffer);</div><div class="line">		<span class="comment">// printf("%d, %s\n", i, numbers[i]);</span></div><div class="line">		i++;</div><div class="line">	&#125;</div><div class="line">	fclose(fd1);</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">	<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; N; i++) &#123;</div><div class="line">		pc = fork();</div><div class="line">		<span class="keyword">if</span> (pc == <span class="number">0</span> || pc == <span class="number">-1</span>) &#123;</div><div class="line">			<span class="built_in">strcpy</span>(number, numbers[i]);</div><div class="line">			<span class="keyword">break</span>;</div><div class="line">		&#125; <span class="keyword">else</span> <span class="keyword">if</span> (pc &gt; <span class="number">0</span>) &#123;</div><div class="line">			childProcessIds[i] = pc;</div><div class="line">			totalNumberOfChildProcesses++;</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="keyword">if</span> (pc == <span class="number">0</span>) &#123; <span class="comment">// child process</span></div><div class="line">		<span class="comment">// printf("%s\n", number);</span></div><div class="line">		<span class="keyword">char</span> *argv[] = &#123;<span class="string">"./isPrime"</span>, number, <span class="literal">NULL</span>&#125;;</div><div class="line">		execvp(argv[<span class="number">0</span>], argv);</div><div class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> (pc &gt; <span class="number">0</span>) &#123; <span class="comment">// parent process</span></div><div class="line">		<span class="keyword">int</span> return_code;</div><div class="line">		<span class="keyword">int</span> child_ret;</div><div class="line">		<span class="keyword">while</span> (<span class="number">1</span>) &#123;</div><div class="line">			return_code = waitpid(<span class="number">-1</span>, &amp;child_ret, <span class="number">0</span>);</div><div class="line">			<span class="keyword">if</span> (return_code == <span class="number">-1</span>) &#123;</div><div class="line">				<span class="built_in">exit</span>(<span class="number">0</span>);</div><div class="line">			&#125;</div><div class="line"></div><div class="line">			<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; N; i++) &#123;</div><div class="line">				<span class="keyword">if</span> (childProcessIds[i] == return_code) &#123;</div><div class="line">					<span class="keyword">break</span>;</div><div class="line">				&#125;</div><div class="line">			&#125;</div><div class="line"></div><div class="line">			<span class="keyword">if</span> (i != N &amp;&amp; WEXITSTATUS(child_ret))</div><div class="line">				<span class="built_in">printf</span>(<span class="string">"%s is a prime number\n"</span>, numbers[i]);</div><div class="line">			countFinished++;</div><div class="line">		&#125;</div><div class="line">		</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="makefile文件的配置格式和编译命令"><a href="#makefile文件的配置格式和编译命令" class="headerlink" title="makefile文件的配置格式和编译命令"></a>makefile文件的配置格式和编译命令</h2><p>示例：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">singleSpawn : singleSpawn.o</div><div class="line">	cc -o singleSpawn singleSpawn.o</div><div class="line">singleSpawn.o : singleSpawn.c</div><div class="line">	cc -c singleSpawn.c</div><div class="line">clean :</div><div class="line">	rm singleSpawn singleSpawn.o</div></pre></td></tr></table></figure></p>
+<p>target : file<br>    command<br>clean :<br>    rm target file<br>target后面加一个空格然后加冒号再加一个空格，然后加上编译后的二进制文件，<br>命令之前加上tab，<br>clean :之后换下一行，rm之前加上tab，之后是中间生成的文件<br>使用make -f makefile编译文件，使用make -f makefile clean清楚生成的程序</p>
+<h2 id="函数说明"><a href="#函数说明" class="headerlink" title="函数说明"></a>函数说明</h2><ol>
+<li>execvp()<br>表头文件：<br>#include<unistd.h></unistd.h></li>
+</ol>
+<p>定义函数：<br>int execvp(const char <em>file ,char </em> const argv []);</p>
+<p>函数说明：<br>execvp()会从PATH 环境变量所指的目录中查找符合参数file 的文件名，找到后便执行该文件，然后将第二个参数argv传给该欲执行的文件。</p>
+<p>返回值：<br>如果执行成功则函数不会返回，执行失败则直接返回-1，失败原因存于errno中。        </p>
+<ol>
+<li>fork()</li>
+</ol>
+<p>计算机程序设计中的分叉函数。返回值： 若成功调用一次则返回两个值，子进程返回0，父进程返回子进程标记；否则，出错返回-1。<br>fork函数将运行着的程序分成2个（几乎）完全一样的进程，每个进程都启动一个从代码的同一位置开始执行的线程。这两个进程中的线程继续执行，就像是两个用户同时启动了该应用程序的两个副本</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2017/03/20/拼多多笔试题/" itemprop="url">
                   拼多多笔试题(2017-3-20)
                 </a>
@@ -376,7 +523,7 @@
               
                 
                 <a class="post-title-link" href="/2017/03/20/[LeetCode]481.Magical String/" itemprop="url">
-                  481.Magical String
+                  【LeetCode】481.Magical String
                 </a>
               
             
@@ -430,7 +577,7 @@
 
           
           
-             <span id="/2017/03/20/[LeetCode]481.Magical String/" class="leancloud_visitors" data-flag-title="481.Magical String">
+             <span id="/2017/03/20/[LeetCode]481.Magical String/" class="leancloud_visitors" data-flag-title="【LeetCode】481.Magical String">
                &nbsp; | &nbsp;
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -1624,165 +1771,6 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/06/13/图形学中的辐射度学/" itemprop="url">
-                  图形学中的辐射度学
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-06-13T03:34:37+08:00" content="2016-06-13">
-              2016-06-13
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Graphic/" itemprop="url" rel="index">
-                    <span itemprop="name">Graphic</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/06/13/图形学中的辐射度学/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/06/13/图形学中的辐射度学/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/06/13/图形学中的辐射度学/" class="leancloud_visitors" data-flag-title="图形学中的辐射度学">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>辐射度学提供了一系列的数学工具用来描述光的传递和反射，它基于辐射度学基本原理，运行在几何光学中。在pbrt中，我们使用几何光学模型来描述光和光的散射。当然，我们需要遵守以下一些假设：    </p>
-<ul>
-<li>线性：光学系统中输入效果的集合总是等于每个输入效果的和。</li>
-<li>能量守恒：当光从表面或者参与媒介中散射时，散射事件不会产生比原来还多的能量。</li>
-<li>非极化：我们会忽略电磁领域的极化现象；波长（也就是频率）是光线中唯一需要关心的属性。</li>
-<li>没有荧光或者磷光：因为没有极化现象。</li>
-<li>状态稳定：我们假设环境光是处于一个平衡的状态 。 </li>
-</ul>
-<h2 id="基础变量"><a href="#基础变量" class="headerlink" title="基础变量"></a>基础变量</h2><ul>
-<li>Flux(流量)：也就是功率，描述单位时间内通过表面或者空间区域的能量总量，单位是焦耳(J/s)或者是W，符号是$\Phi$</li>
-<li>Irradiance(E)/Radiance Exitance(M)：入射率描述了到达物体表面的光的单位面积密度，出射率描述了离开无敌表面的光的单位面积密度。其中，在一个球面上的入射率可以用以下公式描述:<br>$$ E = \frac {\Phi}  {4\pi r^2} $$</li>
-</ul>
-<img src="/images/辐射度f1.jpg"> 
-<ul>
-<li>Solid Angle and Intensity: 以观测点为球心，构造一个单位球面；任意物体投影到该单位球面上的投影面积，即为该物体相对于该观测点的立体角。因此，立体角是单位球面上的一块面积，这和“平面角是单位圆上的一段弧长”类似。 </li>
-</ul>
-<h2 id="入射和出射光线函数"><a href="#入射和出射光线函数" class="headerlink" title="入射和出射光线函数"></a>入射和出射光线函数</h2><p>考虑物体表面上的一点，到达该点的光线分布可以在数学上使用一个带有位置和方向变量的函数来描述，我们使用$ L_i(p, \omega) $来代表这个函数，使用$ L_o(p, \omega) $描述该点出射的反射光线。</p>
-<h2 id="亮度"><a href="#亮度" class="headerlink" title="亮度"></a>亮度</h2><p>$$ Y = \int_\lambda{L(\lambda)V(\lambda)d\lambda} $$</p>
-<h2 id="辐射度积分"><a href="#辐射度积分" class="headerlink" title="辐射度积分"></a>辐射度积分</h2><p>$$ E(p, n) = \int_\Omega{L_i(p, \lambda)|cos\theta|d\omega} $$<br>物体表面上一点半球形上的流量总和可以用以下公式计算出来：<br>    $$ \Phi \int_A\int_H  L_o(p, \omega)cos\theta d\omega dA $$</p>
-<h2 id="使用球面坐标进行积分"><a href="#使用球面坐标进行积分" class="headerlink" title="使用球面坐标进行积分"></a>使用球面坐标进行积分</h2><p>$$x = sin\theta cos\phi$$<br>$$y = sin\theta sin\phi$$<br>$$z = cos\phi.$$<br>$$d\omega = sin\theta d\theta d\phi$$</p>
-<img src="/images/辐射度f2.jpg">
-<p>辐射度公式可以使用球面坐标重写为：<br>$$ E(p, n) = \int_0^{2\pi}\int_0^{\pi/2} {L_i(p, \theta, \phi)cos\theta sin\theta d\theta d\phi}$$</p>
-<img src="/images/辐射度f3.jpg">
-<h2 id="表面反射"><a href="#表面反射" class="headerlink" title="表面反射"></a>表面反射</h2><p>描述光线反射主要有两种函数：</p>
-<ul>
-<li><p>BRDF(bidirectional reflectance distribution function)<br>  $$ f_r(p, \omega_o, \omega_i) = \frac {dL_o(p, \omega_o)}  {dE(p, \omega_i)} = \frac {dL_o(p, \omega_o)} {L_i(p, \omega_i) cos\theta_i d\omega_i}  $$<br>  $$ L_o(p, \omega_o) = \int_g f(p, \omega_o, \omega_i)L_i(p, \omega_i)|cos\theta_i|d\omega_i $$</p>
-  <img src="/images/辐射度f4.jpg">
-</li>
-<li><p>BSSDF(bidirectional scattering-surface reflectance distribution function)<br>  $$ S(p_o, \omega_o, p_i, \omega_i) = \frac {dL_o(p_o, \omega_o)}  {dE(p_i, \omega_i)} $$<br>  $$ L_o(p_o, \omega_o) = \int_A\int_H S(p_o, \omega_o, p_i, \omega_i)L_i(p_i, \omega_i)|cos\theta_i|d\omega_i dA $$ </p>
-</li>
-</ul>
-<img src="/images/辐射度f5.jpg">
-<blockquote>
-<p>文献引用：physically based rendering from theory to implementation 2nd edition </p>
-</blockquote>
-<img src="/images/songb1.jpg">
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1828,7 +1816,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">24</span>
+              <span class="site-state-item-count">25</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1836,7 +1824,7 @@
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-count">8</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -1845,7 +1833,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-count">26</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

@@ -1,0 +1,1121 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="linux,多进程," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.5.0" />
+
+
+
+
+
+
+<meta name="description" content="了解linux环境下多进程编程##1. Purpose of software    a. using fopen() and fclose() to read data from file.    b. using fork() to spawn child processes and wait() or waitpid() to fetch        the results of chil">
+<meta property="og:type" content="article">
+<meta property="og:title" content="linux下多进程示例">
+<meta property="og:url" content="http://yoursite.com/2017/03/30/linux下多进程示例/index.html">
+<meta property="og:site_name" content="熔火之心">
+<meta property="og:description" content="了解linux环境下多进程编程##1. Purpose of software    a. using fopen() and fclose() to read data from file.    b. using fork() to spawn child processes and wait() or waitpid() to fetch        the results of chil">
+<meta property="og:updated_time" content="2017-03-30T13:56:35.747Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="linux下多进程示例">
+<meta name="twitter:description" content="了解linux环境下多进程编程##1. Purpose of software    a. using fopen() and fclose() to read data from file.    b. using fork() to spawn child processes and wait() or waitpid() to fetch        the results of chil">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 6264780808712619000,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> linux下多进程示例 | 熔火之心 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?b5cc997336f28f59fa10c14b7fef523b";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">熔火之心</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th fa-fw"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="#" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                linux下多进程示例
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-03-30T20:54:45+08:00" content="2017-03-30">
+              2017-03-30
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2017/03/30/linux下多进程示例/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/03/30/linux下多进程示例/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2017/03/30/linux下多进程示例/" class="leancloud_visitors" data-flag-title="linux下多进程示例">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="了解linux环境下多进程编程"><a href="#了解linux环境下多进程编程" class="headerlink" title="了解linux环境下多进程编程"></a>了解linux环境下多进程编程</h1><p>##1. Purpose of software<br>    a. using fopen() and fclose() to read data from file.<br>    b. using fork() to spawn child processes and wait() or waitpid() to fetch<br>        the results of child processes.<br>    c. using excevp() to change from one program to another.<br>    d. using signals to communicate with different processes.</p>
+<p>##2. developer and development date    </p>
+<p>##3. how the software is organized<br>    isPrime.c    //判断一个数是否是素数<br>    singlePrime.c         //使用exevp函数调用isPrime<br>    singleSpawn.c        //生成一个子进程调用isPrime，通过wait()函数获取程序执行结果<br>    multiSpawn.c        //生成多个子进程，在每个子进程中都调用morph函数<br>    multiSpawnSignal.c    //注册信号处理函数，在接收到SIGUSR1信号时返回有多少子进程已经执行完毕，多少子进程还在执行<br>    Makefile2    //用于make编译的文件<br>    Makefile3    // …<br>    Makefile4    // …</p>
+<p>##4. Instruction on how to compile the program<br>    Task 0:<br>        cc isPrime.c -o isPrime<br>    Task 1:<br>        cc singlePrime.c -o singlePrime<br>    Task 2:<br>        make -f Makefile2<br>    Task 3:<br>        make -f Makefile3<br>    Task 4:<br>        make -f Makefile3</p>
+<p>##5. Any issues/limitations problem that user must be aware of</p>
+<p>##6. Instructions explaining how to use the software<br>    Task 0:<br>        ./isPrime 1<br>    Task 1:<br>        ./singlePrime prime.bin<br>    Task 2:<br>        ./singleSpawn prime.bin<br>    Task 3:<br>        ./multiSpawn prime.bin<br>    Task 4:<br>        ./multiSpawnSignal prime.bin</p>
+<p>###<br>isPrime.c<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* </span></div><div class="line">File is isPrime.c</div><div class="line"></div><div class="line">Purpose:</div><div class="line">a program that checks if a given number is a prime number</div><div class="line"></div><div class="line">input:</div><div class="line">number - a positive int  entered via the command line parameters.  For example isPrime 1234</div><div class="line"></div><div class="line">output:</div><div class="line">0 - if the input number is not a prime number</div><div class="line">1 - if the input number is a prime number</div><div class="line">2 - if the command line parameter is not correct </div><div class="line"></div><div class="line">Assumption:</div><div class="line">the program does not check if the number is a positive integer</div><div class="line"></div><div class="line">*/ </div><div class="line"></div><div class="line"><span class="comment">/**************************************************************/</span></div><div class="line"><span class="comment">// INCLUDE FILES</span></div><div class="line"><span class="comment">//</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"stdio.h"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"stdlib.h"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">/*************************************************************/</span></div><div class="line"><span class="comment">// PROTYPES</span></div><div class="line"><span class="comment">//</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">isPrime</span><span class="params">(<span class="keyword">unsigned</span> <span class="keyword">int</span> number)</span></span>;</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">/*************************************************************/</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span></span></div><div class="line"></div><div class="line">&#123;</div><div class="line">	<span class="keyword">int</span> i;</div><div class="line"></div><div class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span> number;</div><div class="line"></div><div class="line">	<span class="keyword">if</span> (argc &lt; <span class="number">2</span>) <span class="keyword">return</span>(<span class="number">2</span>);</div><div class="line">	<span class="keyword">else</span> number = atoi(argv[<span class="number">1</span>]);</div><div class="line">	<span class="keyword">if</span> (isPrime(number)) &#123;</div><div class="line">		<span class="built_in">exit</span>(<span class="number">1</span>);</div><div class="line">	&#125;</div><div class="line">	<span class="built_in">exit</span>(<span class="number">0</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">/*************************************************************/</span></div><div class="line"><span class="comment">/*</span></div><div class="line">Purpose: check if the input number is a prime number</div><div class="line">input:</div><div class="line">number - the number to be checked</div><div class="line"></div><div class="line">return:</div><div class="line">0 - if the number is not a prime number</div><div class="line">1 - if the number is a prime number</div><div class="line">*/ </div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">isPrime</span><span class="params">(<span class="keyword">unsigned</span> <span class="keyword">int</span> number)</span></span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">int</span> i;</div><div class="line">	<span class="keyword">for</span>(i = <span class="number">2</span>; i*i &lt;= number; i++) &#123;</div><div class="line">		usleep(<span class="number">100</span>);</div><div class="line">		<span class="keyword">if</span> (number % i == <span class="number">0</span>) &#123;</div><div class="line">			<span class="keyword">return</span>(<span class="number">0</span>);</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">    <span class="comment">// printf("%d is a prime number\n",number);</span></div><div class="line">	<span class="keyword">return</span>(<span class="number">1</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>createBinary.c<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* </span></div><div class="line">File is createBinary.c</div><div class="line"></div><div class="line">Purpose:</div><div class="line">a program that creates a binary file for testing the prime number program </div><div class="line"></div><div class="line">input:</div><div class="line">a sequence of numbers to be tested</div><div class="line"></div><div class="line">output:</div><div class="line">0 - if success</div><div class="line">1 - if an error occured</div><div class="line">a binary file with the name.   </div><div class="line"></div><div class="line">Assumption:</div><div class="line">1. the program does not check if the number is a positive integer</div><div class="line">2. the program overwrites that file testPrime.bin</div><div class="line"></div><div class="line">*/ </div><div class="line"></div><div class="line"><span class="comment">/**************************************************************/</span></div><div class="line"><span class="comment">// INCLUDE FILES</span></div><div class="line"><span class="comment">//</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"stdio.h"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"stdlib.h"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">/*************************************************************/</span></div><div class="line"><span class="comment">// PROTYPES</span></div><div class="line"><span class="comment">//</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">/*************************************************************/</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span></span></div><div class="line"></div><div class="line">&#123;</div><div class="line">	<span class="keyword">int</span> i;</div><div class="line">    FILE *fd1;</div><div class="line">    <span class="keyword">char</span> s[<span class="number">32</span>];</div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> n;</div><div class="line">    <span class="keyword">int</span> rc = <span class="number">0</span>;</div><div class="line"></div><div class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span> number;</div><div class="line"></div><div class="line">	<span class="keyword">if</span> (argc &lt; <span class="number">2</span>) &#123;</div><div class="line">        <span class="built_in">printf</span>(<span class="string">" Usage: %s filename number number number etc. \n"</span>,argv[<span class="number">0</span>]);</div><div class="line">        <span class="keyword">return</span>(<span class="number">1</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    fd1 = fopen(argv[<span class="number">1</span>],<span class="string">"wb"</span>);</div><div class="line">    <span class="keyword">if</span> (fd1 == <span class="literal">NULL</span>) &#123;</div><div class="line">        <span class="built_in">printf</span>(<span class="string">"error when openning file %s\n"</span>,argv[<span class="number">1</span>]);</div><div class="line">       <span class="keyword">return</span>(<span class="number">1</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">for</span> (i = <span class="number">2</span>; i &lt; argc; i++) &#123;</div><div class="line">        n = strtoul(argv[i],<span class="literal">NULL</span>,<span class="number">10</span>);</div><div class="line">        rc = fwrite(&amp;n, <span class="keyword">sizeof</span>(<span class="keyword">unsigned</span> <span class="keyword">int</span>), <span class="number">1</span>, fd1);</div><div class="line">        <span class="keyword">if</span> (rc != <span class="number">1</span>) &#123;</div><div class="line">            <span class="built_in">printf</span>(<span class="string">"error when writing to file %s \n"</span>,argv[<span class="number">1</span>]);</div><div class="line">            <span class="keyword">if</span> (fd1 != <span class="literal">NULL</span>) fclose(fd1);</div><div class="line">            <span class="keyword">return</span>(<span class="number">1</span>);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="keyword">if</span> (fd1 != <span class="literal">NULL</span>) fclose(fd1);</div><div class="line"></div><div class="line">	<span class="built_in">exit</span>(<span class="number">0</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>singlePrime.c<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">morph</span><span class="params">(<span class="keyword">char</span> *number)</span> </span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">char</span> *argv[] = &#123;<span class="string">"./isPrime"</span>, number, <span class="literal">NULL</span>&#125;;</div><div class="line">	</div><div class="line">	<span class="built_in">printf</span>(<span class="string">"%s\n"</span>, number);</div><div class="line">	<span class="keyword">int</span> ret = execvp(argv[<span class="number">0</span>], argv); <span class="comment">// using execvp function to change from one program to another</span></div><div class="line">	<span class="keyword">return</span> ret;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>** argv)</span> </span></div><div class="line">&#123;</div><div class="line">	FILE *fd1;</div><div class="line">	<span class="keyword">char</span> s[<span class="number">32</span>];</div><div class="line">	<span class="keyword">char</span> buffer[<span class="number">32</span>];</div><div class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span> n;</div><div class="line">	<span class="keyword">int</span> i = <span class="number">0</span>;</div><div class="line"></div><div class="line">	<span class="keyword">if</span> (argc &lt; <span class="number">2</span>) &#123;	<span class="comment">// check whether the file name is send to this program</span></div><div class="line">		<span class="built_in">printf</span>(<span class="string">"Usage: singlePrime fileName\n"</span>);</div><div class="line">		<span class="keyword">return</span>(<span class="number">1</span>);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	fd1 = fopen(argv[<span class="number">1</span>], <span class="string">"rb"</span>); <span class="comment">// read from a binary file as readable mode</span></div><div class="line">	<span class="keyword">if</span> (fd1 == <span class="literal">NULL</span>) &#123;</div><div class="line">		<span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"file file.bin does not exist, where file.bin is the provided file name\n"</span>);</div><div class="line">		<span class="keyword">return</span>(<span class="number">1</span>);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span> temp;</div><div class="line">	<span class="keyword">while</span> (fread(&amp;temp, <span class="keyword">sizeof</span>(<span class="keyword">unsigned</span> <span class="keyword">int</span>), <span class="number">1</span>, fd1)) &#123;</div><div class="line">		<span class="built_in">sprintf</span>(buffer, <span class="string">"%u"</span>, temp);</div><div class="line">		<span class="comment">// printf("%d: %s\n", i, buffer);</span></div><div class="line">		morph(buffer);	<span class="comment">// call morph function</span></div><div class="line">		i++;</div><div class="line">	&#125;</div><div class="line">	fclose(fd1);</div><div class="line">	<span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>singleSpawn.c<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">morph</span><span class="params">(<span class="keyword">char</span> *number)</span> </span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">int</span> child_ret;</div><div class="line">	<span class="keyword">pid_t</span> pc, pr;</div><div class="line">	pc = fork();	<span class="comment">// spawn a child process</span></div><div class="line">	<span class="keyword">if</span> (pc &lt; <span class="number">0</span>) </div><div class="line">		perror(<span class="string">"error when fork"</span>);</div><div class="line">	<span class="keyword">else</span> <span class="keyword">if</span> (pc == <span class="number">0</span>) &#123; <span class="comment">// child process</span></div><div class="line">		<span class="keyword">char</span> *argv[] = &#123;<span class="string">"./isPrime"</span>, number, <span class="literal">NULL</span>&#125;;</div><div class="line">		execvp(argv[<span class="number">0</span>], argv);</div><div class="line">	&#125; <span class="keyword">else</span> &#123;	<span class="comment">// parent process</span></div><div class="line">		pr = wait(&amp;child_ret);	<span class="comment">// using wait function to fetch return code from child process</span></div><div class="line">        <span class="keyword">if</span> (WEXITSTATUS(child_ret))</div><div class="line">        	<span class="built_in">printf</span>(<span class="string">"%s is a prime number\n"</span>, number);</div><div class="line">        <span class="built_in">exit</span>(<span class="number">0</span>);</div><div class="line">	&#125;</div><div class="line">	 </div><div class="line">	<span class="built_in">exit</span>(<span class="number">0</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>** argv)</span> </span></div><div class="line">&#123;</div><div class="line">	FILE *fd1;</div><div class="line">	<span class="keyword">char</span> s[<span class="number">32</span>];</div><div class="line">	<span class="keyword">char</span> buffer[<span class="number">32</span>];</div><div class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span> n;</div><div class="line">	<span class="keyword">int</span> i = <span class="number">0</span>;</div><div class="line"></div><div class="line">	<span class="keyword">if</span> (argc &lt; <span class="number">2</span>) &#123;</div><div class="line">		<span class="built_in">printf</span>(<span class="string">"Usage: singlePrime fileName\n"</span>);</div><div class="line">		<span class="keyword">return</span>(<span class="number">1</span>);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	fd1 = fopen(argv[<span class="number">1</span>], <span class="string">"rb"</span>); <span class="comment">// read from a binary file as readable mode</span></div><div class="line">	<span class="keyword">if</span> (fd1 == <span class="literal">NULL</span>) &#123;</div><div class="line">		<span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"file file.bin does not exist, where file.bin is the provided file name\n"</span>);</div><div class="line">		<span class="keyword">return</span>(<span class="number">1</span>);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span> temp;</div><div class="line">	<span class="keyword">while</span> (fread(&amp;temp, <span class="keyword">sizeof</span>(<span class="keyword">unsigned</span> <span class="keyword">int</span>), <span class="number">1</span>, fd1)) &#123;</div><div class="line">		<span class="built_in">sprintf</span>(buffer, <span class="string">"%u"</span>, temp);</div><div class="line">		morph(buffer);</div><div class="line">		<span class="comment">// printf("%d: %s\n", i, buffer);</span></div><div class="line">		i++;</div><div class="line">	&#125;</div><div class="line">	fclose(fd1);</div><div class="line">	<span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>multiSpawn.c<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">morph</span><span class="params">(<span class="keyword">char</span> *number)</span> </span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">char</span> *argv[] = &#123;<span class="string">"./isPrime"</span>, number, <span class="literal">NULL</span>&#125;;</div><div class="line">	execvp(argv[<span class="number">0</span>], argv);</div><div class="line">	<span class="built_in">exit</span>(<span class="number">0</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>** argv)</span> </span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">const</span> <span class="keyword">int</span> INTEGER_SIZE = <span class="number">4</span>; </div><div class="line">	<span class="keyword">int</span> N = <span class="number">10</span>;</div><div class="line">	FILE *fd1;	<span class="comment">// file pointer</span></div><div class="line">	<span class="keyword">char</span> buffer[<span class="number">32</span>]; <span class="comment">// file raading buffer</span></div><div class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span> n;</div><div class="line">	<span class="keyword">int</span> i = <span class="number">0</span>, count = <span class="number">0</span>;</div><div class="line">	<span class="keyword">char</span> number[<span class="number">32</span>]; </div><div class="line">	<span class="keyword">pid_t</span> pc;</div><div class="line"></div><div class="line">	<span class="keyword">if</span> (argc &lt; <span class="number">2</span>) &#123;</div><div class="line">		<span class="built_in">printf</span>(<span class="string">"Usage: multiSpawn fileName\n"</span>);</div><div class="line">		<span class="keyword">return</span>(<span class="number">1</span>);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	fd1 = fopen(argv[<span class="number">1</span>], <span class="string">"rb"</span>); <span class="comment">// read from a binary file as readable mode</span></div><div class="line">	<span class="keyword">if</span> (fd1 == <span class="literal">NULL</span>) &#123;</div><div class="line">		<span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"file file.bin does not exist, where file.bin is the provided file name\n"</span>);</div><div class="line">		<span class="keyword">return</span>(<span class="number">1</span>);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	fseek(fd1, <span class="number">0L</span>, SEEK_END);	<span class="comment">// move fd1 file pointer to the end of file</span></div><div class="line">	<span class="keyword">long</span> file_size = ftell(fd1);	<span class="comment">// fetch the file size</span></div><div class="line">	fseek(fd1, <span class="number">0L</span>, SEEK_SET); <span class="comment">// reset fd1 pointer to the begin of file</span></div><div class="line"></div><div class="line">	N = file_size / INTEGER_SIZE;	<span class="comment">// find the number of integers in the file</span></div><div class="line"></div><div class="line">	<span class="keyword">int</span> childProcessIds[N]; <span class="comment">// record the child process id according each integer</span></div><div class="line">	<span class="keyword">char</span> numbers[N][<span class="number">32</span>];	<span class="comment">// integer array to record each integer readed from file</span></div><div class="line"></div><div class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span> temp;</div><div class="line">	<span class="keyword">while</span> (fread(&amp;temp, <span class="keyword">sizeof</span>(<span class="keyword">unsigned</span> <span class="keyword">int</span>), <span class="number">1</span>, fd1) &amp;&amp; i &lt; N) &#123;</div><div class="line">		<span class="built_in">sprintf</span>(buffer, <span class="string">"%u"</span>, temp);</div><div class="line">		<span class="built_in">strcpy</span>(numbers[i], buffer);</div><div class="line">		<span class="comment">// printf("%d, %s\n", i, numbers[i]);</span></div><div class="line">		i++;</div><div class="line">	&#125;</div><div class="line">	fclose(fd1);</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">	<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; N; i++) &#123;</div><div class="line">		pc = fork();</div><div class="line">		<span class="keyword">if</span> (pc == <span class="number">0</span> || pc == <span class="number">-1</span>) &#123;</div><div class="line">			<span class="built_in">strcpy</span>(number, numbers[i]);</div><div class="line">			<span class="keyword">break</span>;</div><div class="line">		&#125; <span class="keyword">else</span> <span class="keyword">if</span> (pc &gt; <span class="number">0</span>) &#123;</div><div class="line">			childProcessIds[i] = pc;</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="keyword">if</span> (pc == <span class="number">0</span>) &#123; <span class="comment">// child process</span></div><div class="line">		<span class="comment">// printf("%s\n", number);</span></div><div class="line">		<span class="keyword">char</span> *argv[] = &#123;<span class="string">"./isPrime"</span>, number, <span class="literal">NULL</span>&#125;;</div><div class="line">		execvp(argv[<span class="number">0</span>], argv);</div><div class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> (pc &gt; <span class="number">0</span>) &#123; <span class="comment">// parent process</span></div><div class="line">		<span class="keyword">int</span> return_code;</div><div class="line">		<span class="keyword">int</span> child_ret;</div><div class="line">		<span class="keyword">while</span> (<span class="number">1</span>) &#123;</div><div class="line">			return_code = waitpid(<span class="number">-1</span>, &amp;child_ret, <span class="number">0</span>);</div><div class="line">			<span class="keyword">if</span> (return_code == <span class="number">-1</span>) &#123;</div><div class="line">				<span class="built_in">exit</span>(<span class="number">0</span>);</div><div class="line">			&#125;</div><div class="line"></div><div class="line">			<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; N; i++) &#123;	<span class="comment">// search child process id according return_code</span></div><div class="line">				<span class="keyword">if</span> (childProcessIds[i] == return_code) &#123;</div><div class="line">					<span class="keyword">break</span>;</div><div class="line">				&#125;</div><div class="line">			&#125;</div><div class="line">			<span class="keyword">if</span> (i != N &amp;&amp; WEXITSTATUS(child_ret)) <span class="comment">// determine whether the number is prime according return code of child process</span></div><div class="line">				<span class="built_in">printf</span>(<span class="string">"%s is a prime number\n"</span>, numbers[i]);</div><div class="line">		&#125;</div><div class="line">		</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>multiSpawnSignal.c<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* </span></div><div class="line">File is multiSpawnSignal.c</div><div class="line"></div><div class="line">to test this program, you need run by typing './multiSpawnSignal prime.bin &amp;'</div><div class="line">then you will see a pid in terminal, you can use 'kill -USR1 pid' to send singal to the</div><div class="line">program</div><div class="line"></div><div class="line">*/ </div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;signal.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">static</span> <span class="keyword">int</span> countFinished = <span class="number">0</span>;</div><div class="line"><span class="keyword">static</span> <span class="keyword">int</span> totalNumberOfChildProcesses = <span class="number">0</span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">morph</span><span class="params">(<span class="keyword">char</span> *number)</span> </span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">char</span> *argv[] = &#123;<span class="string">"./isPrime"</span>, number, <span class="literal">NULL</span>&#125;;</div><div class="line">	execvp(argv[<span class="number">0</span>], argv);</div><div class="line">	<span class="built_in">exit</span>(<span class="number">0</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// signal handler</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">handler</span><span class="params">(<span class="keyword">int</span> signo)</span> </span>&#123;</div><div class="line">	<span class="keyword">switch</span>(signo) &#123;</div><div class="line">		<span class="keyword">case</span> SIGUSR1:</div><div class="line">			<span class="built_in">printf</span>(<span class="string">"%d processes have finished their execution and %d are still working\n"</span>, countFinished, totalNumberOfChildProcesses - countFinished);</div><div class="line">			<span class="keyword">break</span>;</div><div class="line">		<span class="keyword">default</span>:</div><div class="line">			<span class="keyword">break</span>;			</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>** argv)</span> </span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">10</span>;</div><div class="line">	FILE *fd1;</div><div class="line">	<span class="keyword">char</span> buffer[<span class="number">32</span>];</div><div class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span> n;</div><div class="line">	<span class="keyword">int</span> i = <span class="number">0</span>, count = <span class="number">0</span>;</div><div class="line">	<span class="keyword">int</span> childProcessIds[N];</div><div class="line">	<span class="keyword">char</span> numbers[N][<span class="number">32</span>];</div><div class="line">	<span class="keyword">char</span> number[<span class="number">32</span>];</div><div class="line">	<span class="keyword">pid_t</span> pc;</div><div class="line"></div><div class="line">	<span class="comment">// set signal handler</span></div><div class="line">	<span class="keyword">if</span> (signal(SIGUSR1, handler) == SIG_ERR) &#123;</div><div class="line">		perror(<span class="string">"Can't set handler for SIGUSR1"</span>);</div><div class="line">		<span class="built_in">exit</span>(<span class="number">1</span>);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="keyword">if</span> (argc &lt; <span class="number">2</span>) &#123;</div><div class="line">		<span class="built_in">printf</span>(<span class="string">"Usage: multiSpawn fileName\n"</span>);</div><div class="line">		<span class="built_in">exit</span>(<span class="number">1</span>);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	fd1 = fopen(argv[<span class="number">1</span>], <span class="string">"rb"</span>); <span class="comment">// read from a binary file as readable mode</span></div><div class="line">	<span class="keyword">if</span> (fd1 == <span class="literal">NULL</span>) &#123;</div><div class="line">		<span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"file file.bin does not exist, where file.bin is the provided file name\n"</span>);</div><div class="line">		<span class="built_in">exit</span>(<span class="number">1</span>);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span> temp;</div><div class="line">	<span class="keyword">while</span> (fread(&amp;temp, <span class="keyword">sizeof</span>(<span class="keyword">unsigned</span> <span class="keyword">int</span>), <span class="number">1</span>, fd1) &amp;&amp; i &lt; N) &#123;</div><div class="line">		<span class="built_in">sprintf</span>(buffer, <span class="string">"%u"</span>, temp);</div><div class="line">		<span class="built_in">strcpy</span>(numbers[i], buffer);</div><div class="line">		<span class="comment">// printf("%d, %s\n", i, numbers[i]);</span></div><div class="line">		i++;</div><div class="line">	&#125;</div><div class="line">	fclose(fd1);</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">	<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; N; i++) &#123;</div><div class="line">		pc = fork();</div><div class="line">		<span class="keyword">if</span> (pc == <span class="number">0</span> || pc == <span class="number">-1</span>) &#123;</div><div class="line">			<span class="built_in">strcpy</span>(number, numbers[i]);</div><div class="line">			<span class="keyword">break</span>;</div><div class="line">		&#125; <span class="keyword">else</span> <span class="keyword">if</span> (pc &gt; <span class="number">0</span>) &#123;</div><div class="line">			childProcessIds[i] = pc;</div><div class="line">			totalNumberOfChildProcesses++;</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="keyword">if</span> (pc == <span class="number">0</span>) &#123; <span class="comment">// child process</span></div><div class="line">		<span class="comment">// printf("%s\n", number);</span></div><div class="line">		<span class="keyword">char</span> *argv[] = &#123;<span class="string">"./isPrime"</span>, number, <span class="literal">NULL</span>&#125;;</div><div class="line">		execvp(argv[<span class="number">0</span>], argv);</div><div class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> (pc &gt; <span class="number">0</span>) &#123; <span class="comment">// parent process</span></div><div class="line">		<span class="keyword">int</span> return_code;</div><div class="line">		<span class="keyword">int</span> child_ret;</div><div class="line">		<span class="keyword">while</span> (<span class="number">1</span>) &#123;</div><div class="line">			return_code = waitpid(<span class="number">-1</span>, &amp;child_ret, <span class="number">0</span>);</div><div class="line">			<span class="keyword">if</span> (return_code == <span class="number">-1</span>) &#123;</div><div class="line">				<span class="built_in">exit</span>(<span class="number">0</span>);</div><div class="line">			&#125;</div><div class="line"></div><div class="line">			<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; N; i++) &#123;</div><div class="line">				<span class="keyword">if</span> (childProcessIds[i] == return_code) &#123;</div><div class="line">					<span class="keyword">break</span>;</div><div class="line">				&#125;</div><div class="line">			&#125;</div><div class="line"></div><div class="line">			<span class="keyword">if</span> (i != N &amp;&amp; WEXITSTATUS(child_ret))</div><div class="line">				<span class="built_in">printf</span>(<span class="string">"%s is a prime number\n"</span>, numbers[i]);</div><div class="line">			countFinished++;</div><div class="line">		&#125;</div><div class="line">		</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="makefile文件的配置格式和编译命令"><a href="#makefile文件的配置格式和编译命令" class="headerlink" title="makefile文件的配置格式和编译命令"></a>makefile文件的配置格式和编译命令</h2><p>示例：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">singleSpawn : singleSpawn.o</div><div class="line">	cc -o singleSpawn singleSpawn.o</div><div class="line">singleSpawn.o : singleSpawn.c</div><div class="line">	cc -c singleSpawn.c</div><div class="line">clean :</div><div class="line">	rm singleSpawn singleSpawn.o</div></pre></td></tr></table></figure></p>
+<p>target : file<br>    command<br>clean :<br>    rm target file<br>target后面加一个空格然后加冒号再加一个空格，然后加上编译后的二进制文件，<br>命令之前加上tab，<br>clean :之后换下一行，rm之前加上tab，之后是中间生成的文件<br>使用make -f makefile编译文件，使用make -f makefile clean清楚生成的程序</p>
+<h2 id="函数说明"><a href="#函数说明" class="headerlink" title="函数说明"></a>函数说明</h2><ol>
+<li>execvp()<br>表头文件：<br>#include<unistd.h></unistd.h></li>
+</ol>
+<p>定义函数：<br>int execvp(const char <em>file ,char </em> const argv []);</p>
+<p>函数说明：<br>execvp()会从PATH 环境变量所指的目录中查找符合参数file 的文件名，找到后便执行该文件，然后将第二个参数argv传给该欲执行的文件。</p>
+<p>返回值：<br>如果执行成功则函数不会返回，执行失败则直接返回-1，失败原因存于errno中。        </p>
+<ol>
+<li>fork()</li>
+</ol>
+<p>计算机程序设计中的分叉函数。返回值： 若成功调用一次则返回两个值，子进程返回0，父进程返回子进程标记；否则，出错返回-1。<br>fork函数将运行着的程序分成2个（几乎）完全一样的进程，每个进程都启动一个从代码的同一位置开始执行的线程。这两个进程中的线程继续执行，就像是两个用户同时启动了该应用程序的两个副本</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/linux/" rel="tag">#linux</a>
+          
+            <a href="/tags/多进程/" rel="tag">#多进程</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/20/拼多多笔试题/" rel="next" title="拼多多笔试题(2017-3-20)">
+                <i class="fa fa-chevron-left"></i> 拼多多笔试题(2017-3-20)
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <div class="ds-share flat" data-thread-key="2017/03/30/linux下多进程示例/"
+     data-title="linux下多进程示例"
+     data-content=""
+     data-url="http://yoursite.com/2017/03/30/linux下多进程示例/">
+  <div class="ds-share-inline">
+    <ul  class="ds-share-icons-16">
+
+      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+
+    </ul>
+    <div class="ds-share-icons-more">
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/03/30/linux下多进程示例/"
+           data-title="linux下多进程示例" data-url="http://yoursite.com/2017/03/30/linux下多进程示例/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/小李.jpg"
+               alt="楼政浩" />
+          <p class="site-author-name" itemprop="name">楼政浩</p>
+          <p class="site-description motion-element" itemprop="description">图形游戏</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">25</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">26</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/rhzx3519" target="_blank">
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/1590103232/profile?topnav=1&wvr=6&is_all=1" target="_blank">
+                  
+                    <i class="fa fa-weibo"></i> Weibo
+                  
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        <div class="links-of-blogroll motion-element">
+          
+            <div class="links-of-blogroll-title">Links</div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://developer.nvidia.com/gpugems" target="_blank">GPU Gems</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://kesen.realtimerendering.com" target="_blank">SIGGRAPH papers</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.learnopengl.com" target="_blank">Learn OpenGL</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.shadertoy.com/" target="_blank">ShaderToy</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.khronos.org" target="_blank">OpenGL Home</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.uefap.com/speaking/symbols/symbols.htm" target="_blank">Mathematical symbols</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.kevinbeason.com" target="_blank">kevinbeason</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://cs.brown.edu/courses/cs224/docs.shtml" target="_blank">Brown Universiy CS</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.iaccepted.net" target="_blank">DOUBI</a>
+                </li>
+              
+            </ul>
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#了解linux环境下多进程编程"><span class="nav-number">1.</span> <span class="nav-text">了解linux环境下多进程编程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#makefile文件的配置格式和编译命令"><span class="nav-number">1.1.</span> <span class="nav-text">makefile文件的配置格式和编译命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#函数说明"><span class="nav-number">1.2.</span> <span class="nav-text">函数说明</span></a></li></ol></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">楼政浩</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+
+  
+
+
+
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=0.5.0"></script>
+
+
+
+  
+  
+<script type="text/javascript" src="/js/src/scrollspy.js?v=0.5.0"></script>
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = NexT.utils.escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    NexT.motion.middleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+
+      if (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          NexT.utils.displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"louzh"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+  
+
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+       search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+    'use strict';
+    $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+            // get the contents from search data
+            isfetched = true;
+            $('.popup').detach().appendTo('.header-inner');
+            var datas = $( "entry", xmlResponse ).map(function() {
+                return {
+                    title: $( "title", this ).text(),
+                    content: $("content",this).text(),
+                    url: $( "url" , this).text()
+                };
+            }).get();
+            var $input = document.getElementById(search_id);
+            var $resultContent = document.getElementById(content_id);
+            $input.addEventListener('input', function(){
+                var matchcounts = 0;
+                var str='<ul class=\"search-result-list\">';                
+                var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                $resultContent.innerHTML = "";
+                if (this.value.trim().length > 1) {
+                // perform local searching
+                datas.forEach(function(data) {
+                    var isMatch = true;
+                    var content_index = [];
+                    var data_title = data.title.trim().toLowerCase();
+                    var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                    var data_url = data.url;
+                    var index_title = -1;
+                    var index_content = -1;
+                    var first_occur = -1;
+                    // only match artiles with not empty titles and contents
+                    if(data_title != '' && data_content != '') {
+                        keywords.forEach(function(keyword, i) {
+                            index_title = data_title.indexOf(keyword);
+                            index_content = data_content.indexOf(keyword);
+                            if( index_title < 0 && index_content < 0 ){
+                                isMatch = false;
+                            } else {
+                                if (index_content < 0) {
+                                    index_content = 0;
+                                }
+                                if (i == 0) {
+                                    first_occur = index_content;
+                                }
+                            }
+                        });
+                    }
+                    // show search results
+                    if (isMatch) {
+                        matchcounts += 1;
+                        str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                        var content = data.content.trim().replace(/<[^>]+>/g,"");
+                        if (first_occur >= 0) {
+                            // cut out 100 characters
+                            var start = first_occur - 20;
+                            var end = first_occur + 80;
+                            if(start < 0){
+                                start = 0;
+                            }
+                            if(start == 0){
+                                end = 50;
+                            }
+                            if(end > content.length){
+                                end = content.length;
+                            }
+                            var match_content = content.substring(start, end);
+                            // highlight all keywords
+                            keywords.forEach(function(keyword){
+                                var regS = new RegExp(keyword, "gi");
+                                match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                            });
+                            
+                            str += "<p class=\"search-result\">" + match_content +"...</p>"
+                        }
+                        str += "</li>";
+                    }
+                })};
+                str += "</ul>";
+                if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+                if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+                $resultContent.innerHTML = str;
+            });
+            proceedsearch();
+        }
+    });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').mousedown(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("RVzQ830wAlYNdhbz5nLmby9w-gzGzoHsz", "5YfzhCNs37UlyrgIi1KmNECg");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+
+
+</body>
+</html>

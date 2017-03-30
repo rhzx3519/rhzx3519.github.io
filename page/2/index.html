@@ -249,6 +249,165 @@
             
               
                 
+                <a class="post-title-link" href="/2016/06/13/图形学中的辐射度学/" itemprop="url">
+                  图形学中的辐射度学
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-06-13T03:34:37+08:00" content="2016-06-13">
+              2016-06-13
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Graphic/" itemprop="url" rel="index">
+                    <span itemprop="name">Graphic</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/06/13/图形学中的辐射度学/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/06/13/图形学中的辐射度学/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/06/13/图形学中的辐射度学/" class="leancloud_visitors" data-flag-title="图形学中的辐射度学">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>辐射度学提供了一系列的数学工具用来描述光的传递和反射，它基于辐射度学基本原理，运行在几何光学中。在pbrt中，我们使用几何光学模型来描述光和光的散射。当然，我们需要遵守以下一些假设：    </p>
+<ul>
+<li>线性：光学系统中输入效果的集合总是等于每个输入效果的和。</li>
+<li>能量守恒：当光从表面或者参与媒介中散射时，散射事件不会产生比原来还多的能量。</li>
+<li>非极化：我们会忽略电磁领域的极化现象；波长（也就是频率）是光线中唯一需要关心的属性。</li>
+<li>没有荧光或者磷光：因为没有极化现象。</li>
+<li>状态稳定：我们假设环境光是处于一个平衡的状态 。 </li>
+</ul>
+<h2 id="基础变量"><a href="#基础变量" class="headerlink" title="基础变量"></a>基础变量</h2><ul>
+<li>Flux(流量)：也就是功率，描述单位时间内通过表面或者空间区域的能量总量，单位是焦耳(J/s)或者是W，符号是$\Phi$</li>
+<li>Irradiance(E)/Radiance Exitance(M)：入射率描述了到达物体表面的光的单位面积密度，出射率描述了离开无敌表面的光的单位面积密度。其中，在一个球面上的入射率可以用以下公式描述:<br>$$ E = \frac {\Phi}  {4\pi r^2} $$</li>
+</ul>
+<img src="/images/辐射度f1.jpg"> 
+<ul>
+<li>Solid Angle and Intensity: 以观测点为球心，构造一个单位球面；任意物体投影到该单位球面上的投影面积，即为该物体相对于该观测点的立体角。因此，立体角是单位球面上的一块面积，这和“平面角是单位圆上的一段弧长”类似。 </li>
+</ul>
+<h2 id="入射和出射光线函数"><a href="#入射和出射光线函数" class="headerlink" title="入射和出射光线函数"></a>入射和出射光线函数</h2><p>考虑物体表面上的一点，到达该点的光线分布可以在数学上使用一个带有位置和方向变量的函数来描述，我们使用$ L_i(p, \omega) $来代表这个函数，使用$ L_o(p, \omega) $描述该点出射的反射光线。</p>
+<h2 id="亮度"><a href="#亮度" class="headerlink" title="亮度"></a>亮度</h2><p>$$ Y = \int_\lambda{L(\lambda)V(\lambda)d\lambda} $$</p>
+<h2 id="辐射度积分"><a href="#辐射度积分" class="headerlink" title="辐射度积分"></a>辐射度积分</h2><p>$$ E(p, n) = \int_\Omega{L_i(p, \lambda)|cos\theta|d\omega} $$<br>物体表面上一点半球形上的流量总和可以用以下公式计算出来：<br>    $$ \Phi \int_A\int_H  L_o(p, \omega)cos\theta d\omega dA $$</p>
+<h2 id="使用球面坐标进行积分"><a href="#使用球面坐标进行积分" class="headerlink" title="使用球面坐标进行积分"></a>使用球面坐标进行积分</h2><p>$$x = sin\theta cos\phi$$<br>$$y = sin\theta sin\phi$$<br>$$z = cos\phi.$$<br>$$d\omega = sin\theta d\theta d\phi$$</p>
+<img src="/images/辐射度f2.jpg">
+<p>辐射度公式可以使用球面坐标重写为：<br>$$ E(p, n) = \int_0^{2\pi}\int_0^{\pi/2} {L_i(p, \theta, \phi)cos\theta sin\theta d\theta d\phi}$$</p>
+<img src="/images/辐射度f3.jpg">
+<h2 id="表面反射"><a href="#表面反射" class="headerlink" title="表面反射"></a>表面反射</h2><p>描述光线反射主要有两种函数：</p>
+<ul>
+<li><p>BRDF(bidirectional reflectance distribution function)<br>  $$ f_r(p, \omega_o, \omega_i) = \frac {dL_o(p, \omega_o)}  {dE(p, \omega_i)} = \frac {dL_o(p, \omega_o)} {L_i(p, \omega_i) cos\theta_i d\omega_i}  $$<br>  $$ L_o(p, \omega_o) = \int_g f(p, \omega_o, \omega_i)L_i(p, \omega_i)|cos\theta_i|d\omega_i $$</p>
+  <img src="/images/辐射度f4.jpg">
+</li>
+<li><p>BSSDF(bidirectional scattering-surface reflectance distribution function)<br>  $$ S(p_o, \omega_o, p_i, \omega_i) = \frac {dL_o(p_o, \omega_o)}  {dE(p_i, \omega_i)} $$<br>  $$ L_o(p_o, \omega_o) = \int_A\int_H S(p_o, \omega_o, p_i, \omega_i)L_i(p_i, \omega_i)|cos\theta_i|d\omega_i dA $$ </p>
+</li>
+</ul>
+<img src="/images/辐射度f5.jpg">
+<blockquote>
+<p>文献引用：physically based rendering from theory to implementation 2nd edition </p>
+</blockquote>
+<img src="/images/songb1.jpg">
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/06/01/BRDF/" itemprop="url">
                   BRDF
                 </a>
@@ -1523,157 +1682,6 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/03/22/Cocos2dx-3-10版本开发环境配置以及相关脚本编译命令/" itemprop="url">
-                  Cocos2dx 3.10版本开发环境配置以及相关脚本编译命令
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-03-22T08:37:40+08:00" content="2016-03-22">
-              2016-03-22
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Game/" itemprop="url" rel="index">
-                    <span itemprop="name">Game</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/03/22/Cocos2dx-3-10版本开发环境配置以及相关脚本编译命令/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/03/22/Cocos2dx-3-10版本开发环境配置以及相关脚本编译命令/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/03/22/Cocos2dx-3-10版本开发环境配置以及相关脚本编译命令/" class="leancloud_visitors" data-flag-title="Cocos2dx 3.10版本开发环境配置以及相关脚本编译命令">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="一-相关程序下载地址"><a href="#一-相关程序下载地址" class="headerlink" title="一. 相关程序下载地址"></a>一. 相关程序下载地址</h2><ul>
-<li>Cocos2d-x v3.x <a href="http://cocos2d-x.org/download" target="_blank" rel="external">http://cocos2d-x.org/download</a></li>
-<li>JDK/SDK 1.6+ <a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html" target="_blank" rel="external">http://www.oracle.com/technetwork/java/javase/downloads/index.html</a></li>
-<li>Android Studio Bundle <a href="http://developer.android.com/sdk/index.html" target="_blank" rel="external">http://developer.android.com/sdk/index.html</a></li>
-<li>NDK r10c <a href="https://developer.android.com/tools/sdk/ndk/index.html" target="_blank" rel="external">https://developer.android.com/tools/sdk/ndk/index.html</a></li>
-<li>Apache Ant <a href="http://ant.apache.org/bindownload.cgi" target="_blank" rel="external">http://ant.apache.org/bindownload.cgi</a></li>
-<li>Python 2.7.5 <a href="https://www.python.org/downloads/" target="_blank" rel="external">https://www.python.org/downloads/</a>  </li>
-</ul>
-<p>一定要注意ndk版本，程序不要安装在带空格的路径中</p>
-<p>运行 cocos安装目录下的setup.py配置各种路径，之后cd到build目录下，执行  </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">python android-build.py -p 21 cpp-tests</div></pre></td></tr></table></figure>
-<h2 id="二-从cpp导出lua"><a href="#二-从cpp导出lua" class="headerlink" title="二. 从cpp导出lua"></a>二. 从cpp导出lua</h2><p>方法一： 使用cocos的脚本，配置ini文件</p>
-<p>cd到cocos安装目录下 tools/tolua 目录中，运行genbinding.py脚本, 可能会报错，缺少python脚本。 我们首先安装一个easy_install用来方便地安装python库。  </p>
-<p>将路径%PYTHON_HOME%/Scripts加入在环境变量path中，打开命令行，运行命令easy_install packageName | packageURL即可安装相应的库。我们主要用到两个库：  </p>
-<ol>
-<li>virtaulenv</li>
-<li><a href="http://pypi.python.org/packages/source/C/Cheetah/Cheetah-2.4.4.tar.gz" target="_blank" rel="external">Cheetah</a></li>
-</ol>
-<p>方法二： 参考cocos lua-binding下面的接口转换文件（libluacocos2d工程下auto/lua_cocos2dx_auto.cpp 中int lua_register_cocos2dx_Texture2D(lua_State* tolua_S)方法），自己手写一个接口转换文件，然后添加到AppDeletegate.cpp的模块载入方法中。</p>
-<h2 id="三-查看android系统版本"><a href="#三-查看android系统版本" class="headerlink" title="三. 查看android系统版本"></a>三. 查看android系统版本</h2><p>cocos android平台程序中查看系统版本号。引入ndk中的头文件  </p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">if</span> (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)  </span></div><div class="line">    <span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/system_properties.h&gt;</span>  </span></div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span>  </span></div><div class="line">  </div><div class="line"><span class="keyword">char</span> os_ver_str[PROP_VALUE_MAX] = <span class="string">"0"</span>;  </div><div class="line">__system_property_get(<span class="string">"ro.build.version.release"</span>, os_ver_str);</div></pre></td></tr></table></figure>
-<blockquote>
-<ol>
-<li><a href="http://www.cocos2d-x.org/docs/installation/B/" target="_blank" rel="external">Android (Terminal) Installation and Setup</a> </li>
-<li><a href="http://blog.csdn.net/weihongchang/article/details/40822015" target="_blank" rel="external">Windows 下 Python easy_install 的安装</a></li>
-<li><a href="http://www.cocos2d-x.org/wiki/Lua#Call-custom-c-from-Lua" target="_blank" rel="external">Call custom c++ from Lua</a>  </li>
-</ol>
-</blockquote>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1719,7 +1727,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">24</span>
+              <span class="site-state-item-count">25</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1727,7 +1735,7 @@
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-count">8</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -1736,7 +1744,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-count">26</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

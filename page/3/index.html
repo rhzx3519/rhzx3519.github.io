@@ -249,6 +249,157 @@
             
               
                 
+                <a class="post-title-link" href="/2016/03/22/Cocos2dx-3-10版本开发环境配置以及相关脚本编译命令/" itemprop="url">
+                  Cocos2dx 3.10版本开发环境配置以及相关脚本编译命令
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-03-22T08:37:40+08:00" content="2016-03-22">
+              2016-03-22
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Game/" itemprop="url" rel="index">
+                    <span itemprop="name">Game</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/03/22/Cocos2dx-3-10版本开发环境配置以及相关脚本编译命令/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/03/22/Cocos2dx-3-10版本开发环境配置以及相关脚本编译命令/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/03/22/Cocos2dx-3-10版本开发环境配置以及相关脚本编译命令/" class="leancloud_visitors" data-flag-title="Cocos2dx 3.10版本开发环境配置以及相关脚本编译命令">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="一-相关程序下载地址"><a href="#一-相关程序下载地址" class="headerlink" title="一. 相关程序下载地址"></a>一. 相关程序下载地址</h2><ul>
+<li>Cocos2d-x v3.x <a href="http://cocos2d-x.org/download" target="_blank" rel="external">http://cocos2d-x.org/download</a></li>
+<li>JDK/SDK 1.6+ <a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html" target="_blank" rel="external">http://www.oracle.com/technetwork/java/javase/downloads/index.html</a></li>
+<li>Android Studio Bundle <a href="http://developer.android.com/sdk/index.html" target="_blank" rel="external">http://developer.android.com/sdk/index.html</a></li>
+<li>NDK r10c <a href="https://developer.android.com/tools/sdk/ndk/index.html" target="_blank" rel="external">https://developer.android.com/tools/sdk/ndk/index.html</a></li>
+<li>Apache Ant <a href="http://ant.apache.org/bindownload.cgi" target="_blank" rel="external">http://ant.apache.org/bindownload.cgi</a></li>
+<li>Python 2.7.5 <a href="https://www.python.org/downloads/" target="_blank" rel="external">https://www.python.org/downloads/</a>  </li>
+</ul>
+<p>一定要注意ndk版本，程序不要安装在带空格的路径中</p>
+<p>运行 cocos安装目录下的setup.py配置各种路径，之后cd到build目录下，执行  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">python android-build.py -p 21 cpp-tests</div></pre></td></tr></table></figure>
+<h2 id="二-从cpp导出lua"><a href="#二-从cpp导出lua" class="headerlink" title="二. 从cpp导出lua"></a>二. 从cpp导出lua</h2><p>方法一： 使用cocos的脚本，配置ini文件</p>
+<p>cd到cocos安装目录下 tools/tolua 目录中，运行genbinding.py脚本, 可能会报错，缺少python脚本。 我们首先安装一个easy_install用来方便地安装python库。  </p>
+<p>将路径%PYTHON_HOME%/Scripts加入在环境变量path中，打开命令行，运行命令easy_install packageName | packageURL即可安装相应的库。我们主要用到两个库：  </p>
+<ol>
+<li>virtaulenv</li>
+<li><a href="http://pypi.python.org/packages/source/C/Cheetah/Cheetah-2.4.4.tar.gz" target="_blank" rel="external">Cheetah</a></li>
+</ol>
+<p>方法二： 参考cocos lua-binding下面的接口转换文件（libluacocos2d工程下auto/lua_cocos2dx_auto.cpp 中int lua_register_cocos2dx_Texture2D(lua_State* tolua_S)方法），自己手写一个接口转换文件，然后添加到AppDeletegate.cpp的模块载入方法中。</p>
+<h2 id="三-查看android系统版本"><a href="#三-查看android系统版本" class="headerlink" title="三. 查看android系统版本"></a>三. 查看android系统版本</h2><p>cocos android平台程序中查看系统版本号。引入ndk中的头文件  </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">if</span> (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)  </span></div><div class="line">    <span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/system_properties.h&gt;</span>  </span></div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span>  </span></div><div class="line">  </div><div class="line"><span class="keyword">char</span> os_ver_str[PROP_VALUE_MAX] = <span class="string">"0"</span>;  </div><div class="line">__system_property_get(<span class="string">"ro.build.version.release"</span>, os_ver_str);</div></pre></td></tr></table></figure>
+<blockquote>
+<ol>
+<li><a href="http://www.cocos2d-x.org/docs/installation/B/" target="_blank" rel="external">Android (Terminal) Installation and Setup</a> </li>
+<li><a href="http://blog.csdn.net/weihongchang/article/details/40822015" target="_blank" rel="external">Windows 下 Python easy_install 的安装</a></li>
+<li><a href="http://www.cocos2d-x.org/wiki/Lua#Call-custom-c-from-Lua" target="_blank" rel="external">Call custom c++ from Lua</a>  </li>
+</ol>
+</blockquote>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/03/22/cocos2dx-3-10-场景后处理实现方法/" itemprop="url">
                   cocos2dx 3.10 场景后处理实现方法
                 </a>
@@ -889,7 +1040,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">24</span>
+              <span class="site-state-item-count">25</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -897,7 +1048,7 @@
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-count">8</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -906,7 +1057,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-count">26</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
