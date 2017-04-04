@@ -57,19 +57,24 @@
 
 
 
-<meta name="description" content="结构定义数组A[N]的索引从1开始Tree[i]存储了数组A[i]从i-lowbit(i)+1 到 i的和
-1234567void createTree(int A[], int n) &amp;#123;	memset(Tree, 0, sizeof(Tree));	for (int i = 1; i &amp;lt;= n; i++) &amp;#123;		for (int j = i - lowbit(i) +">
+<meta name="description" content="结构定义 
+数组A[N]的索引从1开始Tree[i]存储了数组A[i]从i-lowbit(i)+1 到 i的和
+1234567void createTree(int A[], int n) &amp;#123;	memset(Tree, 0, sizeof(Tree));	for (int i = 1; i &amp;lt;= n; i++) &amp;#123;		for (int j = i - lowbit(i)">
 <meta property="og:type" content="article">
 <meta property="og:title" content="【数据结构】树状数组">
 <meta property="og:url" content="http://yoursite.com/2017/04/04/【数据结构】树状数组/index.html">
 <meta property="og:site_name" content="熔火之心">
-<meta property="og:description" content="结构定义数组A[N]的索引从1开始Tree[i]存储了数组A[i]从i-lowbit(i)+1 到 i的和
-1234567void createTree(int A[], int n) &amp;#123;	memset(Tree, 0, sizeof(Tree));	for (int i = 1; i &amp;lt;= n; i++) &amp;#123;		for (int j = i - lowbit(i) +">
-<meta property="og:updated_time" content="2017-04-04T03:33:23.923Z">
+<meta property="og:description" content="结构定义 
+数组A[N]的索引从1开始Tree[i]存储了数组A[i]从i-lowbit(i)+1 到 i的和
+1234567void createTree(int A[], int n) &amp;#123;	memset(Tree, 0, sizeof(Tree));	for (int i = 1; i &amp;lt;= n; i++) &amp;#123;		for (int j = i - lowbit(i)">
+<meta property="og:image" content="http://yoursite.com/images/algorithm/树状数组.png">
+<meta property="og:updated_time" content="2017-04-04T03:36:07.547Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="【数据结构】树状数组">
-<meta name="twitter:description" content="结构定义数组A[N]的索引从1开始Tree[i]存储了数组A[i]从i-lowbit(i)+1 到 i的和
-1234567void createTree(int A[], int n) &amp;#123;	memset(Tree, 0, sizeof(Tree));	for (int i = 1; i &amp;lt;= n; i++) &amp;#123;		for (int j = i - lowbit(i) +">
+<meta name="twitter:description" content="结构定义 
+数组A[N]的索引从1开始Tree[i]存储了数组A[i]从i-lowbit(i)+1 到 i的和
+1234567void createTree(int A[], int n) &amp;#123;	memset(Tree, 0, sizeof(Tree));	for (int i = 1; i &amp;lt;= n; i++) &amp;#123;		for (int j = i - lowbit(i)">
+<meta name="twitter:image" content="http://yoursite.com/images/algorithm/树状数组.png">
 
 
 
@@ -330,7 +335,8 @@
       
 
       
-        <h2 id="结构定义"><a href="#结构定义" class="headerlink" title="结构定义"></a>结构定义</h2><p>数组A[N]的索引从1开始<br>Tree[i]存储了数组A[i]从i-lowbit(i)+1 到 i的和</p>
+        <h2 id="结构定义"><a href="#结构定义" class="headerlink" title="结构定义"></a>结构定义</h2><img src="/images/algorithm/树状数组.png"> 
+<p>数组A[N]的索引从1开始<br>Tree[i]存储了数组A[i]从i-lowbit(i)+1 到 i的和</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">createTree</span><span class="params">(<span class="keyword">int</span> A[], <span class="keyword">int</span> n)</span> </span>&#123;</div><div class="line">	<span class="built_in">memset</span>(Tree, <span class="number">0</span>, <span class="keyword">sizeof</span>(Tree));</div><div class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</div><div class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> j = i - lowbit(i) + <span class="number">1</span>; j &lt;= i; j++)</div><div class="line">			Tree[i] += A[j];</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <h2 id="接口实现"><a href="#接口实现" class="headerlink" title="接口实现"></a>接口实现</h2><ol>
 <li>给A[i]加上一个数    </li>
