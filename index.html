@@ -249,6 +249,140 @@
             
               
                 
+                <a class="post-title-link" href="/2017/04/04/【leetcode】51-N-Queens/" itemprop="url">
+                  【leetcode】51.N-Queens
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-04-04T17:17:55+08:00" content="2017-04-04">
+              2017-04-04
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/algorithm/" itemprop="url" rel="index">
+                    <span itemprop="name">algorithm</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2017/04/04/【leetcode】51-N-Queens/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/04/04/【leetcode】51-N-Queens/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+             <span id="/2017/04/04/【leetcode】51-N-Queens/"class="leancloud_visitors"  data-flag-title="【leetcode】51.N-Queens">
+                |   阅读次数
+              </span>
+          
+
+          
+          
+             <span id="/2017/04/04/【leetcode】51-N-Queens/" class="leancloud_visitors" data-flag-title="【leetcode】51.N-Queens">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>使用一维数组A[N]存储row行上的皇后位置col,即A[row]=col，数组元素的初始值是INT_MIN。按行搜索每一列上可能摆放的位置,如果A[i] == col || |A[i]-col| == |i-row| || A[row]!=INT_MIN, 则表明位置row,col所在的行、列或者斜线上有皇后，不可摆放，否则设置A[row]=i，继续搜索下一行。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Solution &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">	<span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt;&gt; solveNQueens(<span class="keyword">int</span> n) &#123;</div><div class="line">		<span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt;&gt; res;</div><div class="line">		<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; A(n, INT_MIN);</div><div class="line">		dfs(<span class="number">0</span>, n, res, A);</div><div class="line">		<span class="keyword">return</span> res;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> row, <span class="keyword">int</span> n, <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt;&gt; &amp;res, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; A)</span> </span>&#123;</div><div class="line">		<span class="keyword">if</span> (row == n) &#123;</div><div class="line">			<span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; rows;</div><div class="line">			<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</div><div class="line">				<span class="built_in">string</span> str;</div><div class="line">				<span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; n; j++) &#123;</div><div class="line">					<span class="keyword">if</span> (j == A[i])</div><div class="line">						str += <span class="string">'Q'</span>;</div><div class="line">					<span class="keyword">else</span></div><div class="line">						str += <span class="string">'.'</span>;</div><div class="line">				&#125;</div><div class="line">				rows.push_back(str);</div><div class="line">			&#125;</div><div class="line">			res.push_back(rows);</div><div class="line">			<span class="keyword">return</span>;</div><div class="line">		&#125;</div><div class="line"></div><div class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</div><div class="line">			<span class="keyword">if</span> (place(row, i, A, n)) &#123;</div><div class="line">				A[row] = i;</div><div class="line">				dfs(row + <span class="number">1</span>, n, res, A);</div><div class="line">				A[row] = INT_MIN;</div><div class="line">			&#125;</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">bool</span> <span class="title">place</span><span class="params">(<span class="keyword">int</span> row, <span class="keyword">int</span> col, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;A, <span class="keyword">int</span> n)</span> </span>&#123;</div><div class="line">	    <span class="keyword">if</span> (A[row] != INT_MIN) <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++)</div><div class="line">			<span class="keyword">if</span> (A[i] == col || <span class="built_in">abs</span>(A[i] - col) == <span class="built_in">abs</span>(row - i))</div><div class="line">				<span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">		<span class="keyword">return</span> <span class="literal">true</span>;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<blockquote>
+<p><a href="https://leetcode.com/problems/n-queens/#/description" target="_blank" rel="external">原题地址</a></p>
+</blockquote>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2017/04/04/【数据结构】树状数组/" itemprop="url">
                   【数据结构】树状数组
                 </a>
@@ -1705,145 +1839,6 @@ Task 4:
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/07/03/字幕组翻译/" itemprop="url">
-                  字幕组翻译
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-07-03T23:00:36+08:00" content="2016-07-03">
-              2016-07-03
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/英语/" itemprop="url" rel="index">
-                    <span itemprop="name">英语</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/07/03/字幕组翻译/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/07/03/字幕组翻译/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-             <span id="/2016/07/03/字幕组翻译/"class="leancloud_visitors"  data-flag-title="字幕组翻译">
-                |   阅读次数
-              </span>
-          
-
-          
-          
-             <span id="/2016/07/03/字幕组翻译/" class="leancloud_visitors" data-flag-title="字幕组翻译">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="字幕翻译"><a href="#字幕翻译" class="headerlink" title="字幕翻译"></a>字幕翻译</h1><p>开个小博客记录下自己的翻译任务    </p>
-<ol>
-<li><a href="http://bbs.ncar.cc/forum.php?mod=viewthread&amp;tid=28229&amp;highlight=outcast" target="_blank" rel="external">Outcast</a> 驱魔浪人S01E03 1-160 16/6/18 下午12:01    </li>
-</ol>
-<ol>
-<li><p><a href="http://bbs.ncar.cc/forum.php?mod=viewthread&amp;tid=28324&amp;highlight=%C5%AE%D7%D3%BC%E0%D3%FC" target="_blank" rel="external">Orange is the new black</a> 女子监狱S04E06 701-850 2016年6月18日 星期六 下午7:14</p>
-</li>
-<li><p><a href="">Inside.Amy.Schumer</a> 艾米的臆想世界S04E01 001-185 2016年7月24日 星期日 下午2:10</p>
-</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1889,7 +1884,7 @@ Task 4:
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">26</span>
+              <span class="site-state-item-count">27</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1897,7 +1892,7 @@ Task 4:
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-count">10</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -1906,7 +1901,7 @@ Task 4:
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">27</span>
+                <span class="site-state-item-count">29</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

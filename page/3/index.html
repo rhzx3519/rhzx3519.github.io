@@ -249,6 +249,150 @@
             
               
                 
+                <a class="post-title-link" href="/2016/03/22/cocos-后处理效果之模糊/" itemprop="url">
+                  cocos 后处理效果之模糊
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-03-22T08:54:17+08:00" content="2016-03-22">
+              2016-03-22
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Game/" itemprop="url" rel="index">
+                    <span itemprop="name">Game</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/03/22/cocos-后处理效果之模糊/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/03/22/cocos-后处理效果之模糊/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+             <span id="/2016/03/22/cocos-后处理效果之模糊/"class="leancloud_visitors"  data-flag-title="cocos 后处理效果之模糊">
+                |   阅读次数
+              </span>
+          
+
+          
+          
+             <span id="/2016/03/22/cocos-后处理效果之模糊/" class="leancloud_visitors" data-flag-title="cocos 后处理效果之模糊">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>一般后处理中的模糊效果有两种实现方式：gaussian模糊和mipmap模糊。前者采样片元周围的片元，综合计算得到当前片元的颜色老实现，后者通过设置采样偏移值，在不同lod的mipmap之间采样当前片元纹理。相较来说，gaussian blur的性能较差但是效果好；mipmap blur的性能较好，但是效果一般。</p>
+<p>以下讨论一下cocos中mipmap的实现：</p>
+<p>首先，场景后处理是通过RenderTexture实现的。在新建RenderTexture时，它默认创建在帧缓冲的纹理不是带有mipmap的，就是只有第0层的纹理。我们要修改文件创建的源码，使它生成mipmap，之后我们才能利用mipmap来实现blur的效果。  </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> (_texture)</div><div class="line">&#123;</div><div class="line">   _texture-&gt;initWithData() <span class="comment">//修改默认的纹理生成方法，使用自定义的方法代替</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">bool</span> Texture2D::initWithDataMipMap(<span class="keyword">const</span> <span class="keyword">void</span> *data, <span class="keyword">ssize_t</span> dataLen, Texture2D::PixelFormat pixelFormat, <span class="keyword">int</span> pixelsWide, <span class="keyword">int</span> pixelsHigh, <span class="keyword">const</span> Size&amp; contentSize)</div><div class="line">&#123;<span class="comment">// data并没有用</span></div><div class="line">    CCASSERT(dataLen &gt; <span class="number">0</span> &amp;&amp; pixelsWide &gt; <span class="number">0</span> &amp;&amp; pixelsHigh &gt; <span class="number">0</span>, <span class="string">"Invalid size"</span>);</div><div class="line"></div><div class="line">    <span class="comment">//if data has no mipmaps, we will consider it has only one mipmap</span></div><div class="line">    MipmapInfo mipmap;</div><div class="line">    mipmap.address = (<span class="keyword">unsigned</span> <span class="keyword">char</span>*)data;</div><div class="line">    mipmap.len = <span class="keyword">static_cast</span>&lt;<span class="keyword">int</span>&gt;(dataLen);</div><div class="line"></div><div class="line">    <span class="comment">//the pixelFormat must be a certain value </span></div><div class="line">    CCASSERT(pixelFormat != PixelFormat::NONE &amp;&amp; pixelFormat != PixelFormat::AUTO, <span class="string">"the \"pixelFormat\" param must be a certain value!"</span>);</div><div class="line">    CCASSERT(pixelsWide &gt; <span class="number">0</span> &amp;&amp; pixelsHigh &gt; <span class="number">0</span>, <span class="string">"Invalid size"</span>);</div><div class="line"></div><div class="line"></div><div class="line">    <span class="keyword">if</span> (_pixelFormatInfoTables.find(pixelFormat) == _pixelFormatInfoTables.end())</div><div class="line">    &#123;</div><div class="line">        CCLOG(<span class="string">"cocos2d: WARNING: unsupported pixelformat: %lx"</span>, (<span class="keyword">unsigned</span> <span class="keyword">long</span>)pixelFormat);</div><div class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">const</span> PixelFormatInfo&amp; info = _pixelFormatInfoTables.at(pixelFormat);</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (info.compressed &amp;&amp; !Configuration::getInstance()-&gt;supportsPVRTC()</div><div class="line">        &amp;&amp; !Configuration::getInstance()-&gt;supportsETC()</div><div class="line">        &amp;&amp; !Configuration::getInstance()-&gt;supportsS3TC()</div><div class="line">        &amp;&amp; !Configuration::getInstance()-&gt;supportsATITC())</div><div class="line">    &#123;</div><div class="line">        CCLOG(<span class="string">"cocos2d: WARNING: PVRTC/ETC images are not supported"</span>);</div><div class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    glPixelStorei(GL_UNPACK_ALIGNMENT, <span class="number">1</span>);</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (_name != <span class="number">0</span>)</div><div class="line">    &#123;</div><div class="line">        GL::deleteTexture(_name);</div><div class="line">        _name = <span class="number">0</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    glGenTextures(<span class="number">1</span>, &amp;_name);</div><div class="line">    <span class="comment">//GL::bindTexture2D(_name);</span></div><div class="line">    glBindTexture(GL_TEXTURE_2D, _name);</div><div class="line">    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);</div><div class="line">    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);</div><div class="line">    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);</div><div class="line">    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);</div><div class="line">    <span class="comment">//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, 0);</span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">if</span> CC_ENABLE_CACHE_TEXTURE_DATA</span></div><div class="line">    <span class="keyword">if</span> (_antialiasEnabled)</div><div class="line">    &#123;</div><div class="line">        TexParams texParams = &#123; (GLuint)(_hasMipmaps ? GL_LINEAR_MIPMAP_NEAREST : GL_LINEAR),GL_LINEAR,GL_NONE,GL_NONE &#125;;</div><div class="line">        VolatileTextureMgr::setTexParameters(<span class="keyword">this</span>, texParams);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">else</span></div><div class="line">    &#123;</div><div class="line">        TexParams texParams = &#123; (GLuint)(_hasMipmaps ? GL_NEAREST_MIPMAP_NEAREST : GL_NEAREST),GL_NEAREST,GL_NONE,GL_NONE &#125;;</div><div class="line">        VolatileTextureMgr::setTexParameters(<span class="keyword">this</span>, texParams);</div><div class="line">    &#125;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div><div class="line"></div><div class="line">    <span class="comment">// clean possible GL error</span></div><div class="line">    GLenum err = glGetError();</div><div class="line">    <span class="keyword">if</span> (err != GL_NO_ERROR)</div><div class="line">    &#123;</div><div class="line">        cocos2d::<span class="built_in">log</span>(<span class="string">"OpenGL error 0x%04X in %s %s %d\n"</span>, err, __FILE__, __FUNCTION__, __LINE__);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// Specify OpenGL texture image</span></div><div class="line">    <span class="keyword">int</span> width = pixelsWide;</div><div class="line">    <span class="keyword">int</span> height = pixelsHigh;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="keyword">if</span> (info.compressed)</div><div class="line">    &#123;</div><div class="line">        glCompressedTexImage2D(GL_TEXTURE_2D, <span class="number">0</span>, info.internalFormat, (GLsizei)width, (GLsizei)height, <span class="number">0</span>, <span class="keyword">static_cast</span>&lt;<span class="keyword">int</span>&gt;(dataLen), data);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">else</span></div><div class="line">    &#123;</div><div class="line">        glTexImage2D(GL_TEXTURE_2D, <span class="number">0</span>, GL_RGB, (GLsizei)width, (GLsizei)height, <span class="number">0</span>, GL_RGB, GL_UNSIGNED_BYTE, <span class="literal">NULL</span>);</div><div class="line">    &#125;</div><div class="line">    glGenerateMipmap(GL_TEXTURE_2D);<span class="comment">//生成mipmap</span></div><div class="line"></div><div class="line">    err = glGetError();</div><div class="line">    <span class="keyword">if</span> (err != GL_NO_ERROR)</div><div class="line">    &#123;</div><div class="line">        CCLOG(<span class="string">"cocos2d: Texture2D: Error uploading compressed texture level: %u . glError: 0x%04X"</span>, <span class="number">0</span>, err);</div><div class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    _contentSize = Size((<span class="keyword">float</span>)pixelsWide, (<span class="keyword">float</span>)pixelsHigh);</div><div class="line">    _pixelsWide = pixelsWide;</div><div class="line">    _pixelsHigh = pixelsHigh;</div><div class="line">    _pixelFormat = pixelFormat;</div><div class="line">    _maxS = <span class="number">1</span>;</div><div class="line">    _maxT = <span class="number">1</span>;</div><div class="line"></div><div class="line">    _hasPremultipliedAlpha = <span class="literal">false</span>;</div><div class="line">    _hasMipmaps = <span class="literal">true</span>;</div><div class="line"></div><div class="line">    <span class="comment">// shader</span></div><div class="line">    setGLProgram(GLProgramCache::getInstance()-&gt;getGLProgram(GLProgram::SHADER_NAME_POSITION_TEXTURE));</div><div class="line">    glBindTexture(GL_TEXTURE_2D, <span class="number">0</span>);</div><div class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>以上代码主要添加了glGenerateMipmap(GL_TEXTURE_2D);这句代码用来生成mipmap。还必须设置纹理的放大缩小过滤模式为GL_LINEAR_MIPMAP_LINEAR和GL_LINEAR，这样我们在纹理采样的时候才会分别在不同层的纹理之间采样。我们还可以通过glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, 0) 来设置纹理采样的便宜值，当然我们在片元着色器里面设置的话更加方便。</p>
+<p>纹理准备好了，接下里编写我们的着色器：  </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* Mipmap Blur */</span></div><div class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> GL_ES</span></div><div class="line">precision mediump <span class="keyword">float</span>;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div><div class="line"></div><div class="line">out vec4 v_fragmentColor;</div><div class="line">varying vec2 v_texCoord;</div><div class="line"></div><div class="line">uniform sampler2D u_texture;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">( )</span></span></div><div class="line">&#123;</div><div class="line">    gl_FragColor = texture2D( u_texture, v_texCoord, <span class="number">1.55</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>texture2D的最后一个参数是一个可选值，默认是0，就是在同一层lod（level of detail）中取样。具体的意思看官方的api是：bias Specifies an optional bias to be applied during level-of-detail computation.</p>
+<p>在我们的渲染函数里面非常要注意的一点是，我们每一帧都必须要通过glGenerateMipmap(GL_TEXTURE_2D)重新生成当前绑定纹理的mipmap，因为我们的纹理数据是在每一帧中通过帧缓冲渲染得到的，如果我们不重新生成mipmap，纹理的mipmap数据将会丢失。（普通的纹理只要在创建的时候生成一次就可以了）。</p>
+<p>效果图如下：  </p>
+<img src="http://img.blog.csdn.net/20160321103609710">
+<blockquote>
+<p><a href="http://stackoverflow.com/questions/20359352/opengl-glgeneratemipmap-and-framebuffers" target="_blank" rel="external">OpenGL glGeneratemipmap and Framebuffers</a></p>
+</blockquote>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/03/22/cocos性能分析技巧/" itemprop="url">
                   cocos性能分析技巧
                 </a>
@@ -1273,7 +1417,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">26</span>
+              <span class="site-state-item-count">27</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1281,7 +1425,7 @@
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-count">10</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -1290,7 +1434,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">27</span>
+                <span class="site-state-item-count">29</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
