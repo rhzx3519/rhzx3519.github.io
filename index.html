@@ -249,6 +249,154 @@
             
               
                 
+                <a class="post-title-link" href="/2017/04/04/【数据结构】树状数组/" itemprop="url">
+                  【数据结构】树状数组
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-04-04T11:23:14+08:00" content="2017-04-04">
+              2017-04-04
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/数据结构/" itemprop="url" rel="index">
+                    <span itemprop="name">数据结构</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2017/04/04/【数据结构】树状数组/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/04/04/【数据结构】树状数组/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+             <span id="/2017/04/04/【数据结构】树状数组/"class="leancloud_visitors"  data-flag-title="【数据结构】树状数组">
+                |   阅读次数
+              </span>
+          
+
+          
+          
+             <span id="/2017/04/04/【数据结构】树状数组/" class="leancloud_visitors" data-flag-title="【数据结构】树状数组">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="结构定义"><a href="#结构定义" class="headerlink" title="结构定义"></a>结构定义</h2><p>数组A[N]的索引从1开始<br>Tree[i]存储了数组A[i]从i-lowbit(i)+1 到 i的和</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">createTree</span><span class="params">(<span class="keyword">int</span> A[], <span class="keyword">int</span> n)</span> </span>&#123;</div><div class="line">	<span class="built_in">memset</span>(Tree, <span class="number">0</span>, <span class="keyword">sizeof</span>(Tree));</div><div class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</div><div class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> j = i - lowbit(i) + <span class="number">1</span>; j &lt;= i; j++)</div><div class="line">			Tree[i] += A[j];</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="接口实现"><a href="#接口实现" class="headerlink" title="接口实现"></a>接口实现</h2><ol>
+<li>给A[i]加上一个数    </li>
+</ol>
+<p>(1) 当i &gt; n时，算法结束，否则转到第(2)歩<br>(2) Tree[i] += x, i += lowbit(i), 转第(1)歩</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//给A[x]加上一个数</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">add</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> value)</span> </span>&#123;</div><div class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = x; i &lt;= N; i += lowbit(i))</div><div class="line">		Tree[i] += value;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ol>
+<li>求A[1]到A[i]的和    </li>
+</ol>
+<p>(1) 令sum=0，转第(2)步<br>(2) 加入i &lt;= 0，算法结束，返回sun的值，否则 sum += Tree[i]，转第(3)步<br>(3) i-=lowbit(i)，转第(2)步</p>
+<pre><code class="c"><span class="comment">//求A[1]到A[X]的和</span>
+<span class="function"><span class="keyword">int</span> <span class="title">get</span><span class="params">(<span class="keyword">int</span> x)</span> </span>{
+    <span class="keyword">int</span> sum = <span class="number">0</span>;
+    <span class="keyword">for</span> (<span class="keyword">int</span> i = x; i; i -= lowbit(i))
+        sum += Tree[i];
+    <span class="keyword">return</span> sum;
+}
+</code></pre>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2017/03/30/linux下多进程示例/" itemprop="url">
                   linux下多进程示例
                 </a>
@@ -1695,169 +1843,6 @@ Task 4:
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/06/15/采样与重建/" itemprop="url">
-                  采样与重建
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-06-15T04:15:32+08:00" content="2016-06-15">
-              2016-06-15
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Graphic/" itemprop="url" rel="index">
-                    <span itemprop="name">Graphic</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/06/15/采样与重建/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/06/15/采样与重建/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-             <span id="/2016/06/15/采样与重建/"class="leancloud_visitors"  data-flag-title="采样与重建">
-                |   阅读次数
-              </span>
-          
-
-          
-          
-             <span id="/2016/06/15/采样与重建/" class="leancloud_visitors" data-flag-title="采样与重建">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="采样理论"><a href="#采样理论" class="headerlink" title="采样理论"></a>采样理论</h2><p>从定义在连续域在函数中取得离散的样本值，利用这些样本值重构一个与原函数近似的函数。<br><img src="/images/sampling/sample1.jpg"></p>
-<p>左侧是原函数，左侧则是重建后的函数</p>
-<h2 id="频域与傅立叶变换"><a href="#频域与傅立叶变换" class="headerlink" title="频域与傅立叶变换"></a>频域与傅立叶变换</h2><p>傅立叶变换将函数从空间域变换到频域。<br>下图展示了函数在空间域和频域中不同的图形    </p>
-<img src="/images/sampling/sample2.jpg">    
-<img src="/images/sampling/sample3.jpg">    
-<p>大部分的函数可以分解为一系列sin函数的和<br>一维函数$f(x)$的傅立叶变换如下:<br>$$ F(\omega) = \int_{-\infty}^{\infty}f(x)e^{-i2\pi\omega x}dx. $$</p>
-<p>其中$$e^{ix} = cosx + isinx$$<br>逆傅立叶变换<br>$$ f(x) = \int_{-\infty}^{\infty}F(\omega)e^{i2\pi\omega x}d\omega. $$</p>
-<p>下面列了一些常用函数以及对应的频域中的函数</p>
-<img src="/images/sampling/sample4.jpg">        
-<p>Dirac delta distribution<br>$$ \int\delta(x)dx = 1 $$<br>其中$当 x\neq 0, \delta(x) = 0$<br>$$\int f(x)\delta(x)dx = f(0).$$  </p>
-<h2 id="采样和重建"><a href="#采样和重建" class="headerlink" title="采样和重建"></a>采样和重建</h2><p>shah函数的定义如下:<br>$$ III<em>T(x) = T\sum</em>{i=-\infty}^{\infty} \delta(x - iT). $$  </p>
-<p>T代码采样周期或者采样频率  </p>
-<p>$$ III_T(x)f(x) = T\sum_i \delta(x - iT)f(iT). $$</p>
-<p>shah函数与函数$f(x)$的结果是一个无穷的函数值序列<br>重构函数通过以下方程得到：    </p>
-<p>$$ \widetilde f = (III_T(x)f(x))\otimes r(x) $$  </p>
-<p>其中$r(x)$是一个重构过滤函数，$\otimes$代表卷积:<br>$$ f(x)\otimes g(x) = \int_{-\infty}^\infty f(x’)g(x - x’) d(x’) $$  </p>
-<img src="/images/sampling/sample5.jpg">    
-<img src="/images/sampling/sample6.jpg">    
-<p>三角重构过滤函数(triangle reconstruction filter)为$f(x) = max(0, 1 - |x|).$<br>简化后的重构函数如下:<br>$$ \widetilde f(x) = T\sum_{i=-\infty}^\infty f(iT)r(x - iT). $$<br>我们假设函数$f(x)$是带限的(band limit)，即存在频率值$\omega_0$函数$f(x)$的的所有频率值都小于$\omega_0$<br>$$ F(\omega)    = 0, |\omega| = \omega_0 $$<br>傅立叶变换具有以下一些重要的特性：    </p>
-<ol>
-<li>两个函数乘积的傅立叶变换等于各自傅立叶变换的卷积:    $$ \mathscr F\lbrace f(x)g(x) \rbrace = F(x)\otimes G(x). $$    </li>
-<li>两个函数卷积的傅立叶变换等于傅立叶变换的乘积:    $$ \mathscr F\lbrace \otimes f(x)g(x) \rbrace = F(x) G(x). $$    </li>
-<li>一个周期为T的shah函数的傅立叶变换是一个周期为$\frac 1 T$的shah函数， 这意味着在空间域中采样的间隔越长，在频域中的采样间隔越小</li>
-<li>任意函数与delta函数的卷积等于函数本身，任意函数与shah函数的卷积等于原函数的无穷序列，为了舍弃频域中除了原点之外的所有函数，我们乘以一个周期为T的盒函数$Pi_T(x)$:<br>$$<br> \Pi_T(x) =<br> \begin{cases}<br>  1 / {(2T)} |x|&lt;T \<br>  0 otherwise.<br> \end{cases}<br>$$  </li>
-</ol>
-<img src="/images/sampling/sample7.jpg">  
-<img src="/images/sampling/sample8.jpg">    
-<p>理想的采样和重建过程可以总结为如下公式：<br>    $$ \widetilde F = (F(\omega)\otimes III_{\frac 1 T}(\omega)) \Pi_T(x). $$</p>
-<p>相同的过程应用于空间域同样能够重建$f(x)$函数，box函数的逆傅立叶变换是$sinc(x) = \frac {sin(\pi x)} {\pi x}$:  </p>
-<p>$$<br>\widetilde f = (f(x)III<em>T(x)) \otimes sinc(x).<br>or<br>\widetilde f = \sum</em>{i = -\infty}^\infty sinc(x - i)f(i).<br>$$  </p>
-<blockquote>
-<p>文献引用：physically based rendering from theory to implementation 2nd edition, chapter 7</p>
-</blockquote>
-<img src="/images/songb2.jpg">
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1903,7 +1888,7 @@ Task 4:
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">25</span>
+              <span class="site-state-item-count">26</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1911,7 +1896,7 @@ Task 4:
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-count">9</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -1920,7 +1905,7 @@ Task 4:
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">26</span>
+                <span class="site-state-item-count">27</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

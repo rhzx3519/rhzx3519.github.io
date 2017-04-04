@@ -41,7 +41,7 @@
 <link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="OpenGL ES,Cocos," />
+  <meta name="keywords" content="Tree Array," />
 
 
 
@@ -57,20 +57,19 @@
 
 
 
-<meta name="description" content="As the CPUs and GPUs in mobile devices have become more powerful and devices with one or more high-resolution screen have become ubiquitous, the demand for complex interactions with the graphics drive">
+<meta name="description" content="结构定义数组A[N]的索引从1开始Tree[i]存储了数组A[i]从i-lowbit(i)+1 到 i的和
+1234567void createTree(int A[], int n) &amp;#123;	memset(Tree, 0, sizeof(Tree));	for (int i = 1; i &amp;lt;= n; i++) &amp;#123;		for (int j = i - lowbit(i) +">
 <meta property="og:type" content="article">
-<meta property="og:title" content="[Repost] Understanding OpenGL ES: Multi-thread and multi-window rendering">
-<meta property="og:url" content="http://yoursite.com/2016/03/22/Repost-Understanding-OpenGL-ES-Multi-thread-and-multi-window-rendering/index.html">
+<meta property="og:title" content="【数据结构】树状数组">
+<meta property="og:url" content="http://yoursite.com/2017/04/04/【数据结构】树状数组/index.html">
 <meta property="og:site_name" content="熔火之心">
-<meta property="og:description" content="As the CPUs and GPUs in mobile devices have become more powerful and devices with one or more high-resolution screen have become ubiquitous, the demand for complex interactions with the graphics drive">
-<meta property="og:image" content="http://withimagination.imgtec.com/wp-content/uploads/2014/11/OpenGL-data-upload-Optimized.png">
-<meta property="og:image" content="http://withimagination.imgtec.com/wp-content/uploads/2014/11/OpenGL-data-upload-Optimized.png">
-<meta property="og:image" content="http://withimagination.imgtec.com/wp-content/uploads/2014/11/Application-Layer-Composition-Optimized.png">
-<meta property="og:updated_time" content="2016-03-22T13:15:51.000Z">
+<meta property="og:description" content="结构定义数组A[N]的索引从1开始Tree[i]存储了数组A[i]从i-lowbit(i)+1 到 i的和
+1234567void createTree(int A[], int n) &amp;#123;	memset(Tree, 0, sizeof(Tree));	for (int i = 1; i &amp;lt;= n; i++) &amp;#123;		for (int j = i - lowbit(i) +">
+<meta property="og:updated_time" content="2017-04-04T03:33:23.923Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="[Repost] Understanding OpenGL ES: Multi-thread and multi-window rendering">
-<meta name="twitter:description" content="As the CPUs and GPUs in mobile devices have become more powerful and devices with one or more high-resolution screen have become ubiquitous, the demand for complex interactions with the graphics drive">
-<meta name="twitter:image" content="http://withimagination.imgtec.com/wp-content/uploads/2014/11/OpenGL-data-upload-Optimized.png">
+<meta name="twitter:title" content="【数据结构】树状数组">
+<meta name="twitter:description" content="结构定义数组A[N]的索引从1开始Tree[i]存储了数组A[i]从i-lowbit(i)+1 到 i的和
+1234567void createTree(int A[], int n) &amp;#123;	memset(Tree, 0, sizeof(Tree));	for (int i = 1; i &amp;lt;= n; i++) &amp;#123;		for (int j = i - lowbit(i) +">
 
 
 
@@ -88,7 +87,7 @@
   };
 </script>
 
-  <title> [Repost] Understanding OpenGL ES: Multi-thread and multi-window rendering | 熔火之心 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title> 【数据结构】树状数组 | 熔火之心 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -251,7 +250,7 @@
             
             
               
-                [Repost] Understanding OpenGL ES: Multi-thread and multi-window rendering
+                【数据结构】树状数组
               
             
           </h1>
@@ -263,8 +262,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-03-22T08:58:44+08:00" content="2016-03-22">
-              2016-03-22
+            <time itemprop="dateCreated" datetime="2017-04-04T11:23:14+08:00" content="2017-04-04">
+              2017-04-04
             </time>
           </span>
 
@@ -277,8 +276,8 @@
               <span class="post-meta-item-text">分类于</span>
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/OpenGL/" itemprop="url" rel="index">
-                    <span itemprop="name">OpenGL</span>
+                  <a href="/categories/数据结构/" itemprop="url" rel="index">
+                    <span itemprop="name">数据结构</span>
                   </a>
                 </span>
 
@@ -293,8 +292,8 @@
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2016/03/22/Repost-Understanding-OpenGL-ES-Multi-thread-and-multi-window-rendering/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/03/22/Repost-Understanding-OpenGL-ES-Multi-thread-and-multi-window-rendering/" itemprop="commentsCount"></span>
+                <a href="/2017/04/04/【数据结构】树状数组/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/04/04/【数据结构】树状数组/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -303,14 +302,14 @@
           
 
           
-             <span id="/2016/03/22/Repost-Understanding-OpenGL-ES-Multi-thread-and-multi-window-rendering/"class="leancloud_visitors"  data-flag-title="[Repost] Understanding OpenGL ES: Multi-thread and multi-window rendering">
+             <span id="/2017/04/04/【数据结构】树状数组/"class="leancloud_visitors"  data-flag-title="【数据结构】树状数组">
                 |   阅读次数
               </span>
           
 
           
           
-             <span id="/2016/03/22/Repost-Understanding-OpenGL-ES-Multi-thread-and-multi-window-rendering/" class="leancloud_visitors" data-flag-title="[Repost] Understanding OpenGL ES: Multi-thread and multi-window rendering">
+             <span id="/2017/04/04/【数据结构】树状数组/" class="leancloud_visitors" data-flag-title="【数据结构】树状数组">
                &nbsp; | &nbsp;
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -331,56 +330,25 @@
       
 
       
-        <p>As the CPUs and GPUs in mobile devices have become more powerful and devices with one or more high-resolution screen have become ubiquitous, the demand for complex interactions with the graphics driver has increased. In this blog post, I’ll discuss what multi-thread and multi-window rendering means to developers, and I’ll describe if and when these techniques should be used in your apps.  </p>
-<h2 id="What-is-multi-thread-rendering"><a href="#What-is-multi-thread-rendering" class="headerlink" title="What is multi-thread rendering?"></a>What is multi-thread rendering?</h2><p>Traditionally, OpenGL ES applications only render to one surface from one thread. However, as the complexity of 3D rendering engines has increased, the CPU overhead of graphics API operations has become a common bottleneck – particularly when loading assets. This is where multi-threaded rendering becomes interesting.</p>
-<p>A rendering thread is one CPU thread associated with one graphics context. By default, each graphics context will not be able to access the resources (textures, shaders and vertex buffers) of another context. For this reason, shared contexts are used so one or more background loading threads can access the resources of a primary thread. There are two reasons why this rendering model is extremely useful:  </p>
-<ol>
-<li><p>The primary thread won’t block<br>By their nature, graphics API calls that upload data have to block until the transfer between application and driver memory has completed. Additionally, shader compilation is a blocking operation in many graphics drivers. This blocking introduces a costly overhead that results in the GPU being starved of work. By moving all upload operations to a background thread, the primary thread can maintain a consistent framerate</p>
-</li>
-<li><p>Parallel work distribution on multi-core CPUs<br>As the graphics driver is processed on the CPU, splitting the work into multiple rendering threads enables the OS to issue work to multiple CPU cores in parallel. This results in the driver’s workload being processed faster than a single rendering thread would be capable of</p>
-</li>
+        <h2 id="结构定义"><a href="#结构定义" class="headerlink" title="结构定义"></a>结构定义</h2><p>数组A[N]的索引从1开始<br>Tree[i]存储了数组A[i]从i-lowbit(i)+1 到 i的和</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">createTree</span><span class="params">(<span class="keyword">int</span> A[], <span class="keyword">int</span> n)</span> </span>&#123;</div><div class="line">	<span class="built_in">memset</span>(Tree, <span class="number">0</span>, <span class="keyword">sizeof</span>(Tree));</div><div class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</div><div class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> j = i - lowbit(i) + <span class="number">1</span>; j &lt;= i; j++)</div><div class="line">			Tree[i] += A[j];</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="接口实现"><a href="#接口实现" class="headerlink" title="接口实现"></a>接口实现</h2><ol>
+<li>给A[i]加上一个数    </li>
 </ol>
-<h2 id="When-should-I-use-multi-threaded-rendering"><a href="#When-should-I-use-multi-threaded-rendering" class="headerlink" title="When should I use multi-threaded rendering?"></a>When should I use multi-threaded rendering?</h2><img src="http://withimagination.imgtec.com/wp-content/uploads/2014/11/OpenGL-data-upload-Optimized.png">  
-<p><strong>OpenGL ES Data Upload – Unoptimized</strong>  </p>
-<img src="http://withimagination.imgtec.com/wp-content/uploads/2014/11/OpenGL-data-upload-Optimized.png">  
-<p>OpenGL ES Data Upload – Optimized  </p>
-<p>Multi-threaded rendering is best suited to applications that are CPU limited when compiling shaders or uploading data to the graphics driver. Multi-threaded rendering (when done sensibly) enables better distribution of driver work and allows applications to maintain consistent frame rates.</p>
-<p>In the simple example above, the transition from Level 1 to Level 2 in a game requires additional textures, VBOs and shader programs to be uploaded. Assuming a seamless transition between the two is required (i.e. splash screens, videos etc. can’t be used to hide the upload cost), the game must upload the new resources to the driver while Level 1 is still being rendered.</p>
-<p>In the unoptimized case, the time spent issuing calls to the driver each frame is erratic due to the additional overhead of upload/compilation operations. The increased frame submission time may cause V-sync’s to be missed, which could cause the game to feel jerky as the frame rate stutters.</p>
-<p>In the optimized case, a secondary thread is used to upload resources in the background. This allows the primary thread to retain a consistent call submission time and, in turn, a smooth frame rate.  </p>
-<h2 id="Best-practices"><a href="#Best-practices" class="headerlink" title="Best practices"></a>Best practices</h2><p>For the best possible performance, rendering threads should be created at start up. A primary thread should be used for all rendering. Additional threads (created with a shared context) should only be used for shader compilation and buffer data upload. The number of background threads should be kept to a minimum (e.g. one thread per-CPU core). Creating threads in excess will lead to unmaintainable, hard to debug code.</p>
-<p>Calls to eglMakeCurrent() should be kept to a minimum due to its cost (the EGL specification states that all outstanding operations must be flushed before the context is bound to a new thread).</p>
-<h2 id="When-shouldn’t-I-use-multi-threaded-rendering"><a href="#When-shouldn’t-I-use-multi-threaded-rendering" class="headerlink" title="When shouldn’t I use multi-threaded rendering?"></a>When shouldn’t I use multi-threaded rendering?</h2><h3 id="When-you’re-not-CPU-limited-or-load-times-are-not-a-concern"><a href="#When-you’re-not-CPU-limited-or-load-times-are-not-a-concern" class="headerlink" title="When you’re not CPU limited or load times are not a concern"></a>When you’re not CPU limited or load times are not a concern</h3><p>If you’re not CPU limited by the graphics driver, you should avoid multi-threaded rendering. It will increase the complexity of your rendering engine and may even reduce performance if it’s implemented badly.  </p>
-<h3 id="When-trying-to-“simplify”-your-rendering-engine"><a href="#When-trying-to-“simplify”-your-rendering-engine" class="headerlink" title="When trying to “simplify” your rendering engine"></a>When trying to “simplify” your rendering engine</h3><p>The worst use case is to frequently bind a single graphics context to different threads (using eglmakeCurrent()). This is bad for two reasons:  </p>
+<p>(1) 当i &gt; n时，算法结束，否则转到第(2)歩<br>(2) Tree[i] += x, i += lowbit(i), 转第(1)歩</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//给A[x]加上一个数</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">add</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> value)</span> </span>&#123;</div><div class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = x; i &lt;= N; i += lowbit(i))</div><div class="line">		Tree[i] += value;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <ol>
-<li><strong>The cost of context binding</strong><br>As discussed above, calling eglMakeCurrent() forces the driver to kick all outstanding operations<br>API calls are serialized  </li>
-<li><strong>API calls are serialized</strong><br>As a graphics context can only be bound to a single CPU thread at any point in time, all API calls will be submitted serially  </li>
+<li>求A[1]到A[i]的和    </li>
 </ol>
-<p>So, the API calls have the same cost as a single threaded render (as API call submission is serialized), but there is the additional overhead of the context switch…which means that performance will be less optimal than a single threaded renderer.  </p>
-<p>It may seem like a good design decision, but rendering in this way always results in complex, messy code, where submission order is very difficult to understand (and even more difficult to debug!).</p>
-<p>Don’t do this!  </p>
-<h2 id="What-is-multi-window-rendering"><a href="#What-is-multi-window-rendering" class="headerlink" title="What is multi-window rendering?"></a>What is multi-window rendering?</h2><p>Multi-window rendering is when an application renders into more than one window surface. These surfaces are then composed into a surface by the OS’s window compositor (for example, Surface Flinger on Android or X11 on many Linux distros) that can be presented to the device’s screen.</p>
-<p>In a multi-window application, there is a one to one mapping of CPU threads and graphics contexts. Each graphics context is used to render into its own windows surface.  </p>
-<h2 id="When-should-I-use-multi-window-rendering"><a href="#When-should-I-use-multi-window-rendering" class="headerlink" title="When should I use multi-window rendering?"></a>When should I use multi-window rendering?</h2><p>Multi-window rendering is best suited to use cases where an application needs to render to more than one screen, for example when a TV is used as a second screen.  </p>
-<h2 id="When-shouldn’t-I-use-multi-window-rendering"><a href="#When-shouldn’t-I-use-multi-window-rendering" class="headerlink" title="When shouldn’t I use multi-window rendering?"></a>When shouldn’t I use multi-window rendering?</h2><p><strong>To compose layers</strong>  </p>
-<img src="http://withimagination.imgtec.com/wp-content/uploads/2014/11/Application-Layer-Composition-Optimized.png">  
-<p>Layer Composition – Optimized  </p>
-<p>In the unoptimized example above, the game scene, touch controls and mini map are rendered to individual surfaces. The application then relies on the OS’s compositor to combine them into surface that can be displayed. This approach is wasteful as memory has to be allocated for a number of surfaces, the compositor will process transparent pixels and the GPU’s Hidden Surface Removal (HSR) isn’t being used to its full potential (i.e. fragments that are occluded by opaque UI elements will be redundantly coloured).</p>
-<p>In the optimized case, the game scene is rendered first, and then the touch controls and mini map are rendered directly into the same surface. In cases where this approach isn’t suitable, FBOs can be used to perform the composition within the application. For example, the game scene could be rendered to a lower resolution FBO, blit into the app’s window surface and the UI elements could be drawn on top at the native resolution (this technique is commonly used to increase the performance per-pixel when rendering game scenes).</p>
-<h2 id="Multi-thread-multi-window-support-in-PVRTrace"><a href="#Multi-thread-multi-window-support-in-PVRTrace" class="headerlink" title="Multi-thread, multi-window support in PVRTrace"></a>Multi-thread, multi-window support in PVRTrace</h2><p>As of our <a href="http://withimagination.imgtec.com/index.php/powervr/powervr-graphics-sdk-v3-2-brings-advanced-features" target="_blank" rel="external">PowerVR Graphics 3.2 SDK</a>, <a href="http://www.imgtec.com/powervr/insider/pvrtrace.asp" target="_blank" rel="external">PVRTrace</a> (our OpenGL ES capture and analysis tool) supports applications that rely on these complex graphics driver interactions. This includes per-thread render state inspectors, per-thread filtering in the Call View and Frame Selector, and a thread usage timeline graph. The combination of all of these features makes multi-threaded OpenGL ES much easier for you (and us!) to debug. Additionally, the multi-thread support in our PVRVFrame OpenGL ES emulator has been significantly improved.</p>
-<h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p>Multi-thread, multi-window rendering makes it very easy to shoot yourself in the foot by creating complex, hard to debug rendering engines. However, it also provides a lot of power and flexibility when used correctly. If you stick to the guidelines outlined in this post, you can improve the performance of your resource loading without introducing unnecessary headaches.</p>
-<p>Remember to follow us on Twitter (@ImaginationPR, @PowerVRInsider) and keep coming back to our blog as we continue to bring you the latest news and announcements on PowerVR.  </p>
-<p>Related Posts:  </p>
-<ul>
-<li><a href="http://blog.imgtec.com/powervr-developers/ray-traced-soft-shadows-in-real-time-spellwrath" target="_blank" rel="external">Ray traced soft shadows in real time in Spellwrath</a></li>
-<li><a href="http://blog.imgtec.com/powervr/imagination-announces-vulkan-sdk-for-powervr-rogue-gpus" target="_blank" rel="external">Imagination announces Vulkan SDK for PowerVR Rogue GPUs</a></li>
-<li><a href="http://blog.imgtec.com/powervr/gdc-2016-ray-tracing-graphics-mobile" target="_blank" rel="external">PowerVR at GDC 2016: ray tracing and high-end graphics on mobile</a></li>
-<li><a href="http://blog.imgtec.com/powervr/unity-5-plus-hybrid-rendering-ray-tracing" target="_blank" rel="external">Go from zero to hero in one day with Unity 5 plus hybrid rendering</a></li>
-<li><a href="http://blog.imgtec.com/powervr/physically-based-rendering-on-a-powervr-gpu" target="_blank" rel="external">Dwarf Hall: physically based rendering on a PowerVR GPU</a>   </li>
-</ul>
-<blockquote>
-<p><a href="http://blog.imgtec.com/powervr/understanding-opengl-es-multi-thread-multi-window-rendering" target="_blank" rel="external">original source</a></p>
-</blockquote>
+<p>(1) 令sum=0，转第(2)步<br>(2) 加入i &lt;= 0，算法结束，返回sun的值，否则 sum += Tree[i]，转第(3)步<br>(3) i-=lowbit(i)，转第(2)步</p>
+<pre><code class="c"><span class="comment">//求A[1]到A[X]的和</span>
+<span class="function"><span class="keyword">int</span> <span class="title">get</span><span class="params">(<span class="keyword">int</span> x)</span> </span>{
+    <span class="keyword">int</span> sum = <span class="number">0</span>;
+    <span class="keyword">for</span> (<span class="keyword">int</span> i = x; i; i -= lowbit(i))
+        sum += Tree[i];
+    <span class="keyword">return</span> sum;
+}
+</code></pre>
 
       
     </div>
@@ -395,9 +363,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/OpenGL-ES/" rel="tag">#OpenGL ES</a>
-          
-            <a href="/tags/Cocos/" rel="tag">#Cocos</a>
+            <a href="/tags/Tree-Array/" rel="tag">#Tree Array</a>
           
         </div>
       
@@ -406,17 +372,13 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/03/22/cocos-后处理效果之模糊/" rel="next" title="cocos 后处理效果之模糊">
-                <i class="fa fa-chevron-left"></i> cocos 后处理效果之模糊
+              <a href="/2017/03/30/linux下多进程示例/" rel="next" title="linux下多进程示例">
+                <i class="fa fa-chevron-left"></i> linux下多进程示例
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/04/02/傅里叶分析之掐死教程（完整版）/" rel="prev" title="【转】傅里叶分析之掐死教程（完整版）">
-                【转】傅里叶分析之掐死教程（完整版） <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -431,10 +393,10 @@
 
     <div class="post-spread">
       
-        <div class="ds-share flat" data-thread-key="2016/03/22/Repost-Understanding-OpenGL-ES-Multi-thread-and-multi-window-rendering/"
-     data-title="[Repost] Understanding OpenGL ES: Multi-thread and multi-window rendering"
+        <div class="ds-share flat" data-thread-key="2017/04/04/【数据结构】树状数组/"
+     data-title="【数据结构】树状数组"
      data-content=""
-     data-url="http://yoursite.com/2016/03/22/Repost-Understanding-OpenGL-ES-Multi-thread-and-multi-window-rendering/">
+     data-url="http://yoursite.com/2017/04/04/【数据结构】树状数组/">
   <div class="ds-share-inline">
     <ul  class="ds-share-icons-16">
 
@@ -461,8 +423,8 @@
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2016/03/22/Repost-Understanding-OpenGL-ES-Multi-thread-and-multi-window-rendering/"
-           data-title="[Repost] Understanding OpenGL ES: Multi-thread and multi-window rendering" data-url="http://yoursite.com/2016/03/22/Repost-Understanding-OpenGL-ES-Multi-thread-and-multi-window-rendering/">
+      <div class="ds-thread" data-thread-key="2017/04/04/【数据结构】树状数组/"
+           data-title="【数据结构】树状数组" data-url="http://yoursite.com/2017/04/04/【数据结构】树状数组/">
       </div>
     
   </div>
@@ -617,7 +579,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#What-is-multi-thread-rendering"><span class="nav-number">1.</span> <span class="nav-text">What is multi-thread rendering?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#When-should-I-use-multi-threaded-rendering"><span class="nav-number">2.</span> <span class="nav-text">When should I use multi-threaded rendering?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Best-practices"><span class="nav-number">3.</span> <span class="nav-text">Best practices</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#When-shouldn’t-I-use-multi-threaded-rendering"><span class="nav-number">4.</span> <span class="nav-text">When shouldn’t I use multi-threaded rendering?</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#When-you’re-not-CPU-limited-or-load-times-are-not-a-concern"><span class="nav-number">4.1.</span> <span class="nav-text">When you’re not CPU limited or load times are not a concern</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#When-trying-to-“simplify”-your-rendering-engine"><span class="nav-number">4.2.</span> <span class="nav-text">When trying to “simplify” your rendering engine</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#What-is-multi-window-rendering"><span class="nav-number">5.</span> <span class="nav-text">What is multi-window rendering?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#When-should-I-use-multi-window-rendering"><span class="nav-number">6.</span> <span class="nav-text">When should I use multi-window rendering?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#When-shouldn’t-I-use-multi-window-rendering"><span class="nav-number">7.</span> <span class="nav-text">When shouldn’t I use multi-window rendering?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Multi-thread-multi-window-support-in-PVRTrace"><span class="nav-number">8.</span> <span class="nav-text">Multi-thread, multi-window support in PVRTrace</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Conclusion"><span class="nav-number">9.</span> <span class="nav-text">Conclusion</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#结构定义"><span class="nav-number">1.</span> <span class="nav-text">结构定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#接口实现"><span class="nav-number">2.</span> <span class="nav-text">接口实现</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator">

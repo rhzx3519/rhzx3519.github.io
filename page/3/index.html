@@ -249,6 +249,209 @@
             
               
                 
+                <a class="post-title-link" href="/2016/03/22/cocos性能分析技巧/" itemprop="url">
+                  cocos性能分析技巧
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-03-22T08:48:16+08:00" content="2016-03-22">
+              2016-03-22
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Game/" itemprop="url" rel="index">
+                    <span itemprop="name">Game</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/03/22/cocos性能分析技巧/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/03/22/cocos性能分析技巧/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+             <span id="/2016/03/22/cocos性能分析技巧/"class="leancloud_visitors"  data-flag-title="cocos性能分析技巧">
+                |   阅读次数
+              </span>
+          
+
+          
+          
+             <span id="/2016/03/22/cocos性能分析技巧/" class="leancloud_visitors" data-flag-title="cocos性能分析技巧">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>使用rendertexture实现了一个后处理效果，打成包之后再android真机上跑，测试机是红米2，发现性能消耗非常厉害，需要分析下性能瓶颈，所以在这边记录一下性能分析用到的工具和分析的方法。  </p>
+<h2 id="初步判断"><a href="#初步判断" class="headerlink" title="初步判断"></a>初步判断</h2><p> 通过打印时间差的方式大致测了下渲染比较耗时的部分，使用的clock（）函数，基于vs中的函数不能通过ndk转换，打包的时候会报错。结果是：RenderTexture begin visit end 这块非常耗时，也就是说渲染到帧缓冲的时候非常慢。  </p>
+<h2 id="TraceViewer"><a href="#TraceViewer" class="headerlink" title="TraceViewer"></a>TraceViewer</h2><p>打印出时间差只能大致确定渲染性能消耗的位置，还需要工具打印出cpu、gpu、io等具体的数据。首先想到的使用android ndk profiler，但是发现它的实现原理是在编译工程的时候，需要在编译命令里面加上pg参数，才能用gprof命令查看运行时信息，windows上没有装gcc环境。之后采用ndk中TraceView工具，查看每一帧调用的OpenGL绘制函数，分别跑了forward和pp的，得到了两个trace文件。traceviewer工具的启动项配置如下图：  </p>
+<img src="http://img.blog.csdn.net/20160314175302188">  
+<img src="http://img.blog.csdn.net/20160314175318203">    
+<h2 id="分析文件"><a href="#分析文件" class="headerlink" title="分析文件"></a>分析文件</h2><p>通过eclipse中adt或者sdk/tolls下面的monitor.bat查看这两个文件，这两个文件中gl调用最大的区别就是加了后处理的帧中，需要调用glBindFrameBuffer(GL_FRAME_BUFFER, FBO)，将渲染缓冲绑定到自定义的帧缓冲中。每一个gl调用后面都有wall time和thread time，刚开始没有注意看着两个时间，一个帧中gl调用是非常多的，看的人眼花。后面突然看到  </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">glBindFramebuffer(target = GL_FRAMEBUFFER, framebuffer = <span class="number">1</span>)  </div><div class="line">glFramebufferTexture2D(target = GL_FRAMEBUFFER, attachment = GL_COLOR_ATTACHMENT0, textarget = GL_TEXTURE_2D, texture = <span class="number">235</span>, level = <span class="number">0</span>) <span class="comment">// 这两个调用非常耗时  </span></div><div class="line">glGetError(<span class="keyword">void</span>) = (GLenum) GL_NO_ERROR  </div><div class="line">glClear(mask = <span class="number">16640</span>)  </div><div class="line">glFramebufferTexture2D(target = GL_FRAMEBUFFER, attachment = GL_COLOR_ATTACHMENT0, textarget = GL_TEXTURE_2D, texture = <span class="number">234</span>, level = <span class="number">0</span>) <span class="comment">// 这两个调用非常耗时</span></div></pre></td></tr></table></figure>
+<p>一般只有创建帧缓冲的时候才会去绑定纹理附件，如果每一帧都去频繁绑定纹理附件的话，是非常消耗性能的。所以去RenderTexture的源码中查看到底哪里调用了这两个函数，源码如下：  </p>
+<pre><code class="cpp">void RenderTexture::onBegin()  
+{  
+    //  
+    Director *director = Director::getInstance();  
+
+    _oldProjMatrix = director-&gt;getMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION);  
+    director-&gt;loadMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION, _projectionMatrix);  
+
+    _oldTransMatrix = director-&gt;getMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);  
+    director-&gt;loadMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW, _transformMatrix);  
+
+    if(!_keepMatrix)  
+    {  
+        director-&gt;setProjection(director-&gt;getProjection());  
+        const Size&amp; texSize = _texture-&gt;getContentSizeInPixels();  
+
+        // Calculate the adjustment ratios based on the old and new projections  
+        Size size = director-&gt;getWinSizeInPixels();  
+        float widthRatio = size.width / texSize.width;  
+        float heightRatio = size.height / texSize.height;  
+
+        Mat4 orthoMatrix;  
+        Mat4::createOrthographicOffCenter((float)-1.0 / widthRatio, (float)1.0 / widthRatio, (float)-1.0 / heightRatio, (float)1.0 / heightRatio, -1, 1, &amp;orthoMatrix);  
+        director-&gt;multiplyMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION, orthoMatrix);  
+    }  
+
+    //calculate viewport  
+    {  
+        Rect viewport;  
+        viewport.size.width = _fullviewPort.size.width;  
+        viewport.size.height = _fullviewPort.size.height;  
+        float viewPortRectWidthRatio = float(viewport.size.width)/_fullRect.size.width;  
+        float viewPortRectHeightRatio = float(viewport.size.height)/_fullRect.size.height;  
+        viewport.origin.x = (_fullRect.origin.x - _rtTextureRect.origin.x) * viewPortRectWidthRatio;  
+        viewport.origin.y = (_fullRect.origin.y - _rtTextureRect.origin.y) * viewPortRectHeightRatio;  
+        //glViewport(_fullviewPort.origin.x, _fullviewPort.origin.y, (GLsizei)_fullviewPort.size.width, (GLsizei)_fullviewPort.size.height);  
+        glViewport(viewport.origin.x, viewport.origin.y, (GLsizei)viewport.size.width, (GLsizei)viewport.size.height);  
+    }  
+
+    // Adjust the orthographic projection and viewport  
+
+    glGetIntegerv(GL_FRAMEBUFFER_BINDING, &amp;_oldFBO);  
+    glBindFramebuffer(GL_FRAMEBUFFER, _FBO);  
+
+    // TODO: move this to configuration, so we don't check it every time  
+    /*  Certain Qualcomm Andreno gpu's will retain data in memory after a frame buffer switch which corrupts the render to the texture. The solution is to clear the frame buffer before rendering to the texture. However, calling glClear has the unintended result of clearing the current texture. Create a temporary texture to overcome this. At the end of RenderTexture::begin(), switch the attached texture to the second one, call glClear, and then switch back to the original texture. This solution is unnecessary for other devices as they don't have the same issue with switching frame buffers. 
+     */  
+&lt;span style="color:#ff0000;"&gt;    if (Configuration::getInstance()-&gt;checkForGLExtension("GL_QCOM"))  
+    {  
+        CCLOG("------------------------glFramebufferTexture2D------------------------------");  
+        long t1 = clock();  
+
+        // -- bind a temporary texture so we can clear the render buffer without losing our texture  
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _textureCopy-&gt;getName(), 0);  
+        CHECK_GL_ERROR_DEBUG();  
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _texture-&gt;getName(), 0);  
+
+        long t2 = clock();  
+
+        long t = t2 - t1;  
+        CCLOG("-------- louzh render texture framebuffer texture : %ld-----------", t);  
+    }&lt;/span&gt;  
+}
+</code></pre>
+<p>每一次绑定帧缓冲时，都会根据硬件的gpu判断是否是高通的骁龙gpu，为了克服gpu在交换帧缓冲时保存上一帧数据的bug，需要手动绑定这一帧新渲的纹理来刷新，调用了两次glFramebufferTexture2D函数来绑定纹理附件。注释掉这段之后，重新比较了forward和postprocessing的渲染时间，pp的时间增加了大约20%，这个还是可以接受的范围，但是不知道注释掉这段代码，以后会不会有隐患。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/03/22/Cocos2dx-3-10版本开发环境配置以及相关脚本编译命令/" itemprop="url">
                   Cocos2dx 3.10版本开发环境配置以及相关脚本编译命令
                 </a>
@@ -1070,7 +1273,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">25</span>
+              <span class="site-state-item-count">26</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1078,7 +1281,7 @@
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-count">9</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -1087,7 +1290,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">26</span>
+                <span class="site-state-item-count">27</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
