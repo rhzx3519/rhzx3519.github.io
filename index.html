@@ -249,6 +249,185 @@
             
               
                 
+                <a class="post-title-link" href="/2017/04/11/c-常见面试题总结/" itemprop="url">
+                  c++常见面试题总结
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-04-11T10:18:30+08:00" content="2017-04-11">
+              2017-04-11
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/c/" itemprop="url" rel="index">
+                    <span itemprop="name">c++</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2017/04/11/c-常见面试题总结/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/04/11/c-常见面试题总结/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+             <span id="/2017/04/11/c-常见面试题总结/"class="leancloud_visitors"  data-flag-title="c++常见面试题总结">
+                |   阅读次数
+              </span>
+          
+
+          
+          
+             <span id="/2017/04/11/c-常见面试题总结/" class="leancloud_visitors" data-flag-title="c++常见面试题总结">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="1-成员函数可以调用delete-this吗？为什么？"><a href="#1-成员函数可以调用delete-this吗？为什么？" class="headerlink" title="1. 成员函数可以调用delete this吗？为什么？"></a>1. 成员函数可以调用delete this吗？为什么？</h2><p>在成员函数中调用delete this会导致指针错误，，这是因为调用delete this之后，类对象会紧接着调用类的析构函数，<br>删除this指针，第二次删除this指针就会出现指针错误；而在析构函数中调用delete this会导致死循环，造成堆栈溢出。</p>
+<h2 id="2-构造函数可以是虚函数吗"><a href="#2-构造函数可以是虚函数吗" class="headerlink" title="2. 构造函数可以是虚函数吗?"></a>2. 构造函数可以是虚函数吗?</h2><p>a. 从存储空间角度<br>虚函数对应一个vtable，vtable是存储在类对象的内存空间中的，如果构造函数是虚函数，那么必须通过vtable来调用。<br>当将要构造一个类对象时，对象没有实例化，无法找到vtable，就不能调用构造函数了<br>b. 从使用角度<br>虚函数的作用在于通过父类的指针或者引用去调用子类的成员函数，而构造函数是在创建类对象时自动调用的，不可能通过父类的<br>指针或者引用去调用，所以没有必要设置成虚函数。<br>c. 创建对象是我们必须明确指明创建对象的类型，所以构造函数不能是虚函数，而析构函数却不一定，我们往往通过调用基类的<br>指针来销毁对象，这时候，如果析构函数不是虚函数，就不能正确地识别对象类型从而不能正确的调用析构函数了。<br>d. 从实现上来说，虚表是在构造函数之后建立的，因而构造函数不能是虚函数</p>
+<h3 id="3-基类的析构函数为什么需要是虚函数？"><a href="#3-基类的析构函数为什么需要是虚函数？" class="headerlink" title="3. 基类的析构函数为什么需要是虚函数？"></a>3. 基类的析构函数为什么需要是虚函数？</h3><p>我们往往通过调用基类的指针来销毁对象，这时候，如果析构函数不是虚函数，就不能正确地识别对象类型从而不能正确的调用析构函数了。</p>
+<h3 id="4-虚表的内存结构，那菱形继承的虚函数内存结构呢？"><a href="#4-虚表的内存结构，那菱形继承的虚函数内存结构呢？" class="headerlink" title="4. 虚表的内存结构，那菱形继承的虚函数内存结构呢？"></a>4. 虚表的内存结构，那菱形继承的虚函数内存结构呢？</h3><p>虚函数表指针存在对象的首部，它指向虚函数表，在虚函数表中，存放着虚函数地址，当通过指针或者引用调用虚函数时，首先找到虚函数表<br>指针，通过虚函数表指针找到虚函数表，然后再虚函数表中找到对应的虚函数地址，之后调用虚函数，这样调用虚函数的时候需要两次通过<br>指针来查询地址，这就为c++多态带来了开支。    </p>
+<ol>
+<li>每个类对象都有自己的虚指针和虚表，虚表的首部存储了类对象的type_info（用于支持RTTI），之后存储了虚函数的地址。</li>
+<li>如果不是虚继承，那么子类将父类的虚指针继承下来，并指向自身的虚表（发生在对象构造时），有多少个虚函数，虚表里面就有多少个项，<br>多重继承时，可能存在多个基类虚表和指针。    </li>
+<li>如果是虚继承，那么子类会有两份虚指针，一份指向虚基类的虚表，另一份指向自己的虚表，多重继承时虚基表和虚基表指针只有一份。</li>
+</ol>
+<h3 id="5-c-中的四种类型转换？static-cast向上向下转换时的会出现什么问题"><a href="#5-c-中的四种类型转换？static-cast向上向下转换时的会出现什么问题" class="headerlink" title="5. c++中的四种类型转换？static_cast向上向下转换时的会出现什么问题"></a>5. c++中的四种类型转换？static_cast向上向下转换时的会出现什么问题</h3><p>1.static_cast<br>最常用的类型转换符，在正常状况下的类型转换，如把int转换为float，如：int i；float f； f=（float）i；或者f=static_cast<float>(i);    </float></p>
+<p>2.const_cast<br>用于取出const属性，把const类型的指针变为非const类型的指针，如：const int <em>fun(int x,int y){}　　int </em>ptr=const_cast<int *="">(fun(2.3))</int></p>
+<p>3.dynamic_cast<br>该操作符用于运行时检查该转换是否类型安全，但只在多态类型时合法，即该类至少具有一个虚拟方法。dynamic_cast与static_cast具有相同的基本语法，dynamic_cast主要用于类层次间的上行转换和下行转换，还可以用于类之间的交叉转换。在类层次间进行上行转换时，dynamic_cast和static_cast的效果是一样的；在进行下行转换时，dynamic_cast具有类型检查的功能，比static_cast更安全。</p>
+<p>4.reinterpret_cast<br>interpret是解释的意思，reinterpret即为重新解释，此标识符的意思即为数据的二进制形式重新解释，但是不改变其值。如：int i; char *ptr=”hello freind!”; i=reinterpret_cast<int>(ptr);这个转换方式很少使用。    </int></p>
+<p>如果涉及到类的话，static_cast只能在有相互联系的类型中进行相互转换,不一定包含虚函数。<br>dynamic_cast 失败的时候，如果要转的是指针，返回空指针；如果是引用，抛 std::bad_cast</p>
+<h3 id="6-map由什么实现的？你知道红黑树和AVL树有什么区别吗？为什么像map，set都用红黑树来实现？"><a href="#6-map由什么实现的？你知道红黑树和AVL树有什么区别吗？为什么像map，set都用红黑树来实现？" class="headerlink" title="6. map由什么实现的？你知道红黑树和AVL树有什么区别吗？为什么像map，set都用红黑树来实现？"></a>6. map由什么实现的？你知道红黑树和AVL树有什么区别吗？为什么像map，set都用红黑树来实现？</h3><p>a) C++STL中map,set的底层实现全是用的红黑树，java,C#等语言同样如此。<br>b) map,set底层都提供了排序功能，且查找速度快。红黑树实际上是AVL的一种变形，但是其比AVL(平衡二叉搜索树)具有更高的插入效率，当然查找效率会平衡二叉树稍微低一点点，毕竟平衡二叉树太完美了。但是这种查找效率的损失是非常值得的。它的操作有着良好的最坏情况运行时间，并且在实践中是高效的: 它可以在O(log n)时间内做查找，插入和删除，这里的n是树中元素的数目。</p>
+<h3 id="7-用过vector-reserve-吗，vector的数组是怎么增长的？"><a href="#7-用过vector-reserve-吗，vector的数组是怎么增长的？" class="headerlink" title="7. 用过vector.reserve()吗，vector的数组是怎么增长的？"></a>7. 用过vector.reserve()吗，vector的数组是怎么增长的？</h3><p>a) resize(Container::size_type n)强制把容器改为容纳n个元素。调用resize之后，size将会返回n。reserve(Container::size_type n)强制容器把它的容量改为至少n，提供的n不小于当前大小。<br>b) 采用类似于realloc的思想来增长，</p>
+<ul>
+<li>分配新的内存块，它有容器目前容量的倍数。在大部分实现中，vector和string的容量每次以2为因数增长。也就是说，当容器必须扩展时，它们的容量每次翻倍。</li>
+<li>把所有元素从容器的旧内存拷贝到它的新内存。</li>
+<li>销毁旧内存中的对象。</li>
+<li>回收旧内存。</li>
+</ul>
+<h3 id="8-数据库的ACID分别代表什么？原子性的定义？"><a href="#8-数据库的ACID分别代表什么？原子性的定义？" class="headerlink" title="8. 数据库的ACID分别代表什么？原子性的定义？"></a>8. 数据库的ACID分别代表什么？原子性的定义？</h3><ul>
+<li>原子性（Atomicity), 原子性是指事务是一个不可再分割的工作单位，事务中的操作要么都发生，要么都不发生。</li>
+<li>一致性（Consistency）,一致性是指在事务开始之前和事务结束以后，数据库的完整性约束没有被破坏。这是说数据库事务不能破坏关系数据的完整性以及业务逻辑上的一致性</li>
+<li>隔离性（Isolation）,多个事务并发访问时，事务之间是隔离的，一个事务不应该影响其它事务运行效果。</li>
+<li>持久性（Durability）,持久性，意味着在事务完成以后，该事务所对数据库所作的更改便持久的保存在数据库之中，并不会被回滚。    </li>
+</ul>
+<h3 id="9-TCP-UDP的区别，如何实现拥塞控制，如何实现可靠传输？UDP的应用？"><a href="#9-TCP-UDP的区别，如何实现拥塞控制，如何实现可靠传输？UDP的应用？" class="headerlink" title="9. TCP/UDP的区别，如何实现拥塞控制，如何实现可靠传输？UDP的应用？"></a>9. TCP/UDP的区别，如何实现拥塞控制，如何实现可靠传输？UDP的应用？</h3><p>a) TCP（Transmission Control Protocol，传输控制协议）是面向连接的协议，也就是说，在收发数据前，必须和对方建立可靠的连接。一个TCP连接必须要经过三次“对话”才能建立起来，其中的过程非常复杂，只简单的描述下这三次对话的简单过程：主机A向主机B发出连接请求数据包：“我想给你发数据，可以吗？”，这是第一次对话；主机B向主机A发送同意连接和要求同步（同步就是两台主机一个在发送，一个在接收，协调工作）的数据包：“可以，你什么时候发？”，这是第二次对话；主机A再发出一个数据包确认主机B的要求同步：“我现在就发，你接着吧！”，这是第三次对话。三次“对话”的目的是使数据包的发送和接收同步，经过三次“对话”之后，主机A才向主机B正式发送数据。</p>
+<p>b)<br>（1） UDP是一个非连接的协议，传输数据之前源端和终端不建立连接，当它想传送时就简单地去抓取来自应用程序的数据，并尽可能快地把它扔到网络上。在发送端，UDP传送数据的速度仅仅是受应用程序生成数据的速度、计算机的能力和传输带宽的限制；在接收端，UDP把每个消息段放在队列中，应用程序每次从队列中读一个消息段。<br>（2） 由于传输数据不建立连接，因此也就不需要维护连接状态，包括收发状态等，因此一台服务机可同时向多个客户机传输相同的消息。<br>（3） UDP信息包的标题很短，只有8个字节，相对于TCP的20个字节信息包的额外开销很小。<br>（4） 吞吐量不受拥挤控制算法的调节，只受应用软件生成数据的速率、传输带宽、源端和终端主机性能的限制。<br>（5）UDP使用尽最大努力交付，即不保证可靠交付，因此主机不需要维持复杂的链接状态表（这里面有许多参数）。<br>（6）UDP是面向报文的。发送方的UDP对应用程序交下来的报文，在添加首部后就向下交付给IP层。既不拆分，也不合并，而是保留这些报文的边界，因此，应用程序需要选择合适的报文大小。<br>我们经常使用“ping”命令来测试两台主机之间TCP/IP通信是否正常，其实“ping”命令的原理就是向对方主机发送UDP数据包，然后对方主机确认收到数据包，如果数据包是否到达的消息及时反馈回来，那么网络就是通的。    </p>
+<p>小结TCP与UDP的区别：<br>1.基于连接与无连接；<br>2.对系统资源的要求（TCP较多，UDP少）；<br>3.UDP程序结构较简单；<br>4.流模式与数据报模式 ；<br>5.TCP保证数据正确性，UDP可能丢包，TCP保证数据顺序，UDP不保证。    </p>
+<p>c) </p>
+<ol>
+<li>慢开始与拥塞避免<br>发送方维持一个叫做拥塞窗口cwnd（congestion window）的状态变量。拥塞窗口的大小取决于网络的拥塞程度，并且动态地在变化。发送方让自己的发送窗口等于拥塞窗口，另外考虑到接受方的接收能力，发送窗口可能小于拥塞窗口。<br>慢开始算法的思路就是，不要一开始就发送大量的数据，先探测一下网络的拥塞程度，也就是说由小到大逐渐增加拥塞窗口的大小。</li>
+<li>快重传和快恢复<br>快重传要求接收方在收到一个失序的报文段后就立即发出重复确认（为的是使发送方及早知道有报文段没有到达对方）而不要等到自己发送数据时捎带确认。快重传算法规定，发送方只要一连收到三个重复确认就应当立即重传对方尚未收到的报文段，而不必继续等待设置的重传计时器时间到期。</li>
+</ol>
+<h3 id="10-什么是多态"><a href="#10-什么是多态" class="headerlink" title="10. 什么是多态"></a>10. 什么是多态</h3><p>多态性可以简单地概括为“一个接口，多种方法”，程序在运行时才决定调用的函数，它是面向对象编程领域的核心概念    。<br>C++多态性是通过虚函数来实现的，虚函数允许子类重新定义成员函数，而子类重新定义父类的做法称为覆盖(override)，或者称为重写。<br>多态与非多态的实质区别就是函数地址是早绑定还是晚绑定。如果函数的调用，在编译器编译期间就可以确定函数的调用地址，并生产代码，是静态的，就是说地址是早绑定的。而如果函数调用的地址不能在编译器期间确定，需要在运行时才确定，这就属于晚绑定。</p>
+<h3 id="11-c-引用计数的实现"><a href="#11-c-引用计数的实现" class="headerlink" title="11. c++引用计数的实现"></a>11. c++引用计数的实现</h3><p>基础对象类<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Point                                       </div><div class="line">&#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    Point(<span class="keyword">int</span> xVal = <span class="number">0</span>, <span class="keyword">int</span> yVal = <span class="number">0</span>) :x(xVal), y(yVal) &#123; &#125;</div><div class="line">    <span class="function"><span class="keyword">int</span> <span class="title">getX</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> x; &#125;</div><div class="line">    <span class="function"><span class="keyword">int</span> <span class="title">getY</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> y; &#125;</div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">setX</span><span class="params">(<span class="keyword">int</span> xVal)</span> </span>&#123; x = xVal; &#125;</div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">setY</span><span class="params">(<span class="keyword">int</span> yVal)</span> </span>&#123; y = yVal; &#125;</div><div class="line"></div><div class="line"><span class="keyword">private</span>:</div><div class="line">    <span class="keyword">int</span> x, y;</div><div class="line"></div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+<p>//辅助类用以封装使用计数与基础对象指针<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> U_Ptr                                  </div><div class="line">&#123;</div><div class="line"><span class="keyword">private</span>:</div><div class="line">    </div><div class="line">    <span class="keyword">friend</span> <span class="keyword">class</span> SmartPtr;      </div><div class="line">    U_Ptr(Point *ptr) :p(ptr), count(<span class="number">1</span>) &#123; &#125;</div><div class="line">    ~U_Ptr() &#123; <span class="keyword">delete</span> p; &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">int</span> count;   </div><div class="line">    Point *p;                                                      </div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+<p>智能指针类    </p>
+<ol>
+<li>当创建类的新对象时，初始化指针，并将引用计数设置为1</li>
+<li>当对象作为另一个对象的副本时，复制构造函数复制副本指针，并增加与指针相应的引用计数（加1）</li>
+<li>使用赋值操作符对一个对象进行赋值时，处理复杂一点：先使左操作数的指针的引用计数减1（为何减1：因为指针已经指向别的地方），如果减1后引用计数为0，则释放指针所指对象内存。然后增加右操作数所指对象的引用计数（为何增加：因为此时做操作数指向对象即右操作数指向对象）。</li>
+<li>析构函数：调用析构函数时，析构函数先使引用计数减1，如果减至0则delete对象。<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> SmartPtr</div><div class="line">&#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    SmartPtr(Point *ptr) :rp(<span class="keyword">new</span> U_Ptr(ptr)) &#123; &#125;    </div><div class="line">    </div><div class="line">    SmartPtr(<span class="keyword">const</span> SmartPtr &amp;sp) :rp(sp.rp) &#123; ++rp-&gt;count; &#125;</div><div class="line">      </div><div class="line">    SmartPtr&amp; <span class="keyword">operator</span>=(<span class="keyword">const</span> SmartPtr&amp; rhs) &#123;    </div><div class="line">        ++rhs.rp-&gt;count;    </div><div class="line">        <span class="keyword">if</span> (--rp-&gt;count == <span class="number">0</span>)    </div><div class="line">            <span class="keyword">delete</span> rp;</div><div class="line">        rp = rhs.rp;</div><div class="line">        <span class="keyword">return</span> *<span class="keyword">this</span>;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    ~SmartPtr() &#123;       </div><div class="line">        <span class="keyword">if</span> (--rp-&gt;count == <span class="number">0</span>)   </div><div class="line">            <span class="keyword">delete</span> rp;</div><div class="line">        <span class="keyword">else</span> </div><div class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">"还有"</span> &lt;&lt; rp-&gt;count &lt;&lt; <span class="string">"个指针指向基础对象"</span> &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line"><span class="keyword">private</span>:</div><div class="line">        U_Ptr *rp;  </div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="12-malloc-free与new-delete的区别"><a href="#12-malloc-free与new-delete的区别" class="headerlink" title="12. malloc/free与new/delete的区别"></a>12. malloc/free与new/delete的区别</h3><p>malloc与free是C++/C 语言的标准库函数，new/delete 是C++的运算符。对于非内部数据类的对象而言，光用maloc/free 无法满足动态对象的要求。对象在创建的同时要自动执行构造函数， 对象消亡之前要自动执行析构函数。由于malloc/free 是库函数而不是运算符，不在编译器控制权限之内，不能够把执行构造函数和析构函数的任务强加malloc/free。</p>
+<h3 id="13-i和i-的区别"><a href="#13-i和i-的区别" class="headerlink" title="13. ++i和i++的区别"></a>13. ++i和i++的区别</h3><p>1、 i++ 返回原来的值，++i 返回加1后的值。<br>2、 i++ 不能作为左值，而++i 可以。</p>
+<h3 id="外部排序"><a href="#外部排序" class="headerlink" title="外部排序"></a>外部排序</h3><p>假设文件需要分成k块读入，需要从小到大进行排序。<br>（1）依次读入每个文件块，在内存中对当前文件块进行排序（应用恰当的内排序算法）。此时，每块文件相当于一个由小到大排列的有序队列。<br>（2）在内存中建立一个最小值堆，读入每块文件的队列头。<br>（3）弹出堆顶元素，如果元素来自第i块，则从第i块文件中补充一个元素到最小值堆。弹出的元素暂存至临时数组。<br>（4）当临时数组存满时，将数组写至磁盘，并清空数组内容。<br>（5）重复过程（3）、（4），直至所有文件块读取完毕。    </p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2017/04/04/【leetcode】51-N-Queens/" itemprop="url">
                   【leetcode】51.N-Queens
                 </a>
@@ -1709,136 +1888,6 @@ Task 4:
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/07/04/耐卡字幕组翻译规则/" itemprop="url">
-                  耐卡字幕组翻译规则
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-07-04T05:43:31+08:00" content="2016-07-04">
-              2016-07-04
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/英语/" itemprop="url" rel="index">
-                    <span itemprop="name">英语</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/07/04/耐卡字幕组翻译规则/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/07/04/耐卡字幕组翻译规则/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-             <span id="/2016/07/04/耐卡字幕组翻译规则/"class="leancloud_visitors"  data-flag-title="耐卡字幕组翻译规则">
-                |   阅读次数
-              </span>
-          
-
-          
-          
-             <span id="/2016/07/04/耐卡字幕组翻译规则/" class="leancloud_visitors" data-flag-title="耐卡字幕组翻译规则">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <img src="/pdfs/耐卡字幕组翻译规则.pdf">
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1884,7 +1933,7 @@ Task 4:
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">27</span>
+              <span class="site-state-item-count">28</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1892,7 +1941,7 @@ Task 4:
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-count">11</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -1901,7 +1950,7 @@ Task 4:
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">29</span>
+                <span class="site-state-item-count">30</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
