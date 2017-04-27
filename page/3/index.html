@@ -249,6 +249,276 @@
             
               
                 
+                <a class="post-title-link" href="/2016/04/07/Unreal-入门/" itemprop="url">
+                  Unreal 入门
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-04-07T08:00:45+08:00" content="2016-04-07">
+              2016-04-07
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Game/" itemprop="url" rel="index">
+                    <span itemprop="name">Game</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/04/07/Unreal-入门/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/04/07/Unreal-入门/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+             <span id="/2016/04/07/Unreal-入门/"class="leancloud_visitors"  data-flag-title="Unreal 入门">
+                |   阅读次数
+              </span>
+          
+
+          
+          
+             <span id="/2016/04/07/Unreal-入门/" class="leancloud_visitors" data-flag-title="Unreal 入门">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Unreal-入门"><a href="#Unreal-入门" class="headerlink" title="Unreal 入门"></a>Unreal 入门</h1><h2 id="一-Gameplay-Classes-Objects-Actors-and-Components"><a href="#一-Gameplay-Classes-Objects-Actors-and-Components" class="headerlink" title="一. Gameplay Classes: Objects, Actors, and Components"></a>一. Gameplay Classes: Objects, Actors, and Components</h2><p>  这有四种主要的类类型，你在游戏中的大部分类都派生自他们。</p>
+<h3 id="1-UObject"><a href="#1-UObject" class="headerlink" title="1. UObject"></a>1. UObject</h3><p>  虚幻引擎（Unreal Engine）中最基本的编译单位被称为UObject。这个类和UClass一起提供了了引擎中一系列最重要基本服务。  </p>
+<ul>
+<li>方法与属性的反射  </li>
+<li>属性的序列化</li>
+<li>垃圾回收</li>
+<li>通过名称取得UObject</li>
+<li>属性值的配置</li>
+<li><p>对属性与方法的网络支持  </p>
+<p>每一个UObject的派生类都有一个UClass单例包含了关于这个类实例的所有元数据。UObject和UClass一起作为一个游戏对象在它的生命周期中做的所有事情的根源。思考UObject和UClass之间区别的最好方式是，UClass描述了UObject的实例看起来是什么样子，什么属性能够序列化，能够进行网络通信等等。大部分游戏开发不涉及到直接从UObject类派生，而是从UObject的子类AActor和UActorComponent派生。 </p>
+</li>
+</ul>
+<h3 id="2-AActor"><a href="#2-AActor" class="headerlink" title="2. AActor"></a>2. AActor</h3><p>  AActor可以由设计者放在一个关卡中，也可以在由游戏系统在运行时动态创建出来。所有能够放置在关卡中的对象都是继承自AActor的。例子包括AStaticMeshActor、ACameraActor和APointLight actors。AActor派生自UObjec，所以你可以使用之前部分提到的所有标准特性。AActors可以显式的通过游戏代码（C++和blueprint）销毁，或者在所属的关卡从内存中卸载的时候通过标准垃圾回收机制销毁。AActor负责游戏对象的高级行为，他也是能够进行网络同步基类。在网络同步期间，AActor同样为所属的所有需要网络支持的UActorComponents发送消息。  </p>
+<p>AActor有自己独有的行为（通过继承特化），但他们同样可以作为UActorCompnents的层级容器（通过组合特化）。这都是通过AActor的RootComponent成员变量实现的，它包括了一个能够包含其他UActorComponent的UActorComponent。在一个AActor置于一个关卡之前，AActor必须包含至少一个UActorCompnent，它包含了AActor所需要的平移、旋转和放缩。  </p>
+<p>AActor定义了一系列能够在其生命周期中被调用的事件。下面的列表列举能够阐述其生命周期的一个简单的事件集合：   </p>
+<ul>
+<li>BeginPlay  - 在对象第一次进入到游戏场景时被调用</li>
+<li>Tick - 每帧被调用一次</li>
+<li>EndPlay - 在对象离开游戏空间时被调用</li>
+</ul>
+<h3 id="3-UActorComponent"><a href="#3-UActorComponent" class="headerlink" title="3. UActorComponent"></a>3. UActorComponent</h3><p>  UActorComponent有其独有的行为，通常负责许多AActor类之间分享的功能，比如提供可见的网络，粒子效果，摄像机视角以及物理相互作用。AActors通过被指定关于游戏中整体角色的高级目标，而UActorComponent通常执行单个任务用于支持这些高级目标。组件同样能够依附于组件，或者作为一个Actor的根组件，它也可能有非常多的子组件依附于它自身。想象一棵组件树。子组件拥有相对于他们父组件的或者父Actor的位置、旋转和大小。  </p>
+<p>虽然有许多种方式去使用AActor和UActorComponent，其中一种方式是想象Actor和Component之间关系是，Actor能够回答“东西是什么”，而Components能够回答“东西是如何构成的”。    </p>
+<ul>
+<li>RootComponent － 这是AActor的成员变量，是AActor组件树的根节点  </li>
+<li>Ticking － 组件作为所属AActor的Tick()方法一部分在每一帧都执行Ticking   </li>
+</ul>
+<h3 id="4-UStruct"><a href="#4-UStruct" class="headerlink" title="4. UStruct"></a>4. UStruct</h3><p>使用一个UStruct，你不必继承任何一个特定的类，只需要使用USTRUCT标记结构体，接下来我们的生成工具会为你完成基本的工作。不像UObject，UStructs不会被垃圾回收机制销毁。如果你动态创建了一个UStruct的实例，你必须自己管理它的生命周期。UStructs是简单就数据类型（plain old data），支持UObject的反射机制，可以使用Unreal editor编辑，Blurprint操作，序列化，网络通信等等。    </p>
+<blockquote>
+<p>文献引用：<a href="https://docs.unrealengine.com/latest/INT/Programming/Introduction/index.html" target="_blank" rel="external">Introduction to C++ Programming in UE4</a></p>
+</blockquote>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2016/04/02/傅里叶分析之掐死教程（完整版）/" itemprop="url">
+                  【转】傅里叶分析之掐死教程（完整版）
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-04-02T04:43:07+08:00" content="2016-04-02">
+              2016-04-02
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/04/02/傅里叶分析之掐死教程（完整版）/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/04/02/傅里叶分析之掐死教程（完整版）/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+             <span id="/2016/04/02/傅里叶分析之掐死教程（完整版）/"class="leancloud_visitors"  data-flag-title="【转】傅里叶分析之掐死教程（完整版）">
+                |   阅读次数
+              </span>
+          
+
+          
+          
+             <span id="/2016/04/02/傅里叶分析之掐死教程（完整版）/" class="leancloud_visitors" data-flag-title="【转】傅里叶分析之掐死教程（完整版）">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>###贴个网址好了<br><a href="http://zhuanlan.zhihu.com/p/19763358" target="_blank" rel="external">傅里叶分析之掐死教程（完整版）更新于2014.06.06</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/03/22/Repost-Understanding-OpenGL-ES-Multi-thread-and-multi-window-rendering/" itemprop="url">
                   [Repost] Understanding OpenGL ES: Multi-thread and multi-window rendering
                 </a>
@@ -1596,7 +1866,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">28</span>
+              <span class="site-state-item-count">30</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1604,7 +1874,7 @@
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-count">12</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -1613,7 +1883,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">30</span>
+                <span class="site-state-item-count">33</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
