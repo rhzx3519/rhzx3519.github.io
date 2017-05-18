@@ -249,6 +249,144 @@
             
               
                 
+                <a class="post-title-link" href="/2017/05/18/动态规划/" itemprop="url">
+                  动态规划
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-05-18T14:51:26+08:00" content="2017-05-18">
+              2017-05-18
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/数据结构/" itemprop="url" rel="index">
+                    <span itemprop="name">数据结构</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2017/05/18/动态规划/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/05/18/动态规划/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+             <span id="/2017/05/18/动态规划/"class="leancloud_visitors"  data-flag-title="动态规划">
+                |   阅读次数
+              </span>
+          
+
+          
+          
+             <span id="/2017/05/18/动态规划/" class="leancloud_visitors" data-flag-title="动态规划">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>动态规划的本质不在于是递推或是递归，也不需要纠结是不是内存换时间。理解动态规划并不需要数学公式介入，只是完全解释清楚需要点篇幅…首先需要明白哪些问题不是动态规划可以解决的，才能明白为神马需要动态规划。不过好处时顺便也就搞明白了递推贪心搜索和动规之间有什么关系，以及帮助那些总是把动规当成搜索解的同学建立动规的思路。当然熟悉了之后可以直接根据问题的描述得到思路，如果有需要的话再补充吧。动态规划是对于 某一类问题 的解决方法！！重点在于如何鉴定“某一类问题”是动态规划可解的而不是纠结解决方法是递归还是递推！怎么鉴定dp可解的一类问题需要从计算机是怎么工作的说起…计算机的本质是一个状态机，内存里存储的所有数据构成了当前的状态，CPU只能利用当前的状态计算出下一个状态（不要纠结硬盘之类的外部存储，就算考虑他们也只是扩大了状态的存储容量而已，并不能改变下一个状态只能从当前状态计算出来这一条铁律）当你企图使用计算机解决一个问题是，其实就是在思考如何将这个问题表达成状态（用哪些变量存储哪些数据）以及如何在状态中转移（怎样根据一些变量计算出另一些变量）。所以所谓的空间复杂度就是为了支持你的计算所必需存储的状态最多有多少，所谓时间复杂度就是从初始状态到达最终状态中间需要多少步！</p>
+<ul>
+<li>每个阶段只有一个状态-&gt;递推；        </li>
+<li>每个阶段的最优状态都是由上一个阶段的最优状态得到的-&gt;贪心；        </li>
+<li>每个阶段的最优状态是由之前所有阶段的状态的组合得到的-&gt;搜索；        </li>
+<li>每个阶段的最优状态可以从之前某个阶段的某个或某些状态直接得到而不管之前这个状态是如何得到的-&gt;动态规划。</li>
+</ul>
+<p><strong>每个阶段的最优状态可以从之前某个阶段的某个或者某些状态直接得到</strong><br>这个性质叫做最优子结构<br><strong>而不管之前这个状态是如何得到的</strong><br>这个性质叫做无后效性    </p>
+<p>作者：王勐<br>链接：<a href="https://www.zhihu.com/question/23995189/answer/35429905" target="_blank" rel="external">https://www.zhihu.com/question/23995189/answer/35429905</a><br>来源：知乎<br>著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2017/04/27/【数据结构】线段树/" itemprop="url">
                   【数据结构】线段树
                 </a>
@@ -1521,288 +1659,11 @@ Task 4:
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/07/05/pbr第一章-介绍/" itemprop="url">
-                  pbr第一章 介绍
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-07-05T23:25:53+08:00" content="2016-07-05">
-              2016-07-05
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Graphic/" itemprop="url" rel="index">
-                    <span itemprop="name">Graphic</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/07/05/pbr第一章-介绍/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/07/05/pbr第一章-介绍/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-             <span id="/2016/07/05/pbr第一章-介绍/"class="leancloud_visitors"  data-flag-title="pbr第一章 介绍">
-                |   阅读次数
-              </span>
-          
-
-          
-          
-             <span id="/2016/07/05/pbr第一章-介绍/" class="leancloud_visitors" data-flag-title="pbr第一章 介绍">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="1-真实渲染与光线追踪算法"><a href="#1-真实渲染与光线追踪算法" class="headerlink" title="1 真实渲染与光线追踪算法"></a>1 真实渲染与光线追踪算法</h1><p>大部分相片般真实的渲染系统都是使用光线追踪算法实现的，这样的渲染系统通常由以下几个要素组成：   </p>
-<ul>
-<li>相机：我们在相机位置生成光线进入到场景中</li>
-<li>光线－物体 相交：我们需要知道沿着光线的最近相交点</li>
-<li>光照分布：光线追踪器必须建模场景中的光照分布，不仅包括光线位置，还要包括光照在空间传递能量的方式</li>
-<li>可见性：判断是否存在一条光线可以从光源位置到达物体表面的某个点，在光线追踪系统中我们可以构造一条从物体表面到光源位置的光线，得到最近的相交点，比较相交点的距离和光源的距离</li>
-<li>表面散射</li>
-<li>递归光线追踪</li>
-<li>光线传播    </li>
-</ul>
-<h2 id="1-1-相机"><a href="#1-1-相机" class="headerlink" title="1.1 相机"></a>1.1 相机</h2><img src="/images/pbr/pbr1.1.jpg">    
-<p>图像成像在近平面上，只有在眼睛和近平面上之间的光线对图像有作用。    </p>
-<h2 id="1-2-光线－物体-相交"><a href="#1-2-光线－物体-相交" class="headerlink" title="1.2 光线－物体 相交"></a>1.2 光线－物体 相交</h2><p>光线r的参数表达式如下：    </p>
-<p>$$ r(t) = o + td, $$    </p>
-<p>其中，o表示原点，d是方向向量，t的定义域是$[0, \infty]$，对于一个由$F(x, y, z) = 0$定义的表面，我只要将光线表达式带入到方程中，求得最小的t实根，即可取得相交点。例如物体表面是一个圆:<br>$$ x^2 + y^2 + z^2 - r^2 = 0, $$    </p>
-<p>带入光线方程：    </p>
-<p>$$ (o + td)^2 + (o + td)^2 + (o + td)^2 - r^2 = 0. $$    </p>
-<h2 id="1-3-光照分布"><a href="#1-3-光照分布" class="headerlink" title="1.3 光照分布"></a>1.3 光照分布</h2><p>基于物理的渲染通常基于区域光源，在微分区域dA上的光照能量总量$d\Phi$的表达式如下：<br>$$ dE = \frac {\Phi cos\theta} {4\pi r^2}. $$<br>其中，$\Phi$表示物体表面一点的总能量，它像所有方向发射光线，则在包围球面上的能量总和为$\Phi / (4\pi)$，球面上一点的能量占球面上所有能量的比例为$1/r^2$，球面上一块倾斜角（表面法线与入射光线之间的夹角）为$/theta$的微分区域dA，所占能量比例为$cos\theta$。    </p>
-<img src="/images/pbr/pbr1.2.jpg">    
-<h2 id="1-4-可见性"><a href="#1-4-可见性" class="headerlink" title="1.4 可见性"></a>1.4 可见性</h2><img src="/images/pbr/pbr1.3.jpg">        
-<h2 id="1-5-表面散射"><a href="#1-5-表面散射" class="headerlink" title="1.5 表面散射"></a>1.5 表面散射</h2><img src="/images/pbr/pbr1.4.jpg">    
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">for</span> each light:	<span class="keyword">if</span> light is not blocked:		incident_light = light.L(point)		amount_reflected = surface.BRDF(hit_point, camera_vector, light_vector)		L += amount_reflected * incident_light</div></pre></td></tr></table></figure>
-<p>物体表面的材质信息使用BRDF(<em>Bidirectional Reflectance Distribution Function</em>)表示，点p的BRDF方程为$f_r(p, \omega_o, \omega_i)$。    </p>
-<h2 id="1-6-递归光线追踪"><a href="#1-6-递归光线追踪" class="headerlink" title="1.6 递归光线追踪"></a>1.6 递归光线追踪</h2><p>从相机位置发射的光线如果击中了擦亮的表面，我们可以在相交点得到一条反射光线，从而递归的调用光线追踪方法寻找到该点的光线，将它们加入到原有的从相机发射的光线中。<br>$$<br>L_0(p, \omega_o) = L_e(p, \omega<em>o) + \int</em>\xi^2 f(p, \omega_o, \omega_i)L_i(p, \omega_i)\mid cos\theta_i \mid d \omega_i<br>$$</p>
-<img src="/images/pbr/pbr1.5.jpg">    
-<h2 id="1-7-光线传播"><a href="#1-7-光线传播" class="headerlink" title="1.7 光线传播"></a>1.7 光线传播</h2><p>有两种媒介可以改变光线的传播：    </p>
-<ol>
-<li>通过吸收或者向其他方向散射使光线衰减，我们可以通过计算光线原点和相交点之间的透射比来实现这种效果    </li>
-<li>如果一种材质可以发光或者从其他方向向光线方向散射光线，我们把这种介质叫做参与介质，通过数值求值volume light transport equation可以实现这种效果    </li>
-</ol>
-<h1 id="2-pbrt-系统概览"><a href="#2-pbrt-系统概览" class="headerlink" title="2 pbrt:系统概览"></a>2 pbrt:系统概览</h1><p>13个最主要的抽象类：    </p>
-<img src="/images/pbr/pbr1.6.jpg">        
-<h2 id="2-1-执行步骤"><a href="#2-1-执行步骤" class="headerlink" title="2.1 执行步骤"></a>2.1 执行步骤</h2><p> 分为两步：    </p>
-<ol>
-<li>解析用户传入的场景文件，构建场景    </li>
-<li>执行渲染循环    </li>
-</ol>
-<p>pbrt’s main() function can be found in the file main/pbrt.cpp.<br>程序入口在 main/pbrt.cpp的main()函数中：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">main program ≡</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span> </span>&#123;	Options options;	<span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; filenames;	Process command-line arguments	pbrtInit(options);	Process scene description <span class="number">21</span>	pbrtCleanup();	<span class="keyword">return</span> <span class="number">0</span>;&#125;</div></pre></td></tr></table></figure>
-<h2 id="2-2-场景表示"><a href="#2-2-场景表示" class="headerlink" title="2.2 场景表示"></a>2.2 场景表示</h2><p>主函数读取场景文件之后调用RenderOptions::MakeScene()存储到Scene对象中，</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Scene Declarations ≡ <span class="keyword">class</span> Scene &#123;	<span class="keyword">public</span>:	Scene Public Methods <span class="number">23</span>	Scene Public Data <span class="number">23</span>&#125;;</div></pre></td></tr></table></figure>
-<p>场景中的每个几何对象都使用图元表示，而图元由形状(Shape)和材质(Material)表示。形状描述几何信息，材质描述物体表面颜色、光泽度等信息。场景中的所有图元都存储到Scene的成员变量Scene::aggregate中，</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Scene Public Data ≡ <span class="number">22</span>   Primitive *aggregate;</div></pre></td></tr></table></figure>
-<p>场景中的每个光源都使用一个光(Light)对象表示，它描述了光源的形状和发射光线的能量分布。Scene对象使用C++标准库中的vector类存储,    </p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Scene Public Data +≡ <span class="number">22</span>    <span class="built_in">vector</span>&lt;Light *&gt; lights;</div></pre></td></tr></table></figure>
-<p>pbrt同样支持参与媒介或者体积图元，它们使用VolumeRegion这个类表示。同样作为成员变量存储在Scene中，<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Scene Public Data +≡ <span class="number">22</span>	VolumeRegion *volumeRegion;</div></pre></td></tr></table></figure></p>
-<p>Scene这个类提供一个Intersect()函数追踪一条入射到场景中的光线是否和场景中图元相交，若相交，则返回true，并将相交点的数据放到函数入参Intersection*所指的地址中，</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Scene Public Methods ≡ <span class="number">22</span>	<span class="function"><span class="keyword">bool</span> <span class="title">Intersect</span><span class="params">(<span class="keyword">const</span> Ray &amp;ray, Intersection *isect)</span> <span class="keyword">const</span> </span>&#123;		<span class="keyword">bool</span> hit = aggregate-&gt;Intersect(ray, isect);	<span class="keyword">return</span> hit;	&#125;</div></pre></td></tr></table></figure>
-<p>另外一个相关的函数是Scene::IntersectP()，它检查光线是否相交，但是并不返回相交点的信息，通常用于阴影光线(shadow ray)，    </p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Scene Public Methods +≡ <span class="number">22</span>	<span class="function"><span class="keyword">bool</span> <span class="title">IntersectP</span><span class="params">(<span class="keyword">const</span> Ray &amp;ray)</span> <span class="keyword">const</span> </span>&#123;		<span class="keyword">bool</span> hit = aggregate-&gt;IntersectP(ray);	<span class="keyword">return</span> hit;	&#125;</div></pre></td></tr></table></figure>
-<p>最后，Scene::WorldBound()返回场景中所有几何对象的3D包围盒，<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Scene Constructor Implementation ≡	bound = aggregate-&gt;WorldBound();	<span class="keyword">if</span> (volumeRegion) bound = Union(bound, volumeRegion-&gt;WorldBound());</div><div class="line">Scene Public Data +≡ <span class="number">22</span>	BBox bound;</div><div class="line">Scene Method Definitions ≡	<span class="keyword">const</span> BBox &amp;Scene::WorldBound() <span class="keyword">const</span> &#123;		<span class="keyword">return</span> bound;	&#125;</div></pre></td></tr></table></figure></p>
-<h2 id="2-3-渲染接口和样本渲染器-SamplerRenderer"><a href="#2-3-渲染接口和样本渲染器-SamplerRenderer" class="headerlink" title="2.3 渲染接口和样本渲染器(SamplerRenderer)"></a>2.3 渲染接口和样本渲染器(SamplerRenderer)</h2><p>场景渲染由实现Render接口的类实例负责，Render抽象类定义在core/renderer.h 和 core/renderer.cpp中。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Renderer Declarations ≡	<span class="keyword">class</span> Renderer &#123;		<span class="keyword">public</span>:		Renderer Interface <span class="number">24</span>	&#125;;</div></pre></td></tr></table></figure>
-<p>Render()类中主要要实现的函数就是Render()函数，<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Renderer Interface ≡ <span class="number">24</span>	<span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">Render</span><span class="params">(<span class="keyword">const</span> Scene *scene)</span> </span>= <span class="number">0</span>;</div></pre></td></tr></table></figure></p>
-<p>Render:Li()函数计算场景中沿着光线的光照信息，它返回光线的入射光照信息(Spectrum)，除了场景和光线等入参之外，它还需要传入其他入参：sample为monte carlo积分器提供了随机样本值，RNG为积分器提供伪随机数，MemoryArena为计算时的临时小内存分配提供高效的途径，相交点的信息可以存储在Intersection<em>中，如果该指针不为空，则入参\</em>T也不为空，他返回光线方向的体积透射率。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;Renderer Interface +≡ <span class="number">24</span>&gt;	<span class="function"><span class="keyword">virtual</span> Spectrum <span class="title">Li</span><span class="params">(<span class="keyword">const</span> Scene *scene, <span class="keyword">const</span> RayDifferential &amp;ray,		<span class="keyword">const</span> Sample *sample, RNG &amp;rng, MemoryArena &amp;arena,		Intersection *isect = <span class="literal">NULL</span>, Spectrum *T = <span class="literal">NULL</span>)</span> <span class="keyword">const</span> </span>= <span class="number">0</span>;</div></pre></td></tr></table></figure></p>
-<p>Render:Transmittance()返回沿光线方向光线因体积散射而衰减的比例。Render会向积分器分发Li()和Transmittance()返回的结果。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Renderer Interface +≡ <span class="number">24</span>	<span class="function"><span class="keyword">virtual</span> Spectrum <span class="title">Transmittance</span><span class="params">(<span class="keyword">const</span> Scene *scene,		<span class="keyword">const</span> RayDifferential &amp;ray, <span class="keyword">const</span> Sample *sample,		RNG &amp;rng, MemoryArena &amp;arena)</span> <span class="keyword">const</span> </span>= <span class="number">0</span>;</div></pre></td></tr></table></figure>
-<p>pbrt中Render的一个具体实现是SamplerRenderer，它的渲染过程是由一个采样器中的一连串的样本驱动的，<br>每个样本标记图像上的一个点，我们在这个点上计算到达的光线，形成图像。它定义在renderers/samplerrenderer.h和renderers/samplerrenderer.cpp中。    </p>
-<p><samplerrenderer declarations="" ≡=""><br>    class SamplerRenderer : public Renderer {<br>        public:<br>            <samplerrenderer public="" methods=""><br>        private:<br>            <samplerrenderer private="" data="" 25=""><br>    };</samplerrenderer></samplerrenderer></samplerrenderer></p>
-<p>SampleRender类有一个成员变量Sampler *sampler，采样器类Sampler能够大大影响图像的质量,</p>
-<ol>
-<li>采样器负责选择图像平面上的点，光线从这个点开始追踪</li>
-<li>采样器为积分器提供光线传递计算中所用到的采样位置    <figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">SamplerRenderer Private Data ≡ <span class="number">25</span>Sampler *sampler;</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>SampleRender:camera 控制位置、朝向、焦点和景深等观察和镜片参数。Camera类中有一个Film对象，负责图像存储。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">SamplerRenderer Private Data +≡ <span class="number">25</span>	Camera *camera;</div></pre></td></tr></table></figure>
-<p>积分器负责场景中光线传播的模拟，计算有多少光线到达film平面上的图像采样位置。它们用来数值计算表面和体积光等式，这些等式用来描述环境中的光照分布。SurfaceIntegrators用来计算几何表面的反射光，VolumeIntegrators负责体积图元的光线散射。    </p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">SamplerRenderer Private Data +≡ <span class="number">25</span>	SurfaceIntegrator *surfaceIntegrator;	VolumeIntegrator *volumeIntegrator;</div></pre></td></tr></table></figure>
-<p>SampleRender的构造函数存储了成员变量的指针，通过RenderOptions::MakeRenderer()创建，<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">SamplerRenderer Method Definitions ≡	SamplerRenderer::SamplerRenderer(Sampler *s, Camera *c,		SurfaceIntegrator *si, VolumeIntegrator *vi) &#123;		sampler = s;		camera = c;		surfaceIntegrator = si;		volumeIntegrator = vi;	&#125;</div></pre></td></tr></table></figure></p>
-<h2 id="2-4-主渲染循环"><a href="#2-4-主渲染循环" class="headerlink" title="2.4 主渲染循环"></a>2.4 主渲染循环</h2><p>Scene和Renderer创建并初始化之后，Renderer::Render()函数被调用，开始pbrt执行的第二个阶段：主渲染循环。在SampleRender类的该方法的具体实现中，在图像平面上的每个位置，该方法使用Camera和Sampler生成一条射入场景中的光线，接着使用积分器得到到达图像平面的沿着该光线的光数量，这个值被传给Film，计算光线的贡献。</p>
-<img src="/images/pbr/pbr1.7.jpg">    
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">SamplerRenderer Method Definitions +≡	<span class="keyword">void</span> SamplerRenderer::Render(<span class="keyword">const</span> Scene *scene) &#123;		&lt;Allow integrators to <span class="keyword">do</span> preprocessing <span class="keyword">for</span> the scene <span class="number">27</span>&gt;		&lt;Allocate and initialize sample <span class="number">27</span>&gt;		&lt;Create and launch SamplerRendererTasks <span class="keyword">for</span> rendering image <span class="number">28</span>&gt;		&lt;Clean up after rendering and store final image <span class="number">29</span>&gt;	&#125;</div></pre></td></tr></table></figure>
-<p>在渲染开始之前，Render调用SamplerRenderer:Preprocess()方法，用来初始化一些特殊光源或者处理场景中一些用不到的几何体，    </p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Allow integrators to <span class="keyword">do</span> preprocessing <span class="keyword">for</span> the scene ≡ <span class="number">27</span>	surfaceIntegrator-&gt;Preprocess(scene, camera, <span class="keyword">this</span>);	volumeIntegrator-&gt;Preprocess(scene, camera, <span class="keyword">this</span>);</div></pre></td></tr></table></figure>
-<p>在渲染开始之前，Render也会创建一个Sample对象，Sampler会将在主循环中生成的样本值存储到它里面。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Allocate and initialize sample ≡ <span class="number">27</span>	Sample *sample = <span class="keyword">new</span> Sample(sampler, surfaceIntegrator,		volumeIntegrator, scene);</div></pre></td></tr></table></figure></p>
-<p>主渲染循环开始之后，生成图像的任务被分配给一系列的SamplerRendererTasks，每个SamplerRendererTasks负责图片的一小块长方形区域。SamplerRendererTask继承自Task抽象类。    </p>
-<p>EnqueueTasks()定义在core/parallel.h中，它输入一个tasks集合，然后在所有处理器上执行它们。之后SamplerR    ender的Render()函数调用WaitForAllTasks()方法等待所有任务执行完毕。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;Create and launch SamplerRendererTasks <span class="keyword">for</span> rendering image&gt; ≡ <span class="number">27</span>	&lt;Compute number of SamplerRendererTasks to create <span class="keyword">for</span> rendering <span class="number">29</span>&gt;	<span class="built_in">vector</span>&lt;Task *&gt; renderTasks;	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nTasks; ++i)		renderTasks.push_back(<span class="keyword">new</span> SamplerRendererTask(scene, <span class="keyword">this</span>, camera,			sampler, sample, nTasks<span class="number">-1</span>-i, nTasks));	EnqueueTasks(renderTasks);	WaitForAllTasks();	<span class="keyword">for</span> (<span class="keyword">uint32_t</span> i = <span class="number">0</span>; i &lt; renderTasks.size(); ++i)		<span class="keyword">delete</span> renderTasks[i];</div></pre></td></tr></table></figure></p>
-<img src="/images/pbr/pbr1.8.jpg">    
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;Compute number of SamplerRendererTasks to create <span class="keyword">for</span> rendering&gt; ≡ <span class="number">28</span>	<span class="keyword">int</span> nPixels = camera-&gt;film-&gt;xResolution * camera-&gt;film-&gt;yResolution;	<span class="keyword">int</span> nTasks = max(<span class="number">32</span> * NumSystemCores(), nPixels / (<span class="number">16</span>*<span class="number">16</span>));	nTasks = RoundUpPow2(nTasks);</div></pre></td></tr></table></figure>
-<p>SamplerRender保证每个处理器至少有32个任务在执行，同时计算共可以分成多少个16x16像素大小的任务。</p>
-<p>任务完成之后，SamplerRender:render()删除样本，调用Film:WriteImage()将图像写入磁盘。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;Clean up after rendering and store final image&gt; ≡ <span class="number">27</span>	<span class="keyword">delete</span> sample;	camera-&gt;film-&gt;WriteImage();</div></pre></td></tr></table></figure>
-<p>下面具体看下SamplerRendererTask.的实现：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;SamplerRendererTask Declarations&gt; ≡	<span class="keyword">class</span> SamplerRendererTask : <span class="keyword">public</span> Task &#123;		<span class="keyword">public</span>:			SamplerRendererTask Public Methods <span class="number">30</span>		<span class="keyword">private</span>:			SamplerRendererTask Private Data <span class="number">30</span>&#125;;</div></pre></td></tr></table></figure>
-<p>SamplerRendererTask独立于SamplerRender:render()运行，构造函数和成员变量如下：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;SamplerRendererTask Public Methods&gt; ≡ <span class="number">29</span>	SamplerRendererTask(<span class="keyword">const</span> Scene *sc, Renderer *ren, Camera *c,		Sampler *ms, Sample *sam, <span class="keyword">int</span> tn, <span class="keyword">int</span> tc)	&#123;		scene = sc; renderer = ren; camera = c; mainSampler = ms;		origSample = sam; taskNum = tn; taskCount = tc;	&#125;</div></pre></td></tr></table></figure></p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;SamplerRendererTask Private Data&gt; ≡ <span class="number">29</span>	<span class="keyword">const</span> Scene *scene;	<span class="keyword">const</span> Renderer *renderer;	Camera *camera;	Sampler *mainSampler;	Sample *origSample;	<span class="keyword">int</span> taskNum, taskCount;</div></pre></td></tr></table></figure>
-<p>Task被分配到特定的处理之后，Task:run()方法会被调用，首先会设置一些运行数据，决定负责Film平面的哪一块区域，在采样器生成样本之前分配内存，决定离开相机的相应的光线，决定用于计算到达Fim平面的光线的积分器。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;SamplerRendererTask Definitions&gt; ≡	<span class="keyword">void</span> SamplerRendererTask::Run() &#123;		&lt;Get sub-Sampler <span class="keyword">for</span> SamplerRendererTask <span class="number">31</span>&gt;		&lt;Declare local variables used <span class="keyword">for</span> rendering loop <span class="number">31</span>&gt;		&lt;Allocate space <span class="keyword">for</span> samples and intersections <span class="number">31</span>&gt;		&lt;Get samples from Sampler and update image <span class="number">32</span>&gt;		&lt;Clean up after SamplerRendererTask is done with its image region&gt;	&#125;</div></pre></td></tr></table></figure></p>
-<p>SamplerRendererTask使用Sampler::GetSubSampler()得到一个只负责生成图像子块样本的新样本器，如果返回空，则SamplerRendererTask:run()函数返回。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;Get sub-Sampler <span class="keyword">for</span> SamplerRendererTask ≡ <span class="number">30</span>&gt;	Sampler *sampler = mainSampler-&gt;GetSubSampler(taskNum, taskCount);	<span class="keyword">if</span> (!sampler)<span class="keyword">return</span>;</div></pre></td></tr></table></figure>
-<p>SamplerRendererTask:run()函数中还有两个本地变量MemoryArena和RNG，MemoryArena被传给积分器，负责小内存分配，RNG用于在积分器中生成monte carlo采样所需的伪随机数。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;Declare local variables used <span class="keyword">for</span> rendering loop ≡ <span class="number">30</span>&gt;	MemoryArena arena;	<span class="function">RNG <span class="title">rng</span><span class="params">(taskNum)</span></span>;</div></pre></td></tr></table></figure>
-<p>采样器产生的样本数量是随机的，对于一些样本生成算法，一次生成所有样本值，相比于一次生成一个样本值更加简单。Sampler::MaximumSampleCount()返回样本器一次能够生成的样本值的上限。根据这个上限值，样本创建并存储相应数量的数据结构。对于每个样本，有必要存储相应的光线数据(RayDifferential)，沿着光线的光谱Ls，沿着光线的透射率Ts和一个光线物体相交点的数据结构Intersection。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;Allocate space <span class="keyword">for</span> samples and intersections ≡ <span class="number">30</span>&gt;	<span class="keyword">int</span> maxSamples = sampler-&gt;MaximumSampleCount();	Sample *samples = origSample-&gt;Duplicate(maxSamples);	RayDifferential *rays = <span class="keyword">new</span> RayDifferential[maxSamples];	Spectrum *Ls = <span class="keyword">new</span> Spectrum[maxSamples];	Spectrum *Ts = <span class="keyword">new</span> Spectrum[maxSamples];	Intersection *isects = <span class="keyword">new</span> Intersection[maxSamples];</div></pre></td></tr></table></figure>
-<p>每次循环，Sampler::GetMoreSamples()都会被调用初始化样本集合，这个函数返回初始化的样本数量。接下来的代码会为每个样本找到对应的相机出射光线，将光线传到积分器计算到达Film平面的光线，最后将样本的贡献值加入到图像中，释放内存。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;Get samples from Sampler and update image ≡ <span class="number">30</span>&gt;	<span class="keyword">int</span> sampleCount;	<span class="keyword">while</span> ((sampleCount = sampler-&gt;GetMoreSamples(samples, rng)) &gt; <span class="number">0</span>) &#123;		&lt;Generate camera rays and compute radiance along rays <span class="number">32</span>&gt;		&lt;Report sample results to Sampler, add contributions to image <span class="number">33</span>&gt;		&lt;Free MemoryArena memory from computing image sample values <span class="number">33</span>&gt;	&#125;</div></pre></td></tr></table></figure>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;Generate camera rays and compute radiance along rays ≡ <span class="number">32</span>&gt;	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; sampleCount; ++i) &#123;		&lt;Find camera ray <span class="keyword">for</span> sample[i]&gt; <span class="number">32</span>		&lt;Evaluate radiance along camera ray&gt; <span class="number">33</span>&#125;</div></pre></td></tr></table></figure>
-<p>Camera类提供了两个方法：</p>
-<ol>
-<li>Camera::GenerateRay(): 返回图像采样位置的光线Ray</li>
-<li>Camera::GenerateRayDifferential(): 返回RayDifferential，包含了采样位置周围1个像素的光线信息</li>
-</ol>
-<p>光线微分信息能够让一些纹理函数得到更好的结果，能够更好地计算纹理在像素空间的变化，是反走样的关键部分。RayDifferential继承自Ray，他有两个额外的成员变量Rays rx和ry，存储相邻的光线信息。</p>
-<p>Camera:GenerateRayDifferential()函数返回光线的浮点权重。对于简单的相机模型，每条光线的权重都是一样的，对于复杂的如镜片构成的相机模型，权重值可能会不一样。这种相机模型能够模拟少量光到达图像边缘，而大量光集中在图像中心的效果，这种效果叫做光晕。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;Find camera ray <span class="keyword">for</span> sample[i] ≡ <span class="number">32</span>&gt;	<span class="keyword">float</span> rayWeight = camera-&gt;GenerateRayDifferential(samples[i], &amp;rays[i]);	rays[i].ScaleDifferentials(<span class="number">1.f</span> / sqrtf(sampler-&gt;samplesPerPixel));</div></pre></td></tr></table></figure>
-<p>现在我们有了一条光线，接下来是确定沿着那条光线到达图像平面的光的数量（它的辐射）。我们用L代表光线的辐射，计算光线辐射的方法是Renderer::Li()，辐射值使用Spectrum类代表，这是pbrt系统用于抽象不同波长上能量分布的类－换句话说，就是颜色。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;Evaluate radiance along camera ray ≡ <span class="number">32</span>&gt;	<span class="keyword">if</span> (rayWeight &gt; <span class="number">0.f</span>)		Ls[i] = rayWeight * renderer-&gt;Li(scene, rays[i], &amp;samples[i], rng,			arena, &amp;isects[i], &amp;Ts[i]);	<span class="keyword">else</span> &#123;		Ls[i] = <span class="number">0.f</span>;		Ts[i] = <span class="number">1.f</span>;	&#125;&lt;Issue warning <span class="keyword">if</span> unexpected radiance value returned&gt;```	</div><div class="line">光线辐射得到之后，图像就能被更新了。在此之前，Sampler::ReportResults()被用于讲辐射值和相交点信息传回给采样器，这使得采样器能够将本次样本的结果和下一次的样本结果整合起来。如果这个方法返回<span class="literal">true</span>，样本值会被添加到图像中，Film::AddSample()用于更新样本值对应的图像像素，具体实现在<span class="number">7.8</span>和<span class="number">7.9</span>章节，</div><div class="line">	</div><div class="line">```CPP</div><div class="line">&lt;Report sample results to Sampler, add contributions to image ≡ <span class="number">32</span>&gt;	<span class="keyword">if</span> (sampler-&gt;ReportResults(samples, rays, Ls, isects, sampleCount))		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; sampleCount; ++i)			camera-&gt;film-&gt;AddSample(samples[i], Ls[i]);</div></pre></td></tr></table></figure>
-<p>处理完一批样本之后，所有MemoryArena分配的内存都会被释放，</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;Free MemoryArena memory from computing image sample values ≡ <span class="number">32</span>&gt;	arena.FreeAll();</div></pre></td></tr></table></figure>
-<p>SamplerRenderer::Li()在SamplerRendererTask::Run()函数中被用于计算光线辐射值。Scene::Intersect()用于计算光线与场景中图元的第一个相交点，如果存在相交点，SamplerRenderer::Li()调用SurfaceIntegrator::Li()计算相交点的出射光线$L_o$，将结果存储到$L_i$。接着调用VolumeIntegrator::Transmittance()光线因为参与媒介在相机和相交点之间的衰减值。最后，VolumeIntegrator::Li()确定了$L_v$被加入到辐射值中。这些相互作用的净效果是$TL_i + L_v$，具体解释在16.1章，</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;SamplerRenderer Method Definitions +≡&gt;	Spectrum SamplerRenderer::Li(<span class="keyword">const</span> Scene *scene,		<span class="keyword">const</span> RayDifferential &amp;ray, <span class="keyword">const</span> Sample *sample, RNG &amp;rng,		MemoryArena &amp;arena, Intersection *isect, Spectrum *T) <span class="keyword">const</span> &#123;			Allocate local variables <span class="keyword">for</span> isect and T <span class="keyword">if</span> needed <span class="number">35</span>			Spectrum Li = <span class="number">0.f</span>;			<span class="keyword">if</span> (scene-&gt;Intersect(ray, isect))				Li = surfaceIntegrator-&gt;Li(scene, <span class="keyword">this</span>, ray, *isect, sample,					rng, arena);			<span class="keyword">else</span> &#123;				Handle ray that doesn’t intersect any geometry <span class="number">35</span>			&#125;			Spectrum Lvi = volumeIntegrator-&gt;Li(scene, <span class="keyword">this</span>, ray, sample, rng,				T, arena);		<span class="keyword">return</span> *T * Li + Lvi;	&#125;</div></pre></td></tr></table></figure>
-<p>对于没有击中任何图元的光线，Light::Le函数被用于计算辐射值，</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;Handle ray that doesn’t intersect any geometry ≡ <span class="number">34</span>&gt;	<span class="keyword">for</span> (<span class="keyword">uint32_t</span> i = <span class="number">0</span>; i &lt; scene-&gt;lights.size(); ++i)		Li += scene-&gt;lights[i]-&gt;Le(ray);</div></pre></td></tr></table></figure>
-<p>SamplerRenderer::Transmittance()用于独立计算光线衰减值</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;SamplerRenderer Method Definitions +≡&gt;	Spectrum SamplerRenderer::Transmittance(<span class="keyword">const</span> Scene *scene,		<span class="keyword">const</span> RayDifferential &amp;ray, <span class="keyword">const</span> Sample *sample, RNG &amp;rng,		MemoryArena &amp;arena) <span class="keyword">const</span> &#123;			<span class="keyword">return</span> volumeIntegrator-&gt;Transmittance(scene, <span class="keyword">this</span>, ray, sample,												rng, arena);		&#125;</div><div class="line">```## <span class="number">2.5</span> WHITTED光线追踪算法积分器</div><div class="line">	这里我们介绍一个基于Whitted光线追踪算法的表面积分器。这个积分器精确计算了来自高光表面的反射和透射光线，它不考虑物体间互相反射的光线。WhittedIntegrator类可以在integrators目录下找到。	&#123;% img /images/pbr/pbr1<span class="number">.9</span>.jpg %&#125;	</div><div class="line">	```cpp</div><div class="line">&lt;WhittedIntegrator Declarations ≡&gt;	<span class="keyword">class</span> WhittedIntegrator : <span class="keyword">public</span> SurfaceIntegrator &#123;		<span class="keyword">public</span>:			WhittedIntegrator Public Methods		<span class="keyword">private</span>:			WhittedIntegrator Private Data <span class="number">42</span>	&#125;;</div></pre></td></tr></table></figure>
-<p>SurfaceIntegrator::Li()是所有表面积分器的关键函数，它返回光线的辐射值，</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;WhittedIntegrator Method Definitions ≡&gt;	Spectrum WhittedIntegrator::Li(<span class="keyword">const</span> Scene *scene,		<span class="keyword">const</span> Renderer *renderer, <span class="keyword">const</span> RayDifferential &amp;ray,		<span class="keyword">const</span> Intersection &amp;isect, <span class="keyword">const</span> Sample *sample, RNG &amp;rng,		MemoryArena &amp;arena) <span class="keyword">const</span> &#123;			<span class="function">Spectrum <span class="title">L</span><span class="params">(<span class="number">0.</span>)</span></span>;			Compute emitted and reflected light at ray intersection point <span class="number">43</span>			<span class="keyword">return</span> L;&#125;</div></pre></td></tr></table></figure>
-<p>Whitted 积分器会沿着反射和折射的光线递归求取辐射度，它会在到达最大深度时停止递归WhittedIntegrator::maxDepth，默认最大深度是5，</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&lt;WhittedIntegrator Private Data ≡ <span class="number">42</span>&gt;	<span class="keyword">int</span> maxDepth;</div><div class="line">	&lt;Compute emitted and reflected light at ray intersection point ≡ <span class="number">42</span>&gt;	&lt;Evaluate BSDF at hit point <span class="number">43</span>&gt;	&lt;Initialize common variables <span class="keyword">for</span> Whitted integrator <span class="number">43</span>&gt;	&lt;Compute emitted light <span class="keyword">if</span> ray hit an area light source <span class="number">43</span>&gt;	&lt;Add contribution of each light source <span class="number">45</span>&gt;	<span class="keyword">if</span> (ray.depth + <span class="number">1</span> &lt; maxDepth) &#123;		&lt;Trace rays <span class="keyword">for</span> specular reflection and refraction <span class="number">46</span>&gt;&#125;</div></pre></td></tr></table></figure>
-<p>BSDF(bidirectional scattering distribution functions)用来描述物体表面如何反射光线，在pbrt系统中我们使用BSDF类表示。pbrt提供了图形学中常用的几种标准散射函数，比如Lambertian反射和Torrance–Sparrow微小面片模型。BRDF会在第八章讨论。</p>
-<p>为了得到相交点的BSDF，积分器会调用Intersection::GetBSDF()函数：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;Evaluate BSDF at hit point ≡ <span class="number">43</span>&gt;	BSDF *bsdf = isect.GetBSDF(ray, arena);</div></pre></td></tr></table></figure>
-<img src="/images/pbr/pbr1.10.jpg">
-<p>上图描述了系统中常用的一些基本性质：p代表相交点，n是相见点微分表面的法线，从p点指向光线原点的向量为$\omega_o$；单位化的方向向量在本书中使用$\omega$表示，在pbrt的代码中我们会使用简写wo代表$\omega_o$，代表出射光线。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;Initialize common variables <span class="keyword">for</span> Whitted integrator ≡ <span class="number">43</span>&gt;	<span class="keyword">const</span> Point &amp;p = bsdf-&gt;dgShading.p;	<span class="keyword">const</span> Normal &amp;n = bsdf-&gt;dgShading.nn;	Vector wo = -ray.d;</div></pre></td></tr></table></figure>
-<p>当光线集中一个发光体时，积分器通过调用Intersection::Le()函数计算发光体发射的辐射度，这给出了光线传递等式的首项，如果物体不是发光体，刚函数返回一个黑色的光谱（即颜色）。</p>
-<p>$$<br>L_0(p, \omega_o) = L_e(p, \omega<em>o) + \int</em>\xi^2 f(p, \omega_o, \omega_i)L_i(p, \omega_i)\mid cos\theta_i \mid d \omega_i<br>$$</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;Compute emitted light <span class="keyword">if</span> ray hit an area light source ≡ <span class="number">43</span>&gt;	L += isect.Le(wo);</div></pre></td></tr></table></figure>
-<p>对于每一条光线，积分器调用Light::Sample_L()计算着色点辐射度，这个函数同样返回从着色点指向光源的方向向量wi($\omega_i$)。</p>
-<p>这个函数返回的光谱没有考虑其他物体的遮挡，它返回一个VisibilityTester对象描述是否有物体遮挡了着色点到光源之间的路线。这个测试可以通过追踪一条着色点到光源之间的阴影光线来验证。</p>
-<p>Sample_L()函数同样光线在wi方向被采样的概率密度，存储在pdf变量中。这个值被用于复杂区域光源的monte carlo积分计算中，光线从许多方向到达着色点，却只有一个方向被采样。对于点光源pdf的值是1，我们会在第13章到第15章讨论细节。</p>
-<p>如果到达的着色点的辐射度不为0，同时BSDF函数显示有一些入射光线wi被散射到出色光线wo，积分器就会将BSDF f乘上辐射度$L_i$；cos项(通过$w_i$和表面法向量n的点乘得到)；着色点和光源之间的透射率。这个乘积代表光线对光线传递等式积分的贡献值，它被加入到反射辐射度的总和$L_o$中。在所有光线都被考虑之后，积分器计算了直接光线（从光源直接到达物体表面的光线，另外一种间接光线是从其他物体反射过来的）总贡献值。</p>
-<p>$$<br>L_0(p, \omega_o) = L_e(p, \omega<em>o) + \int</em>\xi^2 f(p, \omega_o, \omega_i)L_i(p, \omega_i)\mid cos\theta_i \mid d \omega_i<br>$$</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;Add contribution of each light source ≡ <span class="number">43</span>&gt;	<span class="keyword">for</span> (<span class="keyword">uint32_t</span> i = <span class="number">0</span>; i &lt; scene-&gt;lights.size(); ++i) &#123;		Vector wi;		<span class="keyword">float</span> pdf;		VisibilityTester visibility;		Spectrum Li = scene-&gt;lights[i]-&gt;Sample_L(p, isect.rayEpsilon,		LightSample(rng), ray.time, &amp;wi, &amp;pdf, &amp;visibility);		<span class="keyword">if</span> (Li.IsBlack() || pdf == <span class="number">0.f</span>) <span class="keyword">continue</span>;			Spectrum f = bsdf-&gt;f(wo, wi);			<span class="keyword">if</span> (!f.IsBlack() &amp;&amp; visibility.Unoccluded(scene))				L += f * Li * AbsDot(wi, n) *					visibility.Transmittance(scene, renderer,						sample, rng, arena) / pdf;&#125;</div></pre></td></tr></table></figure>
-<p>积分器同样辐射从高光表面发射的光线，</p>
-<img src="/images/pbr/pbr1.11.jpg">
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Trace rays <span class="keyword">for</span> specular reflection and refraction ≡ <span class="number">43</span>, <span class="number">789</span>	L += SpecularReflect(ray, bsdf, rng, isect, renderer, scene, sample,		arena);	L += SpecularTransmit(ray, bsdf, rng, isect, renderer, scene, sample,		arena);</div></pre></td></tr></table></figure>
-<p>在SpecularReflect()和SpecularTransmit()函数中，BSDF::Samplef()方法根据出射方向和光线散射的模式返回一个入射方向，这是Monte Carlo光线传递算法的一个重要基础。这里我们会用这个函数寻找对应高光反射和折射的出射光线。尽管BSDF::Sample_f()能够根据概率积分算法采样离开物体表面的任意方向，但是随机性被BSDF函数的散射属性所限制。</p>
-<p>BSDF::Sample_f()根据选定方向初始化wi，根据(wi, wo)返回BSDF值，如果BSDF值为非0，积分器调用Renderer::Li()得到入射辐射度，这又会重新调用WhittedIntegrator::Li()，为了计算反射积分的cos项，积分器会调用AbsDot()函数，单位化的两个向量之间的点积等于它们夹角的cos值。</p>
-<p>最后，为了使用光线微分反走样处理反射或者折射的纹理，有必要知道光线反射和传递是如何影响屏幕空间的光线印记的。我们在10.1.3节讨论如何计算光线微分。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;Integrator Utility Functions ≡&gt;	<span class="function">Spectrum <span class="title">SpecularReflect</span><span class="params">(<span class="keyword">const</span> RayDifferential &amp;ray, BSDF *bsdf,		RNG &amp;rng, <span class="keyword">const</span> Intersection &amp;isect, <span class="keyword">const</span> Renderer *renderer,		<span class="keyword">const</span> Scene *scene, <span class="keyword">const</span> Sample *sample, MemoryArena &amp;arena)</span> </span>&#123;		Vector wo = -ray.d, wi;		<span class="keyword">float</span> pdf;		<span class="keyword">const</span> Point &amp;p = bsdf-&gt;dgShading.p;		<span class="keyword">const</span> Normal &amp;n = bsdf-&gt;dgShading.nn;		Spectrum f = bsdf-&gt;Sample_f(wo, &amp;wi, BSDFSample(rng), &amp;pdf,		BxDFType(BSDF_REFLECTION | BSDF_SPECULAR));		Spectrum L = <span class="number">0.f</span>;		<span class="keyword">if</span> (pdf &gt; <span class="number">0.f</span> &amp;&amp; !f.IsBlack() &amp;&amp; AbsDot(wi, n) != <span class="number">0.f</span>) &#123;			&lt;Compute ray differential rd <span class="keyword">for</span> specular reflection <span class="number">512</span>&gt;			Spectrum Li = renderer-&gt;Li(scene, rd, sample, rng, arena);			L = f * Li * AbsDot(wi, n) / pdf;		&#125;		<span class="keyword">return</span> L;	&#125;</div></pre></td></tr></table></figure>
-<p>SpecularTransmit()函数和SpecularReflect()同等重要，但只是需要传入BSDF的BSDF_TRANSMISSION高光部分，而SpecularReflect()需要BSDF_REFLECTION反射部分。</p>
-<blockquote>
-<p>文献引用：        </p>
-<ol>
-<li>(physically based rendering from theory to implementation 2nd edition chapter one)[<a href="http://pan.baidu.com/s/1kUZDX5t" target="_blank" rel="external">http://pan.baidu.com/s/1kUZDX5t</a>]</li>
-</ol>
-</blockquote>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1843,7 +1704,7 @@ Task 4:
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">30</span>
+              <span class="site-state-item-count">31</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
