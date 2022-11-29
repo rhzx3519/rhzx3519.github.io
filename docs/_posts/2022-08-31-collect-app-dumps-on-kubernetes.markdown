@@ -5,6 +5,7 @@ date:   2022-08-31 15:03:27 +0800
 categories: DevOps
 tags: Debug DevOps Kubernetes
 ---
+
 # Background
 当容器中的应用崩溃时，会使容器发出SIGKILL信号，之后容器会立刻崩溃，
 导致程序的dump文件也被一起销毁。为了能够保存dump文件，以便之后调查
