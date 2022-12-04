@@ -1,15 +1,14 @@
 ---
 layout: post
-title:  "grpc get starting"
+title:  "gRPC get starting"
 date:   2022-11-29 15:22:27 +0800
 categories: DevOps
 tags: go grpc tutorial
 ---
-# grpc get starting
 
 ## Abstract
 This article exhibited a demon of grpc project which mainly demonstrate 
-how to get started grpc and integrate to a typical go project.
+how to get started grpc and integrate it into a typical go project.
 
 ## Project structure
 ```shell
@@ -27,3 +26,202 @@ how to get started grpc and integrate to a typical go project.
 ```
 
 
+### Define proto file
+First we define our proto buf files which are used to define the messages 
+transmitted between gRPC server and client.
+
+```protobuf
+// proto/helloworld/hello_world.proto
+
+syntax = "proto3";
+
+// go_package define the path expected to be generated to, the following path 
+// means we expect the *.go file generated to project root path(github.com/myuser/myrepo)
+// + pkg path(pkg/apiclient/helloworld)
+option go_package = "github.com/myuser/myrepo/pkg/apiclient/helloworld";
+//option go_package = "./;helloworld";
+package helloworld;
+
+import "google/api/annotations.proto";
+
+// Here is the overall greeting service definition where we define all our endpoints
+service Greeter {
+  // Sends a greeting
+  rpc SayHello (HelloRequest) returns (HelloReply) {
+    option (google.api.http) = {
+      post: "/v1/example/echo"
+      body: "*"
+    };
+  }
+}
+
+// The request message containing the user's name
+message HelloRequest {
+  string name = 1;
+}
+
+// The response message containing the greetings
+message HelloReply {
+  string message = 1;
+}
+```
+
+### Define buf file
+Then, we define the buf yaml file which is used to generate the *.go files from 
+*.proto files. The buf definition files include two files, buf.yaml and buf.gen.yaml.
+
+
+```yaml
+# proto/buf.yaml
+
+version: v1
+name: buf.build/myuser/myrepo
+deps:
+  - buf.build/googleapis/googleapis
+---
+# proto/buf.gen.yaml
+version: v1
+plugins:
+  - name: go
+    out: ..
+    opt: module=github.com/myuser/myrepo
+  - name: go-grpc
+    out: ..
+    opt: module=github.com/myuser/myrepo,require_unimplemented_servers=false
+  - name: grpc-gateway
+    out: ..
+    opt: module=github.com/myuser/myrepo
+```
+
+Now we can use buf cmd to generate *.go files.
+```shell
+PROJECT_ROOT=$(cd $(dirname ${BASH_SOURCE})/..; pwd)
+PROTO_DIR=proto
+
+buf mod update
+buf generate
+```
+
+### Define gRPC server
+First, we can find a interface named `UnimplementedGreeterServer` in
+`pkg/apiclient/helloworld/hello_world_grpc.pb.go`. We need implement this 
+interface generate from *.proto file, so we write a *.go file like following.
+
+```go
+// server/helloworld/helloworld.go
+package helloworld
+
+import (
+	"context"
+	helloworldpb "github.com/myuser/myrepo/pkg/apiclient/helloworld"
+)
+
+type server struct {
+	helloworldpb.UnimplementedGreeterServer
+}
+
+func NewServer() *server {
+	return &server{}
+}
+
+func (s *server) SayHello(ctx context.Context, in *helloworldpb.HelloRequest) (*helloworldpb.HelloReply, error) {
+	return &helloworldpb.HelloReply{Message: in.Name + " world"}, nil
+}
+```
+
+`main.go` is as the entrance of whole gRPC application,
+
+```go
+func main() {
+	// Create a listener on TCP port
+	lis, err := net.Listen("tcp", ":8080")
+	if err != nil {
+		log.Fatalln("Failed to listen:", err)
+	}
+
+	// Create a gRPC server object
+	s := grpc.NewServer()
+	// Attach the Greeter service to the server
+	helloworldpb.RegisterGreeterServer(s, helloworld.NewServer())
+	// Serve gRPC server
+	log.Println("Serving gRPC on 0.0.0.0:8080")
+	go func() {
+		log.Fatalln(s.Serve(lis))
+	}()
+
+	// Create a client connection to the gRPC server we just started
+	// This is where the gRPC-Gateway proxies the requests
+	conn, err := grpc.DialContext(
+		context.Background(),
+		"0.0.0.0:8080",
+		grpc.WithBlock(),
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+	)
+	if err != nil {
+		log.Fatalln("Failed to dial server:", err)
+	}
+
+	gwmux := runtime.NewServeMux()
+	// Register Greeter
+	err = helloworldpb.RegisterGreeterHandler(context.Background(), gwmux, conn)
+	if err != nil {
+		log.Fatalln("Failed to register gateway:", err)
+	}
+
+	gwServer := &http.Server{
+		Addr:    ":8090",
+		Handler: gwmux,
+	}
+
+	log.Println("Serving gRPC-Gateway on http://0.0.0.0:8090")
+	log.Fatalln(gwServer.ListenAndServe())
+}
+
+```
+
+Now we can use `go run main.go` to bootstrap the gRPC server.
+We also define a http server in 8090 port, so we could use 
+`curl -X POST -k http://localhost:8090/v1/example/echo -d '{"name": " hello"}'`
+to visit the http server.
+
+### Define gRPC client
+
+Client code is simpler compared to server code.
+
+```go
+// client/main.go
+var (
+	addr = flag.String("addr", "localhost:8080", "the address to connect to")
+	name = flag.String("name", "hello", "Name to greet")
+)
+
+func main() {
+	flag.Parse()
+	// Set up a connection to the server.
+	conn, err := grpc.Dial(*addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		log.Fatalf("did not connect: %v", err)
+	}
+	defer conn.Close()
+	c := helloworldpb.NewGreeterClient(conn)
+
+	// Contact the server and print out its response.
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	r, err := c.SayHello(ctx, &helloworldpb.HelloRequest{Name: *name})
+	if err != nil {
+		log.Fatalf("could not greet: %v", err)
+	}
+	log.Printf("Greeting: %s", r.GetMessage())
+}
+```
+
+Run `go run client/main.go hello`, the expected answer from server is `Greeting: hellow world`
+
+
+
+
+## References
+> 1. [gRPC, A high performance, open source universal RPC framework](https://grpc.io/)
+> 2. [Building a better way to work with Protocol Buffers](https://buf.build/)
+> 3. [Example code](https://github.com/rhzx3519/gRPC-tutorial)
