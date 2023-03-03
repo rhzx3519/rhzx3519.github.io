@@ -1,10 +1,12 @@
 ---
 layout: post
-title:  "Cue Tutorial for Beginners"
+title:  "Cue Overviews for Beginners"
 date:   2023-03-02 14:16:27 +1100
 categories: DevOps
 tags: Configure Template
 ---
+
+![Image](/assets/images/cue/The Logic of CUE _ CUE.jpeg)
 
 # Overviews
 Every resource in kubernetes can be declared through texts, and these texts are always duplicated.
