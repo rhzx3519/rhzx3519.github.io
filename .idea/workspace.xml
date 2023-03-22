@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5fe081f8-8b55-48e5-8d2e-ca6b65796d19" name="Changes" comment="" />
+    <list default="true" id="5fe081f8-8b55-48e5-8d2e-ca6b65796d19" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/docs/assets/images/kubernetes-controller/controller.png" beforeDir="false" afterPath="$PROJECT_DIR$/docs/assets/images/kubernetes-controller/controller.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/assets/images/kubernetes-controller/pdfdocument-diagram.png" beforeDir="false" afterPath="$PROJECT_DIR$/docs/assets/images/kubernetes-controller/pdfdocument-diagram.png" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
