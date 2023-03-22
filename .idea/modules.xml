@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/rhzx3519.github.io.iml" filepath="$PROJECT_DIR$/.idea/rhzx3519.github.io.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../Code/mysources/writing-kubernetes-controller/.idea/writing-kubernetes-controller.iml" filepath="$PROJECT_DIR$/../../Code/mysources/writing-kubernetes-controller/.idea/writing-kubernetes-controller.iml" />
     </modules>
   </component>
 </project>
