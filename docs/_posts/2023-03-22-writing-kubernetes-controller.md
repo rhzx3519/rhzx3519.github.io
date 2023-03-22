@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Writing a Kubernetes controller"
+title:  "Writing a Kubernetes Controller"
 date:   2023-03-22 0:30:27 +1100
 categories: DevOps
 tags: Kubernetes Controller Cloud-Native
