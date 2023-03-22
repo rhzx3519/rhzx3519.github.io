@@ -8,6 +8,8 @@ tags: Kubernetes Controller Cloud-Native
 
 ![Kubernetes controller](/assets/images/kubernetes-controller/controller.png)
 
+All code of this article is available in [here](https://github.com/Devops-in-Wollongong/writing-kubernetes-controller).
+
 # Introduction
 
 This is an article based on the [Writing Kubernetes Controllers](https://www.youtube.com/watch?v=q7b23612pSc) 
