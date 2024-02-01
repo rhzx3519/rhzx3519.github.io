@@ -6,5 +6,7 @@ categories: Architecture
 tags: Web Architecture
 ---
 
+![Architecture](/assets/images/web-archi/archi.png)
+
 # Introduction
 ...
