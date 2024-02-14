@@ -45,6 +45,7 @@ server {
         proxy_pass http://quote-server;
     }
 }
+
 ```
 
 # Independent Authorization Check
@@ -52,6 +53,7 @@ We want to separate our authorization service from other business services as an
 leverage the auth_request module in Nginx. It enables us to intercept requests for specific routes, routes that need 
 authorization to access. For valid requests, the auth server returns http ok status 200, then the requests will move on 
 to the requested resources, while for invalid requests, these will be aborted with a http unauthorized code 401. 
+
 ```nginx configuration
 upstream auth {
 	server auth-server;
@@ -101,6 +103,7 @@ server {
         return 302 /signin;
     }
 }
+
 ```
 
 # Wrap Up
