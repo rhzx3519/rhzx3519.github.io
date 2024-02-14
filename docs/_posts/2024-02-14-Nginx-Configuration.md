@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Nginx Configuration for Microservices"
-date:   2024-02-01 13:54:27 +1100
+date:   2024-02-14 12:54:27 +1100
 categories: Architecture
 tags: Web Architecture Nginx
 ---
