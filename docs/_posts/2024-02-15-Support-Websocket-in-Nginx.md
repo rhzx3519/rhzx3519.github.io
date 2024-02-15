@@ -17,7 +17,7 @@ However, it takes few more steps to make the Nginx to support websocket through 
 Whenever we receive websocket requests in nginx, before redirect to other server, we need to set the
 proxy http version and proxy header to support websocket.
 
-```nginx configuration
+```shell
     # enable websocket
     proxy_http_version 1.1;
     proxy_set_header Upgrade $http_upgrade;
@@ -28,7 +28,7 @@ proxy http version and proxy header to support websocket.
 
 e.g. we have a chat server preparing to receive websocket requests, the whole nginx configuration will like below:
 
-```nginx configuration    
+```shell
 
 upstream chat {
     server chat-server;
