@@ -40,6 +40,7 @@ func (f *Foo) run() {
     }
 }
 
+
 func main() {
     f := Foo{
         Bars:     make(map[*Bar]bool),
