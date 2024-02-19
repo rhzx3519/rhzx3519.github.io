@@ -62,7 +62,7 @@ func main() {
 
 # Wrap Up
 Actually, W will keep running until it returns or the whole program is finished. Every goroutine is equivalent, it is not a
-tree model like Linux process/thread or Java thread in other languages. If the parent is terminated, the child will not necessarily
+tree model like Linux process. If the parent is terminated, the child will not necessarily
 be terminated. We need to carefully manage the goroutines we created, cause somtimes they will keep running at the back.
 
 # Reference
