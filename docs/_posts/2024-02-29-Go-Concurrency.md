@@ -35,7 +35,7 @@ fmt.Println("Done receiving!")
 How to ensure a single child goroutine is guaranteed to be cleaned up?
 ```go
 // goroutine is stuck in write chan (<-strings)
-doWork := func(done <-chan interface{}, strings <-chan string) <-chan
+doWork := func(done <-chan interface{}, strings <-chan string) <-chan interface{} {
     terminated := make(chan interface{})
     go func() {
         defer fmt.Println("doWork exited.")
@@ -160,7 +160,7 @@ type Result struct {
     Error error
     Response *http.Response
 } 
-checkStatus := func(done <-chan interface{}, urls ...string) <-chan
+checkStatus := func(done <-chan interface{}, urls ...string) <-chan Result {
     results := make(chan Result)
     go func() {
         defer close(results)
@@ -182,7 +182,7 @@ done := make(chan interface{})
 defer close(done)
 
 errCount := 0
-for result := range checkStatus(done, "a", "https://www.google.com"
+for result := range checkStatus(done, "a", "https://www.google.com", "b", "c") {
     if result.Error != nil {
         fmt.Printf("error: %v\n", result.Error)
         errCount++
@@ -201,6 +201,157 @@ for result := range checkStatus(done, "a", "https://www.google.com"
 //Too many errors, breaking!
 ```
 
+# Best Practices for Constructing Pipelines
+```go
+generator := func(done <-chan interface{}, integers ...int) <-chan int {
+    intStream := make(chan int)
+    go func() {
+        defer close(intStream)
+        for _, i := range integers {
+            select {
+            case <-done:
+                return
+            case intStream <- i:
+            }
+        }
+    }()
+    return intStream
+}
+multiply := func(done <-chan interface{}, intStream <-chan int, multiplier int) <-chan int {
+    multipliedStream := make(chan int)
+    go func() {
+        defer close(multipliedStream)
+        for i := range intStream {
+            select {
+              case <-done:
+                return
+              case multipliedStream <- i*multiplier:
+            }
+        }
+    }()
+    return multipliedStream
+}
+add := func(done <-chan interface{}, intStream <-chan int, additive int) <-chan int {
+    addedStream := make(chan int)
+    go func() {
+        defer close(addedStream)
+        for i := range intStream {
+            select {
+                case <-done:
+                    return
+                case addedStream <- i+additive:
+            }
+        }
+    }()
+    return addedStream
+}
+done := make(chan interface{})
+defer close(done)
+
+intStream := generator(done, 1, 2, 3, 4)
+pipeline := multiply(done, add(done, multiply(done, intStream, 2),
+for v := range pipeline {
+    fmt.Println(v)
+}
+//This code produces:
+//6 10
+//14
+//18
+```
+
+# Some Handy Generators
+
+## Repeat & Take
+This function will repeat the values you pass to it infinitely until you tell it to
+stop.
+```go
+repeat := func(done <-chan interface{}, values ...interface{}) <-chan interface{} {
+  valueStream := make(chan interface{})
+  go func() {
+    defer close(valueStream)
+    for {
+      for _, v := range values {
+        select {
+          case <-done:
+            return
+          case valueStream <- v:
+        }
+      }
+    }
+  }()
+  return valueStream
+}
+```
+
+This pipeline stage will only take the first num items off of its incoming
+valueStream and then exit.
+```go
+take := func(done <-chan interface{}, valueStream <-chan interface{}, num int) <-chan interface{} {
+  takeStream := make(chan interface{})
+  go func() {
+    defer close(takeStream)
+    for i := 0; i < num; i++ {
+      select {
+        case <-done:
+          return
+        case takeStream <- <- valueStream:
+      }
+    }
+  }()
+  return takeStream
+}
+```
+
+```go
+done := make(chan interface{})
+defer close(done)
+for num := range take(done, repeat(done, 1), 10) {
+    fmt.Printf("%v ", num)
+}
+//Running this code produces:
+//1 1 1 1 1 1 1 1 1 1
+```
+
+## RepeatFn
+Let’s create another repeating generator, but this
+time, let’s create one that repeatedly calls a function.
+```go
+repeatFn := func(done <-chan interface{}, fn func() interface{}) <-chan interface{} {
+  valueStream := make(chan interface{})
+  go func() {
+    defer close(valueStream)
+    for {
+      select {
+        case <-done:
+            return
+        case valueStream <- fn():
+      }
+    }
+  }()
+  return valueStream
+}
+```
+
+Let’s use it to generate 10 random numbers:
+```go
+done := make(chan interface{})
+defer close(done)
+rand := func() interface{} { return rand.Int()}
+for num := range take(done, repeatFn(done, rand), 10) {
+    fmt.Println(num)
+}
+//This produces:
+//5577006791947779410
+//8674665223082153551
+//6129484611666145821
+//4037200794235010051
+//3916589616287113937
+//6334824724549167320
+//605394647632969758
+//1443635317331776148
+//894385949183117216
+//2775422040480279449
+```
 
 # Reference
 1. [Concurrency in Go](https://www.oreilly.com/library/view/concurrency-in-go/9781491941294/)
