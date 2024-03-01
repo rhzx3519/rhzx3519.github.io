@@ -353,5 +353,178 @@ for num := range take(done, repeatFn(done, rand), 10) {
 //2775422040480279449
 ```
 
+# Fan In & Fan Out
+To reuse a single stage of our pipeline on multiple
+goroutines in an attempt to parallelize pulls from an upstream stage?
+**Fan-out** is a term to describe the process of starting multiple goroutines to
+handle input from the pipeline, and **fan-in** is a term to describe the process of
+combining multiple results into one channel.
+
+```go
+fanIn := func(done <-chan interface{}, channels ...<-chan interface{}) <- chan interface{} {
+    var wg sync.WaitGroup
+    multiplexedStream := make(chan interface{})
+    multiplex := func(c <-chan interface{}) {
+        defer wg.Done()
+        for i := range c {
+            select {
+                case <-done:
+                    return
+                case multiplexedStream <- i:
+            }
+        }
+    }
+    // Select from all the channels
+    wg.Add(len(channels))
+    for _, c := range channels {
+        go multiplex(c)
+    }
+    // Wait for all the reads to complete
+    go func() {
+        wg.Wait()
+        close(multiplexedStream)
+    }()
+    return multiplexedStream
+}
+
+toInt := func(done <-chan interface{}, valueStream <-chan interface{}) <-chan string {
+  stringStream := make(chan string)
+  go func() {
+    defer close(stringStream)
+    for v := range valueStream {
+      select {
+          case <-done:
+              return
+          case stringStream <- v.(int):
+      }
+    }
+  }()
+  return stringStream
+}
+
+primeFinder := func(done <-chan interface{}, intStream <-chan int) <-chan int {
+    count := func(n int) int {
+      var tot int
+      f := make([]bool, n+1)
+      for i := 2; i <= n; i++ {
+        if !f[i] {
+            tot++
+        }
+        for j := i*i; j <= n; j += i {
+            f[j] = true
+        }   
+      }
+    }
+    intStream := make(chan int)
+    go func() {
+        defer close(intStream)
+        for v := range intStream {
+            select {
+                case <-done:
+                    return
+                case n <- v:
+                    intStream <- count(n)
+            }       
+        }   
+    }   
+    return intStream
+}
+
+done := make(chan interface{})
+defer close(done)
+start := time.Now()
+rand := func() interface{} { return rand.Intn(50000000) }
+randIntStream := toInt(done, repeatFn(done, rand))
+numFinders := runtime.NumCPU()
+fmt.Printf("Spinning up %d prime finders.\n", numFinders)
+finders := make([]<-chan interface{}, numFinders)
+fmt.Println("Primes:")
+for i := 0; i < numFinders; i++ {
+    finders[i] = primeFinder(done, randIntStream)
+}
+for prime := range take(done, fanIn(done, finders...), 10) {
+    fmt.Printf("\t%d\n", prime)
+}
+fmt.Printf("Search took: %v", time.Since(start))
+```
+
+# The or-done-channel
+```go
+orDone := func(done, c <-chan interface{}) <-chan interface{} {
+  valStream := make(chan interface{})
+  go func() {
+    defer close(valStream)
+    for {
+      select {
+        case <-done:
+            return
+        case v, ok := <-c:
+        if ok == false {
+            return
+        }
+        select {
+            case valStream <- v:
+            case <-done:
+        }
+      }
+    }
+  }()
+  return valStream
+}
+
+//Doing this allows us to get back to simple for-loops, like so:
+for val := range orDone(done, myChan) {
+    // Do something with val
+}
+```
+
+# The tee-channel
+Taking its name from the **tee** command in Unix-like systems, the tee-channel
+does just this. You can pass it a channel to read from, and it will return two
+separate channels which will get the same value.
+```go
+tee := func(done <-chan interface{}, in <-chan interface{}) (chan any, chan any) {
+  out1 := make(chan interface{})
+  out2 := make(chan interface{})
+  go func() {
+    defer close(out1)
+    defer close(out2)
+    for val := range orDone(done, in) {
+      //We’re going to use one select statement so that writes to out1 and out2
+      //don’t block each other. To ensure both are written to, we’ll perform two
+      //iterations of the select statement: one for each outbound channel.
+      var out1, out2 = out1, out2
+      for i := 0; i < 2; i++ {
+        select {
+          case <-done:
+          case out1<-val:
+              // Once we’ve written to a channel, we set its shadowed copy to nil so 
+              // that further writes will block and the other channel may continue.
+            out1 = nil
+          case out2<-val:
+            out2 = nil
+        }
+      }
+    }
+  }()
+  return out1, out2
+}
+
+done := make(chan interface{})
+defer close(done)
+out1, out2 := tee(done, take(done, repeat(done, 1, 2), 4))
+for val1 := range out1 {
+    fmt.Printf("out1: %v, out2: %v\n", val1, <-out2)
+}
+```
+
+# The bridge-channel
+In some circumstances, you may find yourself wanting to consume values
+from a sequence of channels:
+```go
+  <-chan <-chan interface{}
+```
+
+
 # Reference
 1. [Concurrency in Go](https://www.oreilly.com/library/view/concurrency-in-go/9781491941294/)
