@@ -522,7 +522,215 @@ for val1 := range out1 {
 In some circumstances, you may find yourself wanting to consume values
 from a sequence of channels:
 ```go
-  <-chan <-chan interface{}
+func bridge(done <-chan interface{}, chanStream <-chan <-chan interface{}) <-chan interface{} {
+	valStream := make(chan interface{})
+	go func() {
+		defer close(valStream)
+		for {
+			var stream <-chan interface{}
+			select {
+			case maybeStream, ok := <-chanStream:
+				if ok == false {
+					return
+				}
+				stream = maybeStream
+			case <-done:
+				return
+			}
+			for val := range orDone(done, stream) {
+				select {
+				case valStream <- val:
+				case <-done:
+				}
+			}
+		}
+	}()
+	return valStream
+}
+```
+
+# The Context Package
+
+```go
+var Canceled = errors.New("context canceled")
+var DeadlineExceeded error = deadlineExceededError{}
+type CancelFunc
+type Context
+func Background() Context
+func TODO() Context
+func WithCancel(parent Context) (ctx Context, cancel CancelFunc)
+func WithDeadline(parent Context, deadline time.Time) (Context, CancelFunc
+func WithTimeout(parent Context, timeout time.Duration) (Context,
+func WithValue(parent Context, key, val interface{}) Context
+
+type Context interface {
+  // Deadline returns the time when work done on behalf of this
+  // context should be canceled. Deadline returns ok==false when no
+  // deadline is set. Successive calls to Deadline return the same
+  // results.
+  Deadline() (deadline time.Time, ok bool)
+  // Done returns a channel that's closed when work done on behalf
+  // of this context should be canceled. Done may return nil if this
+  // context can never be canceled. Successive calls to Done return
+  // the same value.
+  Done() <-chan struct{}
+  // Err returns a non-nil error value after Done is closed. Err
+  // returns Canceled if the context was canceled or
+  // DeadlineExceeded if the context's deadline passed. No other
+  // values for Err are defined. After Done is closed, successive
+  // calls to Err return the same value.
+  Err() error
+  // Value returns the value associated with this context for key,
+  // or nil if no value is associated with key. Successive calls to
+  // Value with the same key returns the same result.
+  Value(key interface{}) interface{}
+}
+```
+
+## Instead of Done
+* _WithCancel_ returns a new Context which closes its done channel when the returned cancel function is called.
+* _WithDeadline_ returns a new Context which closes its done channel when the machine’s clock advances past the given deadline.
+* _WithTimeout_ returns a new Context which closes its done channel after the given timeout duration.
+
+```go
+func printGreeting(ctx context.Context) error {
+	greeting, err := genGreeting(ctx)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("%s world!\n", greeting)
+	return nil
+}
+
+func printFarewell(ctx context.Context) error {
+	farewell, err := genFarewell(ctx)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("%s world!\n", farewell)
+	return nil
+}
+
+func genGreeting(ctx context.Context) (string, error) {
+	ctx, cancel := context.WithTimeout(ctx, 1*time.Second)
+	defer cancel()
+	switch locale, err := locale(ctx); {
+	case err != nil:
+		return "", err
+	case locale == "EN/US":
+		return "hello", nil
+	}
+	return "", fmt.Errorf("unsupported locale")
+}
+
+func genFarewell(ctx context.Context) (string, error) {
+	switch locale, err := locale(ctx); {
+	case err != nil:
+		return "", err
+	case locale == "EN/US":
+		return "goodbye", nil
+	}
+	return "", fmt.Errorf("unsupported locale")
+}
+
+func locale(ctx context.Context) (string, error) {
+	// Here we check to see whether our Context has provided a deadline. If it
+	// did, and our system’s clock has advanced past the deadline, we simply
+	// return with a special error defined in the context package,
+	// DeadlineExceeded.
+	if deadline, ok := ctx.Deadline(); ok {
+		if deadline.Sub(time.Now().Add(1*time.Minute)) <= 0 {
+			return "", context.DeadlineExceeded
+		}
+	}
+
+	select {
+	case <-ctx.Done():
+		return "", ctx.Err()
+	case <-time.After(5 * time.Second):
+	}
+	return "EN/US", nil
+}
+
+// Greeting&Farewell Context pattern
+// Let’s say that genGreeting only wants to wait one second before abandoning
+// the call to locale — a timeout of one second. We also want to build some
+// smart logic into main. If printGreeting is unsuccessful, we also want to
+// cancel our call to printFarewell. After all, it wouldn’t make sense to say
+// goodbye if we don’t say hello!
+func ExampleContextPattern() {
+  var wg sync.WaitGroup
+  ctx, cancel := context.WithCancel(context.Background())
+  defer cancel()
+  wg.Add(1)
+  go func() {
+    defer wg.Done()
+    if err := printGreeting(ctx); err != nil {
+      fmt.Printf("cannot print greeting: %v\n", err)
+      cancel()
+    }
+  }()
+  wg.Add(1)
+  go func() {
+    defer wg.Done()
+    if err := printFarewell(ctx); err != nil {
+      fmt.Printf("cannot print farewell: %v\n", err)
+    }
+  }()
+  wg.Wait()
+  // Output:
+  // cannot print greeting: context deadline exceeded
+  // cannot print farewell: context canceled
+}
+```
+
+## Store Value in Context
+
+**Context Value**
+- The key you use must satisfy Go’s notion of comparability, that is the
+  equality operators == and != need to return correct results when used.
+- Values returned must be safe to access from multiple goroutines.
+
+**Convention**
+- First, they recommend you define a custom key-type in your package. As
+  long as other packages do the same, this prevents collisions within the
+  Context.
+- Since the type you define for your package’s keys is unexported, other
+  packages cannot conflict with keys you generate within your package.
+  Since we don’t export the keys we use to store the data, we must therefore
+  export functions that retrieve the data for us.
+
+```go
+type ctxKey int
+
+const (
+	ctxUserID ctxKey = iota
+	ctxAuthToken
+)
+
+func UserID(c context.Context) string {
+	return c.Value(ctxUserID).(string)
+}
+func AuthToken(c context.Context) string {
+	return c.Value(ctxAuthToken).(string)
+}
+
+func ProcessRequest(userID, authToken string) {
+	ctx := context.WithValue(context.Background(), ctxUserID, userID)
+	ctx = context.WithValue(ctx, ctxAuthToken, authToken)
+	HandleResponse(ctx)
+}
+
+func HandleResponse(ctx context.Context) {
+	fmt.Printf("handling response for %v (auth: %v)", UserID(ctx), AuthToken(ctx))
+}
+
+func ExampleContextValue() {
+  ProcessRequest("jane", "abc123")
+  // Output:
+  // handling response for jane (auth: abc123)
+}
+
 ```
 
 
