@@ -9,7 +9,8 @@ tags: go goroutine concurrency
 # Introduction
 Here is some tips of go concurrency regarding the book "Concurrency in Go".
 
-# Chan
+# Concurrency Patterns in Go
+## Chan
 I’ll define ownership as being a goroutine which instantiates, writes, and closes a channel.
 **Channel owners** have a write-access view into the channel (chan or chan<-), and 
 **channel utilizers** only have a read-only view into the channel (<-chan).
@@ -31,7 +32,7 @@ for result := range resultStream {
 fmt.Println("Done receiving!")
 ```
 
-# Preventing goroutine leaks
+## Preventing goroutine leaks
 How to ensure a single child goroutine is guaranteed to be cleaned up?
 ```go
 // goroutine is stuck in write chan (<-strings)
@@ -97,7 +98,7 @@ foundation of passing in a done channel.
 **convention**: _If a goroutine is responsible for creating a goroutine, it is also
 responsible for ensuring it can stop the goroutine._
 
-# The or-channel
+## The or-channel
 At times you may find yourself wanting to _combine one or more done
 channels into a single done channel which closes if any of its component
 channels close._
@@ -154,7 +155,7 @@ fmt.Printf("done after %v", time.Since(start))
 // done after 1.000216772s
 ```
 
-# Error Handling
+## Error Handling
 ```go
 type Result struct {
     Error error
@@ -201,7 +202,7 @@ for result := range checkStatus(done, "a", "https://www.google.com", "b", "c") {
 //Too many errors, breaking!
 ```
 
-# Best Practices for Constructing Pipelines
+## Best Practices for Constructing Pipelines
 ```go
 generator := func(done <-chan interface{}, integers ...int) <-chan int {
     intStream := make(chan int)
@@ -259,9 +260,9 @@ for v := range pipeline {
 //18
 ```
 
-# Some Handy Generators
+## Some Handy Generators
 
-## Repeat & Take
+#### Repeat & Take
 This function will repeat the values you pass to it infinitely until you tell it to
 stop.
 ```go
@@ -312,7 +313,7 @@ for num := range take(done, repeat(done, 1), 10) {
 //1 1 1 1 1 1 1 1 1 1
 ```
 
-## RepeatFn
+#### RepeatFn
 Let’s create another repeating generator, but this
 time, let’s create one that repeatedly calls a function.
 ```go
@@ -353,7 +354,7 @@ for num := range take(done, repeatFn(done, rand), 10) {
 //2775422040480279449
 ```
 
-# Fan In & Fan Out
+## Fan In & Fan Out
 To reuse a single stage of our pipeline on multiple
 goroutines in an attempt to parallelize pulls from an upstream stage?
 **Fan-out** is a term to describe the process of starting multiple goroutines to
@@ -448,7 +449,7 @@ for prime := range take(done, fanIn(done, finders...), 10) {
 fmt.Printf("Search took: %v", time.Since(start))
 ```
 
-# The or-done-channel
+## The or-done-channel
 ```go
 orDone := func(done, c <-chan interface{}) <-chan interface{} {
   valStream := make(chan interface{})
@@ -478,7 +479,7 @@ for val := range orDone(done, myChan) {
 }
 ```
 
-# The tee-channel
+## The tee-channel
 Taking its name from the **tee** command in Unix-like systems, the tee-channel
 does just this. You can pass it a channel to read from, and it will return two
 separate channels which will get the same value.
@@ -518,7 +519,7 @@ for val1 := range out1 {
 }
 ```
 
-# The bridge-channel
+## The bridge-channel
 In some circumstances, you may find yourself wanting to consume values
 from a sequence of channels:
 ```go
@@ -549,7 +550,7 @@ func bridge(done <-chan interface{}, chanStream <-chan <-chan interface{}) <-cha
 }
 ```
 
-# The Context Package
+## The Context Package
 
 ```go
 var Canceled = errors.New("context canceled")
@@ -587,7 +588,7 @@ type Context interface {
 }
 ```
 
-## Instead of Done
+#### Instead of Done
 * _WithCancel_ returns a new Context which closes its done channel when the returned cancel function is called.
 * _WithDeadline_ returns a new Context which closes its done channel when the machine’s clock advances past the given deadline.
 * _WithTimeout_ returns a new Context which closes its done channel after the given timeout duration.
@@ -684,7 +685,7 @@ func ExampleContextPattern() {
 }
 ```
 
-## Store Value in Context
+#### Store Value in Context
 
 **Context Value**
 - The key you use must satisfy Go’s notion of comparability, that is the
@@ -730,9 +731,11 @@ func ExampleContextValue() {
   // Output:
   // handling response for jane (auth: abc123)
 }
-
 ```
+
+# Concurrency at Scale
 
 
 # Reference
 1. [Concurrency in Go](https://www.oreilly.com/library/view/concurrency-in-go/9781491941294/)
+2. [Examples in GitHub Repository](https://github.com/rhzx3519/go-concurrency)
