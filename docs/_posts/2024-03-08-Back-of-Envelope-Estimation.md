@@ -13,12 +13,12 @@ partitioning, load balancing and caching.
 
 There are several metrics we need to determine at the first place, we could split the metrics into two categories:
 **writing** and **reading**. Following metrics are to be estimated:
-- Writing QPS/TPS
-- Reading QPS/TPS
-- Writing Band Width
-- Reading Band Width
-- Data Storage(for writing request)
-- Cache Memory(for reading request)
+- _Writing QPS/TPS_
+- _Reading QPS/TPS_
+- _Writing Band Width_
+- _Reading Band Width_
+- _Data Storage_(for writing request)
+- _Cache Memory_(for reading request)
 
 And there are some common rules we can apply into our estimation.
 - The ratio between writing and reading requests is **100:1**.
@@ -38,19 +38,19 @@ Let's assume each request data is 500 bytes.
 **Writing Band Width** = `200*500 ~= 100KB/s`.   
 **Reading Band Width** = `20K * 500 ~= 10MB/s`.
 
-Let's assume the data expires in 5 years.
+Let's assume the data expires in 5 years.      
 **Data Storage** = `500M * 12month * 5 year * 500bytes ~= 30G * 500bytes ~= 15TB`     
 
-Let's assume the cache expires in 1 day, and only the hot data is cached.
+Let's assume the cache expires in 1 day, and only the hot data is cached.    
 **Cache Memory** = `20K * 3600s * 24h * 500bytes * 0.2 ~= 20K * 100K * 100bytes ~= 200GB`
 
 Here we have all the critical metric estimation for our system:
-- Writing QPS/TPS: 200
-- Reading QPS/TPS: 20K
-- Writing Band Width: 100KB/s
-- Reading Band Width: 10MB/s
-- Data Storage(for writing request): 15TB
-- Cache Memory(for reading request): 200GB
+- _Writing QPS/TPS_: 200
+- _Reading QPS/TPS_: 20K
+- _Writing Band Width_: 100KB/s
+- _Reading Band Width_: 10MB/s
+- _Data Storage_(for writing request): 15TB
+- _Cache Memory_(for reading request): 200GB
 
 ## Wrap up
 This is a common law for us to apply in every back-of-envelope estimate of system design.
