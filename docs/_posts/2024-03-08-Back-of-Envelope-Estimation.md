@@ -9,7 +9,7 @@ tags: system design backend architecture
 ## Metrics
 After clarify the scope and limit of a problem in the system design interview, it is always a good idea to make 
 a preliminary estimation of some metrics for our system. This will help us later when we will be focusing on scaling, 
-partitioning, load balancing and caching. 
+partitioning, load balancing and caching.
 
 There are several metrics we need to determine at the first place, we could split the metrics into two categories:
 **writing** and **reading**. Following metrics are to be estimated:
