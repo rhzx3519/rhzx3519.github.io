@@ -733,7 +733,84 @@ func ExampleContextValue() {
 }
 ```
 
-# Concurrency at Scale
+# Concurrency Traps
+## Case Sequence in Select
+Case sequence do matter in the select, especially when you have both input and output channels.
+Here is an example of producer-consumer pattern.
+```go
+package producerconsumerpattern
+
+import (
+	"context"
+	"fmt"
+	"math/rand"
+)
+
+type Producer struct {
+	outStream chan int
+	inStream  chan int
+	count     int
+}
+
+func NewProducer() *Producer {
+	return &Producer{
+		outStream: make(chan int),
+		inStream:  make(chan int),
+	}
+}
+
+func (p *Producer) Run(ctx context.Context) {
+	go func() {
+		defer close(p.outStream)
+		defer close(p.inStream)
+		for {
+			select {
+      case p.outStream <- p.doProduce():
+			case i, ok := <-p.inStream:
+				fmt.Println("inStream...", i, ok)
+			case <-ctx.Done():
+				return
+			}
+		}
+	}()
+}
+
+func (p *Producer) doProduce() int {
+	p.count++
+	fmt.Println("doProduce...", p.count, len(p.outStream))
+	return rand.Int()
+}
+```
+
+How many times do you assume the doProduce function runs when we call `producer.Run(context.TODO())`, the answer is 1.
+`outStream` channel will be empty at first, so in the `for-select` loop, outStream will be filled with the outcome from `doProduce`,
+then it go into blocked.
+
+After initialization, we call `producer.inStream <- 1`, you will find that the `doProduce` is all also been called. 
+How does this take place? The reason is when we call any channels in the `select`, channels will be checked one-by-one based 
+on their sequence, instead of call the specific channel directly. `case p.outStream <- p.doProduce():` will be checked first,
+no matter `outStream` channel is blocked or not, `doProduce` will be called anyway.
+
+How could we avoid this situation? _We need to put all input channels before output channels_, in this way, when the input channels
+are called, `select` will break after the input case is executed.
+
+```go
+func (p *Producer) Run(ctx context.Context) {
+	go func() {
+		defer close(p.outStream)
+		defer close(p.inStream)
+		for {
+			select {
+			case i, ok := <-p.inStream:
+				fmt.Println("inStream...", i, ok)
+			case <-ctx.Done():
+				return
+      case p.outStream <- p.doProduce():
+			}
+		}
+	}()
+}
+```
 
 
 # Reference
