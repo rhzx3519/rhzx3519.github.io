@@ -791,26 +791,10 @@ How does this take place? The reason is when we call any channels in the `select
 on their sequence, instead of call the specific channel directly. `case p.outStream <- p.doProduce():` will be checked first,
 no matter `outStream` channel is blocked or not, `doProduce` will be called anyway.
 
-How could we avoid this situation? _We need to put all input channels before output channels_, in this way, when the input channels
-are called, `select` will break after the input case is executed.
+How could we avoid this situation? There are two solutions:
+- Separate read & write operation into different goroutines.
+- Use a temp channel to transfer data.
 
-```go
-func (p *Producer) Run(ctx context.Context) {
-	go func() {
-		defer close(p.outStream)
-		defer close(p.inStream)
-		for {
-			select {
-			case i, ok := <-p.inStream:
-				fmt.Println("inStream...", i, ok)
-			case <-ctx.Done():
-				return
-      case p.outStream <- p.doProduce():
-			}
-		}
-	}()
-}
-```
 
 
 # Reference
